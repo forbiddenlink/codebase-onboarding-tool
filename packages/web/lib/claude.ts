@@ -1,13 +1,18 @@
 import Anthropic from '@anthropic-ai/sdk'
 
 // Initialize Anthropic client with API key from environment
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY || '',
-})
+// Only initialize if API key is configured and not a placeholder
+const hasValidApiKey = process.env.ANTHROPIC_API_KEY &&
+  !process.env.ANTHROPIC_API_KEY.includes('xxxxx') &&
+  process.env.ANTHROPIC_API_KEY.startsWith('sk-ant-')
+
+const anthropic = hasValidApiKey ? new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+}) : null
 
 // Verify API key is configured
-if (!process.env.ANTHROPIC_API_KEY) {
-  console.warn('Warning: ANTHROPIC_API_KEY not configured. AI features will not work.')
+if (!hasValidApiKey) {
+  console.warn('Warning: ANTHROPIC_API_KEY not configured or is a placeholder. AI features will not work.')
 }
 
 /**
@@ -22,8 +27,8 @@ export async function analyzeCode(
   question?: string,
   language: string = 'unknown'
 ): Promise<{ analysis: string; confidence: number }> {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    throw new Error('Anthropic API key not configured')
+  if (!anthropic) {
+    throw new Error('Anthropic API key not configured or is invalid')
   }
 
   const systemPrompt = `You are an expert code analyzer. Analyze the provided ${language} code and provide insights about:
@@ -80,8 +85,8 @@ export async function explainCode(
   code: string,
   language: string = 'unknown'
 ): Promise<string> {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    throw new Error('Anthropic API key not configured')
+  if (!anthropic) {
+    throw new Error('Anthropic API key not configured or is invalid')
   }
 
   try {
@@ -116,8 +121,8 @@ export async function answerQuestion(
   question: string,
   codeContext: Array<{ file: string; code: string; language: string }>
 ): Promise<{ answer: string; confidence: number; sources: string[] }> {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    throw new Error('Anthropic API key not configured')
+  if (!anthropic) {
+    throw new Error('Anthropic API key not configured or is invalid')
   }
 
   // Build context from code snippets
@@ -175,7 +180,7 @@ If you're not confident about the answer, say so.`
  * @returns true if API key is set and valid
  */
 export async function checkClaudeConnection(): Promise<boolean> {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!anthropic) {
     return false
   }
 
