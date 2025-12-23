@@ -59,7 +59,7 @@ export default function TestNetworkPage() {
           Network Error Handling Test
         </h1>
         <p className="text-muted-foreground mb-8">
-          Test the application's graceful network error handling with automatic retries
+          Test the application&apos;s graceful network error handling with automatic retries
         </p>
 
         <div className="space-y-6">

@@ -1,12 +1,24 @@
-/** @type {import('tailwindcss').Config} */
+/**
+ * Tailwind CSS Configuration
+ *
+ * Configures Tailwind CSS for the CodeCompass web dashboard.
+ * Includes shadcn/ui theme integration and custom design tokens.
+ * See CONFIG_GUIDE.md for detailed explanations.
+ *
+ * @type {import('tailwindcss').Config}
+ */
 module.exports = {
+  // Enable dark mode via CSS class (.dark on root element)
   darkMode: ["class"],
+
+  // Scan these files for Tailwind classes (for tree-shaking)
   content: [
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
     './lib/**/*.{ts,tsx}',
   ],
   theme: {
+    // Container utilities for responsive layouts
     container: {
       center: true,
       padding: "2rem",
@@ -15,6 +27,8 @@ module.exports = {
       },
     },
     extend: {
+      // Custom color palette using CSS variables for dynamic theming
+      // These map to CSS variables defined in globals.css
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -50,11 +64,13 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      // Border radius utilities using CSS variable for consistent theming
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      // Animation keyframes for interactive components
       keyframes: {
         "accordion-down": {
           from: { height: 0 },
@@ -65,11 +81,13 @@ module.exports = {
           to: { height: 0 },
         },
       },
+      // Animation utilities for smooth transitions
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
   },
+  // Tailwind Animate plugin for additional animation utilities
   plugins: [require("tailwindcss-animate")],
 }

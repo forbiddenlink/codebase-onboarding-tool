@@ -539,7 +539,7 @@ export default function SearchPage() {
                   Search by file name with fuzzy matching. Handles typos and partial matches.
                 </p>
                 <p className="text-xs text-blue-700 dark:text-blue-500 mt-2">
-                  Try: "user", "auth", "index"
+                  Try: &quot;user&quot;, &quot;auth&quot;, &quot;index&quot;
                 </p>
               </div>
               <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
@@ -550,7 +550,7 @@ export default function SearchPage() {
                   Search within file contents. Highlights matches with context.
                 </p>
                 <p className="text-xs text-purple-700 dark:text-purple-500 mt-2">
-                  Try: "express", "jwt", "database"
+                  Try: &quot;express&quot;, &quot;jwt&quot;, &quot;database&quot;
                 </p>
               </div>
               <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
@@ -561,7 +561,7 @@ export default function SearchPage() {
                   Search your notes and annotations by content, author, or file.
                 </p>
                 <p className="text-xs text-green-700 dark:text-green-500 mt-2">
-                  Try: "important", "bug", "refactor"
+                  Try: &quot;important&quot;, &quot;bug&quot;, &quot;refactor&quot;
                 </p>
               </div>
             </div>

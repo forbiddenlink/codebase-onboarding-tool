@@ -1,0 +1,54 @@
+{
+  "name": "CodeCompass - AI-Powered Codebase Onboarding",
+  "short_name": "CodeCompass",
+  "description": "Make joining new codebases 10x faster with AI-powered analysis, interactive diagrams, and personalized learning paths.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#667eea",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "productivity",
+    "developer-tools",
+    "education"
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View your analyzed repositories",
+      "url": "/dashboard",
+      "icons": []
+    },
+    {
+      "name": "Search",
+      "short_name": "Search",
+      "description": "Search through your codebase",
+      "url": "/search",
+      "icons": []
+    },
+    {
+      "name": "Chat",
+      "short_name": "Chat",
+      "description": "Ask questions about your code",
+      "url": "/chat",
+      "icons": []
+    }
+  ],
+  "prefer_related_applications": false
+}

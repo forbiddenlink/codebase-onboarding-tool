@@ -32,12 +32,12 @@ export default function TestErrorPage() {
             Expected Behavior
           </h3>
           <ul className="list-disc list-inside text-sm text-blue-800 dark:text-blue-400 space-y-1">
-            <li>Click the "Trigger Error" button</li>
+            <li>Click the &quot;Trigger Error&quot; button</li>
             <li>Error boundary should catch the error</li>
             <li>Fallback UI should be displayed</li>
             <li>Error details should be logged to console</li>
             <li>App should not crash completely</li>
-            <li>User should see "Try Again" and "Go to Homepage" buttons</li>
+            <li>User should see &quot;Try Again&quot; and &quot;Go to Homepage&quot; buttons</li>
           </ul>
         </div>
       </div>

@@ -8,6 +8,13 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'CodeCompass - AI-Powered Codebase Onboarding',
   description: 'Make joining new codebases 10x faster with AI-powered analysis, interactive diagrams, and personalized learning paths.',
+  manifest: '/manifest.json',
+  themeColor: '#667eea',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'CodeCompass',
+  },
 }
 
 export default function RootLayout({
