@@ -1,10 +1,56 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import * as fs from 'fs'
 import * as path from 'path'
 import simpleGit from 'simple-git'
+import { prisma } from '@/lib/prisma'
 
-const prisma = new PrismaClient()
+// Helper function to validate and sanitize repository path
+function validatePath(inputPath: string): { valid: boolean; error?: string; sanitized?: string } {
+  try {
+    // Resolve to absolute path to prevent traversal
+    const absolutePath = path.resolve(inputPath)
+
+    // Check for path traversal attempts
+    if (inputPath.includes('..') || inputPath.includes('~')) {
+      return { valid: false, error: 'Invalid path: path traversal not allowed' }
+    }
+
+    // Ensure path doesn't access sensitive directories
+    const sensitiveDirectories = ['/etc', '/var', '/usr', '/bin', '/sbin', '/root', '/System']
+    const isSensitive = sensitiveDirectories.some(dir =>
+      absolutePath.startsWith(dir) || absolutePath === dir
+    )
+
+    if (isSensitive) {
+      return { valid: false, error: 'Invalid path: access to system directories not allowed' }
+    }
+
+    return { valid: true, sanitized: absolutePath }
+  } catch (error) {
+    return { valid: false, error: 'Invalid path format' }
+  }
+}
+
+// Helper function to validate git URL
+function validateGitUrl(url: string): { valid: boolean; error?: string } {
+  try {
+    // Check if URL matches git URL patterns
+    const gitUrlPattern = /^(https?:\/\/|git@)(github\.com|gitlab\.com|bitbucket\.org)[/:].+\.git$/i
+
+    if (!gitUrlPattern.test(url)) {
+      return { valid: false, error: 'Invalid git URL: only GitHub, GitLab, and Bitbucket URLs are allowed' }
+    }
+
+    // Additional security: no shell metacharacters
+    if (/[;&|`$()]/.test(url)) {
+      return { valid: false, error: 'Invalid git URL: contains unsafe characters' }
+    }
+
+    return { valid: true }
+  } catch (error) {
+    return { valid: false, error: 'Invalid URL format' }
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,8 +66,19 @@ export async function POST(request: NextRequest) {
         )
       }
 
+      // Validate and sanitize path
+      const pathValidation = validatePath(repoPath)
+      if (!pathValidation.valid) {
+        return NextResponse.json(
+          { error: pathValidation.error },
+          { status: 400 }
+        )
+      }
+
+      const sanitizedPath = pathValidation.sanitized!
+
       // Check if path exists
-      if (!fs.existsSync(repoPath)) {
+      if (!fs.existsSync(sanitizedPath)) {
         return NextResponse.json(
           { error: 'Repository path does not exist' },
           { status: 400 }
@@ -29,7 +86,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Check if it's a git repository
-      const gitDir = path.join(repoPath, '.git')
+      const gitDir = path.join(sanitizedPath, '.git')
       if (!fs.existsSync(gitDir)) {
         return NextResponse.json(
           { error: 'Path is not a git repository' },
@@ -38,11 +95,11 @@ export async function POST(request: NextRequest) {
       }
 
       // Get repository name from path
-      const repoName = path.basename(repoPath)
+      const repoName = path.basename(sanitizedPath)
 
       // Check if repository exists
       let repository = await prisma.repository.findFirst({
-        where: { path: repoPath },
+        where: { path: sanitizedPath },
       })
 
       if (repository) {
@@ -59,7 +116,7 @@ export async function POST(request: NextRequest) {
         repository = await prisma.repository.create({
           data: {
             name: repoName,
-            path: repoPath,
+            path: sanitizedPath,
             url: null,
             lastAnalyzedAt: new Date(),
           },
@@ -67,8 +124,8 @@ export async function POST(request: NextRequest) {
       }
 
       // Start comprehensive file scanning and knowledge graph creation
-      const files = scanDirectory(repoPath, repoPath)
-      const knowledgeGraph = await buildKnowledgeGraph(repository.id, repoPath, files)
+      const files = scanDirectory(sanitizedPath, sanitizedPath)
+      const knowledgeGraph = await buildKnowledgeGraph(repository.id, sanitizedPath, files)
 
       // Store analysis results with knowledge graph
       await prisma.analysisResult.create({
@@ -83,6 +140,34 @@ export async function POST(request: NextRequest) {
           }),
         },
       })
+
+      // Write shared cache file for CLI and VS Code extension
+      const cacheDir = path.join(sanitizedPath, '.codecompass')
+      const cacheFile = path.join(cacheDir, 'analysis-cache.json')
+
+      try {
+        // Create cache directory if it doesn't exist
+        if (!fs.existsSync(cacheDir)) {
+          fs.mkdirSync(cacheDir, { recursive: true })
+        }
+
+        // Write cache file with analysis results
+        const cacheData = {
+          analyzedAt: new Date().toISOString(),
+          fileCount: files.length,
+          fileTypes: knowledgeGraph.fileStats,
+          languageDistribution: knowledgeGraph.languageDistribution,
+          totalLines: knowledgeGraph.totalLines,
+          repositoryId: repository.id,
+          repositoryName: repository.name,
+        }
+
+        fs.writeFileSync(cacheFile, JSON.stringify(cacheData, null, 2), 'utf8')
+        console.log(`Shared cache written to: ${cacheFile}`)
+      } catch (error) {
+        console.error('Failed to write shared cache file:', error)
+        // Don't fail the request if cache write fails
+      }
 
       return NextResponse.json({
         success: true,
@@ -103,6 +188,15 @@ export async function POST(request: NextRequest) {
         )
       }
 
+      // Validate git URL for security
+      const urlValidation = validateGitUrl(repoUrl)
+      if (!urlValidation.valid) {
+        return NextResponse.json(
+          { error: urlValidation.error },
+          { status: 400 }
+        )
+      }
+
       // Extract repository name from URL
       const repoName = repoUrl
         .split('/')
@@ -117,15 +211,19 @@ export async function POST(request: NextRequest) {
 
       const targetPath = path.join(cloneDir, repoName)
 
-      // Clone repository
-      const git = simpleGit()
+      // Clone repository with timeout and error handling
+      const git = simpleGit({
+        timeout: {
+          block: 300000, // 5 minutes max for clone operations
+        },
+      })
 
       // Remove existing directory if it exists
       if (fs.existsSync(targetPath)) {
         fs.rmSync(targetPath, { recursive: true, force: true })
       }
 
-      await git.clone(repoUrl, targetPath)
+      await git.clone(repoUrl, targetPath, ['--depth', '1']) // Shallow clone for faster cloning
 
       // Check if repository exists
       let repository = await prisma.repository.findFirst({
@@ -171,6 +269,34 @@ export async function POST(request: NextRequest) {
           }),
         },
       })
+
+      // Write shared cache file for CLI and VS Code extension
+      const cacheDir = path.join(targetPath, '.codecompass')
+      const cacheFile = path.join(cacheDir, 'analysis-cache.json')
+
+      try {
+        // Create cache directory if it doesn't exist
+        if (!fs.existsSync(cacheDir)) {
+          fs.mkdirSync(cacheDir, { recursive: true })
+        }
+
+        // Write cache file with analysis results
+        const cacheData = {
+          analyzedAt: new Date().toISOString(),
+          fileCount: files.length,
+          fileTypes: knowledgeGraph.fileStats,
+          languageDistribution: knowledgeGraph.languageDistribution,
+          totalLines: knowledgeGraph.totalLines,
+          repositoryId: repository.id,
+          repositoryName: repository.name,
+        }
+
+        fs.writeFileSync(cacheFile, JSON.stringify(cacheData, null, 2), 'utf8')
+        console.log(`Shared cache written to: ${cacheFile}`)
+      } catch (error) {
+        console.error('Failed to write shared cache file:', error)
+        // Don't fail the request if cache write fails
+      }
 
       return NextResponse.json({
         success: true,

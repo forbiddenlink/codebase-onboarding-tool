@@ -442,6 +442,8 @@ async function interactiveMode() {
     { name: '❌ Exit', value: 'exit' }
   ];
 
+  // Main menu loop - exits via 'exit' action
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     const { action } = await inquirer.prompt([
       {
