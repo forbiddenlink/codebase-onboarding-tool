@@ -11,7 +11,7 @@ interface Repository {
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
-  const [repositories, setRepositories] = useState<Repository[]>([])
+  const [repositories] = useState<Repository[]>([])
 
   useEffect(() => {
     // In a real implementation, fetch repositories from API
