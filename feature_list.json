@@ -1,0 +1,2885 @@
+[
+  {
+    "category": "functional",
+    "description": "Web dashboard loads successfully on localhost:3000",
+    "steps": [
+      "Step 1: Start development server",
+      "Step 2: Navigate to http://localhost:3000",
+      "Step 3: Verify page loads without errors",
+      "Step 4: Check browser console for no critical errors"
+    ],
+    "complexity": "simple",
+    "dependencies": [],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Database connection initializes correctly with Prisma and SQLite",
+    "steps": [
+      "Step 1: Check Prisma schema exists",
+      "Step 2: Run prisma migrate dev",
+      "Step 3: Verify SQLite database file is created",
+      "Step 4: Test database connection with a simple query"
+    ],
+    "complexity": "simple",
+    "dependencies": [],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can provide a local git repository path for analysis",
+    "steps": [
+      "Step 1: Navigate to repository setup page",
+      "Step 2: Enter valid local repository path",
+      "Step 3: Click 'Analyze Repository' button",
+      "Step 4: Verify repository path is accepted",
+      "Step 5: Check loading state appears"
+    ],
+    "complexity": "medium",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can provide a git URL for repository cloning and analysis",
+    "steps": [
+      "Step 1: Navigate to repository setup page",
+      "Step 2: Enter valid git URL (e.g., GitHub repository)",
+      "Step 3: Click 'Clone & Analyze' button",
+      "Step 4: Verify cloning progress is displayed",
+      "Step 5: Wait for clone completion"
+    ],
+    "complexity": "medium",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Repository analysis engine scans file structure and creates knowledge graph",
+    "steps": [
+      "Step 1: Provide sample repository for analysis",
+      "Step 2: Trigger analysis process",
+      "Step 3: Monitor analysis progress bar",
+      "Step 4: Verify completion notification",
+      "Step 5: Check that file structure is extracted",
+      "Step 6: Verify knowledge graph is created in database",
+      "Step 7: Confirm analysis results are cached"
+    ],
+    "complexity": "complex",
+    "dependencies": [3],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "TypeScript/JavaScript files are parsed and analyzed correctly",
+    "steps": [
+      "Step 1: Analyze repository with TypeScript files",
+      "Step 2: Verify imports/exports are detected",
+      "Step 3: Check function definitions are extracted",
+      "Step 4: Confirm component relationships are identified"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Python files are parsed and analyzed correctly",
+    "steps": [
+      "Step 1: Analyze repository with Python files",
+      "Step 2: Verify imports are detected",
+      "Step 3: Check function and class definitions are extracted",
+      "Step 4: Confirm module structure is mapped"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Go files are parsed and analyzed correctly",
+    "steps": [
+      "Step 1: Analyze repository with Go files",
+      "Step 2: Verify package imports are detected",
+      "Step 3: Check function definitions are extracted",
+      "Step 4: Confirm module dependencies are identified"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Rust files are parsed and analyzed correctly",
+    "steps": [
+      "Step 1: Analyze repository with Rust files",
+      "Step 2: Verify crate dependencies are detected",
+      "Step 3: Check function and module definitions are extracted",
+      "Step 4: Confirm trait implementations are identified"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Java files are parsed and analyzed correctly",
+    "steps": [
+      "Step 1: Analyze repository with Java files",
+      "Step 2: Verify package imports are detected",
+      "Step 3: Check class and method definitions are extracted",
+      "Step 4: Confirm inheritance relationships are identified"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Monorepo structures are correctly identified and analyzed",
+    "steps": [
+      "Step 1: Provide monorepo with multiple packages",
+      "Step 2: Trigger analysis",
+      "Step 3: Verify each package is identified separately",
+      "Step 4: Check cross-package dependencies are detected",
+      "Step 5: Confirm package.json workspaces are recognized"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "File metadata extraction (LOC, complexity, last modified, authors)",
+    "steps": [
+      "Step 1: Analyze repository",
+      "Step 2: Select a file from the analyzed codebase",
+      "Step 3: Verify LOC (lines of code) is displayed",
+      "Step 4: Check complexity score is shown",
+      "Step 5: Confirm last modified date is present",
+      "Step 6: Verify primary authors are listed"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Call graphs are built showing function invocation relationships",
+    "steps": [
+      "Step 1: Analyze repository with function calls",
+      "Step 2: Navigate to call graph view",
+      "Step 3: Select a function",
+      "Step 4: Verify all functions it calls are shown",
+      "Step 5: Verify all functions that call it are shown"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Dependency trees show module and package relationships",
+    "steps": [
+      "Step 1: Analyze repository",
+      "Step 2: Navigate to dependency tree view",
+      "Step 3: Verify package.json dependencies are displayed",
+      "Step 4: Check internal module dependencies are shown",
+      "Step 5: Confirm tree structure is hierarchical and navigable"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Common frameworks (React, Express, FastAPI) are automatically detected",
+    "steps": [
+      "Step 1: Analyze repository using React",
+      "Step 2: Check framework detection results",
+      "Step 3: Verify React is identified with version",
+      "Step 4: Test with Express backend repository",
+      "Step 5: Test with FastAPI Python repository"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Analysis results are cached for fast subsequent queries",
+    "steps": [
+      "Step 1: Perform initial repository analysis (note duration)",
+      "Step 2: Complete analysis",
+      "Step 3: Query the same repository again",
+      "Step 4: Verify results load from cache (much faster)",
+      "Step 5: Check cache invalidation works on repo changes"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Incremental analysis updates when code changes are detected",
+    "steps": [
+      "Step 1: Analyze repository initially",
+      "Step 2: Modify a file in the repository",
+      "Step 3: Trigger incremental analysis",
+      "Step 4: Verify only changed files are re-analyzed",
+      "Step 5: Confirm analysis is faster than full re-scan",
+      "Step 6: Check knowledge graph is updated correctly"
+    ],
+    "complexity": "complex",
+    "dependencies": [5, 16],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "AI chat interface loads and displays correctly",
+    "steps": [
+      "Step 1: Navigate to Chat page",
+      "Step 2: Verify chat input field is visible",
+      "Step 3: Check send button is present",
+      "Step 4: Confirm chat history area is displayed"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can ask a question about the codebase and receive an answer",
+    "steps": [
+      "Step 1: Complete repository analysis",
+      "Step 2: Navigate to Chat interface",
+      "Step 3: Type question: 'Where is authentication handled?'",
+      "Step 4: Click send",
+      "Step 5: Wait for AI response",
+      "Step 6: Verify response includes relevant information",
+      "Step 7: Check that file paths are included in answer",
+      "Step 8: Verify line numbers are provided",
+      "Step 9: Confirm code snippets are shown"
+    ],
+    "complexity": "complex",
+    "dependencies": [5, 18],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat maintains conversation context across multiple messages",
+    "steps": [
+      "Step 1: Ask initial question about authentication",
+      "Step 2: Wait for response",
+      "Step 3: Ask follow-up: 'Can you show me how it's used?'",
+      "Step 4: Verify AI understands context from previous question",
+      "Step 5: Check response builds on previous answer"
+    ],
+    "complexity": "medium",
+    "dependencies": [19],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat responses include clickable file paths to view code",
+    "steps": [
+      "Step 1: Ask question via chat",
+      "Step 2: Receive response with file path",
+      "Step 3: Verify file path is displayed as hyperlink",
+      "Step 4: Click the file path link",
+      "Step 5: Confirm code viewer opens showing the file",
+      "Step 6: Verify correct line is highlighted"
+    ],
+    "complexity": "medium",
+    "dependencies": [19],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat understands query: 'Where is authentication?'",
+    "steps": [
+      "Step 1: Analyze repository with authentication code",
+      "Step 2: Ask: 'Where is authentication?'",
+      "Step 3: Verify response identifies auth files",
+      "Step 4: Check accuracy of response"
+    ],
+    "complexity": "simple",
+    "dependencies": [19],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat understands query: 'How does data flow?'",
+    "steps": [
+      "Step 1: Analyze repository with data flow",
+      "Step 2: Ask: 'How does data flow from API to frontend?'",
+      "Step 3: Verify response traces data flow",
+      "Step 4: Check multiple files are referenced"
+    ],
+    "complexity": "medium",
+    "dependencies": [19],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat understands query: 'What calls this function?'",
+    "steps": [
+      "Step 1: Analyze repository",
+      "Step 2: Ask about a specific function",
+      "Step 3: Verify response lists all callers",
+      "Step 4: Check file paths and line numbers are provided"
+    ],
+    "complexity": "medium",
+    "dependencies": [19],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat can explain design decisions by analyzing code patterns",
+    "steps": [
+      "Step 1: Ask: 'Why is this pattern used?'",
+      "Step 2: Verify AI analyzes code structure",
+      "Step 3: Check response explains architectural reasoning",
+      "Step 4: Confirm multiple examples are referenced"
+    ],
+    "complexity": "complex",
+    "dependencies": [19],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat responses include confidence scores",
+    "steps": [
+      "Step 1: Ask a question via chat",
+      "Step 2: Receive response",
+      "Step 3: Verify confidence score is displayed (e.g., 'Confidence: 85%')",
+      "Step 4: Check score reflects answer certainty"
+    ],
+    "complexity": "simple",
+    "dependencies": [19],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat suggests relevant follow-up questions",
+    "steps": [
+      "Step 1: Ask initial question",
+      "Step 2: Receive response",
+      "Step 3: Verify 2-3 follow-up questions are suggested",
+      "Step 4: Click a suggested question",
+      "Step 5: Confirm it's automatically sent and answered"
+    ],
+    "complexity": "medium",
+    "dependencies": [19],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat history is saved per repository",
+    "steps": [
+      "Step 1: Have conversation with repository A",
+      "Step 2: Switch to repository B",
+      "Step 3: Have different conversation",
+      "Step 4: Switch back to repository A",
+      "Step 5: Verify original chat history is restored",
+      "Step 6: Check repository B history is separate"
+    ],
+    "complexity": "medium",
+    "dependencies": [19],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat can compare current codebase to similar open-source projects",
+    "steps": [
+      "Step 1: Ask: 'How does this compare to similar projects?'",
+      "Step 2: Verify AI identifies comparable projects",
+      "Step 3: Check response highlights differences",
+      "Step 4: Confirm architectural comparison is provided"
+    ],
+    "complexity": "complex",
+    "dependencies": [19],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Interactive dependency graph diagram renders correctly",
+    "steps": [
+      "Step 1: Analyze repository",
+      "Step 2: Navigate to Architecture Diagrams page",
+      "Step 3: Select 'Dependency Graph' view",
+      "Step 4: Verify graph renders with nodes and edges",
+      "Step 5: Check all files are represented as nodes"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Interactive call graph diagram shows function relationships",
+    "steps": [
+      "Step 1: Navigate to Architecture Diagrams",
+      "Step 2: Select 'Call Graph' view",
+      "Step 3: Verify functions are displayed as nodes",
+      "Step 4: Check call relationships are shown as arrows",
+      "Step 5: Confirm graph layout is readable"
+    ],
+    "complexity": "medium",
+    "dependencies": [5, 13],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Data flow diagram visualizes information flow through the system",
+    "steps": [
+      "Step 1: Navigate to Architecture Diagrams",
+      "Step 2: Select 'Data Flow' view",
+      "Step 3: Verify data sources are identified",
+      "Step 4: Check transformations are shown",
+      "Step 5: Confirm data destinations are displayed"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Module hierarchy diagram shows component organization",
+    "steps": [
+      "Step 1: Navigate to Architecture Diagrams",
+      "Step 2: Select 'Module Hierarchy' view",
+      "Step 3: Verify top-level modules are shown",
+      "Step 4: Check sub-modules are nested correctly",
+      "Step 5: Confirm hierarchy is intuitive"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Diagram nodes are clickable to view associated code",
+    "steps": [
+      "Step 1: Open dependency graph",
+      "Step 2: Click a file node",
+      "Step 3: Verify code viewer modal opens",
+      "Step 4: Check correct file content is displayed",
+      "Step 5: Confirm syntax highlighting is applied"
+    ],
+    "complexity": "medium",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Diagram supports zoom and pan interactions",
+    "steps": [
+      "Step 1: Open architecture diagram",
+      "Step 2: Use mouse wheel to zoom in",
+      "Step 3: Verify graph zooms smoothly",
+      "Step 4: Zoom out",
+      "Step 5: Click and drag to pan",
+      "Step 6: Confirm panning works smoothly"
+    ],
+    "complexity": "simple",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Diagram can be filtered by language",
+    "steps": [
+      "Step 1: Open diagram with multiple languages",
+      "Step 2: Apply 'TypeScript only' filter",
+      "Step 3: Verify only TypeScript files are shown",
+      "Step 4: Clear filter",
+      "Step 5: Apply 'Python only' filter",
+      "Step 6: Verify filtering works correctly"
+    ],
+    "complexity": "medium",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Diagram can be filtered by date range (file age)",
+    "steps": [
+      "Step 1: Open diagram",
+      "Step 2: Apply date filter 'Last 30 days'",
+      "Step 3: Verify only recently modified files shown",
+      "Step 4: Try 'Older than 6 months' filter",
+      "Step 5: Confirm filtering accuracy"
+    ],
+    "complexity": "medium",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Diagram can be filtered by complexity",
+    "steps": [
+      "Step 1: Open diagram",
+      "Step 2: Apply 'High complexity only' filter",
+      "Step 3: Verify only complex files are shown",
+      "Step 4: Check complexity threshold is appropriate"
+    ],
+    "complexity": "medium",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Diagram nodes are color-coded by language",
+    "steps": [
+      "Step 1: Open diagram with multiple languages",
+      "Step 2: Verify TypeScript nodes have distinct color",
+      "Step 3: Check Python nodes have different color",
+      "Step 4: Confirm legend shows color mapping"
+    ],
+    "complexity": "simple",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Diagram nodes can be color-coded by file age",
+    "steps": [
+      "Step 1: Open diagram",
+      "Step 2: Select 'Color by age' option",
+      "Step 3: Verify recent files are one color",
+      "Step 4: Check old files are different color",
+      "Step 5: Confirm gradient or discrete coloring is clear"
+    ],
+    "complexity": "simple",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Diagram nodes can be color-coded by complexity",
+    "steps": [
+      "Step 1: Open diagram",
+      "Step 2: Select 'Color by complexity' option",
+      "Step 3: Verify high complexity files are highlighted",
+      "Step 4: Check color scale is intuitive"
+    ],
+    "complexity": "simple",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Diagram nodes can be color-coded by team ownership",
+    "steps": [
+      "Step 1: Open diagram",
+      "Step 2: Select 'Color by team' option",
+      "Step 3: Verify different teams have distinct colors",
+      "Step 4: Check ownership is derived from git history"
+    ],
+    "complexity": "medium",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Diagrams can be exported as SVG",
+    "steps": [
+      "Step 1: Open architecture diagram",
+      "Step 2: Click 'Export' button",
+      "Step 3: Select 'SVG' format",
+      "Step 4: Verify download starts",
+      "Step 5: Open downloaded SVG file",
+      "Step 6: Confirm diagram is correctly exported"
+    ],
+    "complexity": "simple",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Diagrams can be exported as PNG",
+    "steps": [
+      "Step 1: Open architecture diagram",
+      "Step 2: Click 'Export' button",
+      "Step 3: Select 'PNG' format",
+      "Step 4: Verify download starts",
+      "Step 5: Open downloaded PNG file",
+      "Step 6: Confirm image quality is good"
+    ],
+    "complexity": "simple",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Hot paths (frequently changed files) are highlighted in diagrams",
+    "steps": [
+      "Step 1: Analyze repository with git history",
+      "Step 2: Open dependency graph",
+      "Step 3: Enable 'Show hot paths' option",
+      "Step 4: Verify frequently changed files are highlighted",
+      "Step 5: Check highlighting intensity matches change frequency"
+    ],
+    "complexity": "medium",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Clicking a node shows its import/export relationships",
+    "steps": [
+      "Step 1: Open dependency graph",
+      "Step 2: Click a file node",
+      "Step 3: Verify panel shows 'Imports' section",
+      "Step 4: Check all imported files are listed",
+      "Step 5: Verify 'Exports' section shows what this file exports",
+      "Step 6: Confirm 'Used by' section lists dependent files"
+    ],
+    "complexity": "medium",
+    "dependencies": [30, 34],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Circular dependencies are detected and highlighted",
+    "steps": [
+      "Step 1: Analyze repository with circular dependencies",
+      "Step 2: Open dependency graph",
+      "Step 3: Verify circular dependencies are marked (e.g., red highlight)",
+      "Step 4: Click warning icon",
+      "Step 5: Confirm details about the cycle are shown"
+    ],
+    "complexity": "complex",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Architectural smells (code quality issues) are identified in diagrams",
+    "steps": [
+      "Step 1: Analyze repository",
+      "Step 2: Open architecture diagram",
+      "Step 3: Enable 'Show architectural smells' option",
+      "Step 4: Verify issues like God classes are highlighted",
+      "Step 5: Check tight coupling is indicated",
+      "Step 6: Confirm clicking provides explanation"
+    ],
+    "complexity": "complex",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can select their role (Backend, Frontend, Full-Stack, DevOps)",
+    "steps": [
+      "Step 1: Complete repository analysis",
+      "Step 2: Navigate to Learning Path setup",
+      "Step 3: Verify role selection options are displayed",
+      "Step 4: Select 'Backend Engineer' role",
+      "Step 5: Confirm selection is saved"
+    ],
+    "complexity": "simple",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Personalized learning path is generated based on role",
+    "steps": [
+      "Step 1: Select 'Backend Engineer' role",
+      "Step 2: Trigger learning path generation",
+      "Step 3: Verify backend-focused files are prioritized",
+      "Step 4: Check API and database files appear early",
+      "Step 5: Confirm frontend files are deprioritized or later"
+    ],
+    "complexity": "complex",
+    "dependencies": [48],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Learning path suggests optimal reading order for files",
+    "steps": [
+      "Step 1: Generate learning path",
+      "Step 2: View suggested order",
+      "Step 3: Verify entry points come first",
+      "Step 4: Check dependencies come before dependents",
+      "Step 5: Confirm order is logical"
+    ],
+    "complexity": "medium",
+    "dependencies": [49],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Estimated time to review each file/module is shown",
+    "steps": [
+      "Step 1: Open learning path",
+      "Step 2: View file list",
+      "Step 3: Verify each file has time estimate (e.g., '15 min')",
+      "Step 4: Check estimates correlate with file complexity",
+      "Step 5: Confirm total time is displayed"
+    ],
+    "complexity": "simple",
+    "dependencies": [49],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User progress through learning path is tracked",
+    "steps": [
+      "Step 1: Start learning path",
+      "Step 2: Mark first file as reviewed",
+      "Step 3: Verify progress percentage updates",
+      "Step 4: Mark several more files as reviewed",
+      "Step 5: Confirm progress bar reflects completion"
+    ],
+    "complexity": "medium",
+    "dependencies": [49],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Learning path shows interactive checklist with completion percentage",
+    "steps": [
+      "Step 1: Open learning path",
+      "Step 2: Verify checklist is displayed",
+      "Step 3: Check checkboxes for files",
+      "Step 4: Confirm checked items are marked complete",
+      "Step 5: Verify completion percentage is accurate"
+    ],
+    "complexity": "simple",
+    "dependencies": [52],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Quizzes test understanding of key concepts in the codebase",
+    "steps": [
+      "Step 1: Complete review of a module",
+      "Step 2: Trigger quiz for that module",
+      "Step 3: Verify multiple choice questions appear",
+      "Step 4: Answer questions",
+      "Step 5: Submit quiz",
+      "Step 6: Check score is calculated",
+      "Step 7: Verify correct answers are shown"
+    ],
+    "complexity": "complex",
+    "dependencies": [49],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Days to first PR estimation is provided based on codebase size",
+    "steps": [
+      "Step 1: Analyze repository",
+      "Step 2: Navigate to learning path dashboard",
+      "Step 3: Verify 'Estimated time to first PR' is shown",
+      "Step 4: Check estimate is reasonable (e.g., '5-7 days')",
+      "Step 5: Confirm it's based on LOC and complexity"
+    ],
+    "complexity": "simple",
+    "dependencies": [49],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Learning path adjusts based on user feedback (skip basics)",
+    "steps": [
+      "Step 1: Start learning path",
+      "Step 2: Click 'I already know this' on basic modules",
+      "Step 3: Verify those modules are marked complete automatically",
+      "Step 4: Check advanced modules are prioritized",
+      "Step 5: Confirm path is updated dynamically"
+    ],
+    "complexity": "medium",
+    "dependencies": [49],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Learning path adjusts based on user feedback (explain more)",
+    "steps": [
+      "Step 1: Start learning path",
+      "Step 2: Click 'Need more explanation' on a module",
+      "Step 3: Verify additional resources are provided",
+      "Step 4: Check related files are suggested",
+      "Step 5: Confirm extra context is shown"
+    ],
+    "complexity": "medium",
+    "dependencies": [49],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can resume learning path from where they left off",
+    "steps": [
+      "Step 1: Start learning path and complete some items",
+      "Step 2: Close browser/log out",
+      "Step 3: Return later and log in",
+      "Step 4: Navigate to learning path",
+      "Step 5: Verify progress is preserved",
+      "Step 6: Confirm next uncompleted item is highlighted"
+    ],
+    "complexity": "simple",
+    "dependencies": [52],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Code viewer displays syntax-highlighted code",
+    "steps": [
+      "Step 1: Navigate to any file in the web viewer",
+      "Step 2: Verify syntax highlighting is applied",
+      "Step 3: Check keywords are colored differently",
+      "Step 4: Confirm strings, comments, functions are distinct",
+      "Step 5: Verify line numbers are shown"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Hover over function in code viewer shows inline tooltip",
+    "steps": [
+      "Step 1: Open code viewer",
+      "Step 2: Hover mouse over a function name",
+      "Step 3: Verify tooltip appears",
+      "Step 4: Check tooltip shows function purpose",
+      "Step 5: Verify parameters are described",
+      "Step 6: Confirm return value is shown"
+    ],
+    "complexity": "medium",
+    "dependencies": [59],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Tooltip shows callers of hovered function",
+    "steps": [
+      "Step 1: Hover over function in code viewer",
+      "Step 2: View tooltip",
+      "Step 3: Verify 'Called by' section exists",
+      "Step 4: Check list of caller functions is shown",
+      "Step 5: Confirm file paths are included"
+    ],
+    "complexity": "medium",
+    "dependencies": [60],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Tooltip shows 'connects to' relationship hints",
+    "steps": [
+      "Step 1: Hover over a component/module",
+      "Step 2: View tooltip",
+      "Step 3: Verify 'Connects to' section is present",
+      "Step 4: Check related components are listed",
+      "Step 5: Confirm relationships are accurate"
+    ],
+    "complexity": "medium",
+    "dependencies": [60],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Annotations highlight common gotchas and edge cases",
+    "steps": [
+      "Step 1: View code with known edge cases",
+      "Step 2: Verify warning annotations appear inline",
+      "Step 3: Click or hover over annotation",
+      "Step 4: Check explanation of gotcha is shown",
+      "Step 5: Confirm examples are provided"
+    ],
+    "complexity": "medium",
+    "dependencies": [59],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Team members can add custom annotations to code",
+    "steps": [
+      "Step 1: Open code viewer",
+      "Step 2: Click 'Add annotation' button on a line",
+      "Step 3: Enter annotation text",
+      "Step 4: Save annotation",
+      "Step 5: Verify annotation appears on that line",
+      "Step 6: Confirm author name is shown"
+    ],
+    "complexity": "medium",
+    "dependencies": [59],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Annotations are versioned and tied to specific code versions",
+    "steps": [
+      "Step 1: Add annotation to code at version A",
+      "Step 2: Code is modified (version B)",
+      "Step 3: View code at version A",
+      "Step 4: Verify annotation is still visible",
+      "Step 5: View code at version B",
+      "Step 6: Check annotation status (moved/outdated/preserved)"
+    ],
+    "complexity": "complex",
+    "dependencies": [64],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Annotation packs can be exported for team sharing",
+    "steps": [
+      "Step 1: Create several annotations",
+      "Step 2: Navigate to annotations management",
+      "Step 3: Click 'Export annotations' button",
+      "Step 4: Verify JSON/file is downloaded",
+      "Step 5: Check all annotations are in export"
+    ],
+    "complexity": "simple",
+    "dependencies": [64],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Annotation packs can be imported",
+    "steps": [
+      "Step 1: Have exported annotation file",
+      "Step 2: Navigate to annotations management",
+      "Step 3: Click 'Import annotations' button",
+      "Step 4: Select file to import",
+      "Step 5: Verify annotations are loaded",
+      "Step 6: Check they appear in code viewer"
+    ],
+    "complexity": "simple",
+    "dependencies": [66],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Runnable examples are auto-generated for major features",
+    "steps": [
+      "Step 1: Analyze repository with identifiable features",
+      "Step 2: Navigate to Examples section",
+      "Step 3: Verify list of generated examples",
+      "Step 4: Check examples cover key functionality",
+      "Step 5: Confirm examples are minimal and focused"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Examples include auto-generated mock data",
+    "steps": [
+      "Step 1: Open a generated example",
+      "Step 2: Verify mock data is provided",
+      "Step 3: Check data structure matches actual code",
+      "Step 4: Confirm data is realistic"
+    ],
+    "complexity": "medium",
+    "dependencies": [68],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Try it button runs example code in sandbox",
+    "steps": [
+      "Step 1: Open an example",
+      "Step 2: Click 'Try it' button",
+      "Step 3: Verify sandbox environment loads",
+      "Step 4: Check code executes",
+      "Step 5: Confirm output is displayed",
+      "Step 6: Verify execution is isolated (doesn't affect real code)"
+    ],
+    "complexity": "complex",
+    "dependencies": [68],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Examples show input and output for each scenario",
+    "steps": [
+      "Step 1: Open example",
+      "Step 2: Verify 'Input' section shows sample data",
+      "Step 3: Check 'Output' section shows expected result",
+      "Step 4: Confirm examples are clear"
+    ],
+    "complexity": "simple",
+    "dependencies": [68],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Examples include step-by-step explanations",
+    "steps": [
+      "Step 1: Open example",
+      "Step 2: Verify explanation text is present",
+      "Step 3: Check explanation walks through code logic",
+      "Step 4: Confirm key concepts are highlighted"
+    ],
+    "complexity": "medium",
+    "dependencies": [68],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Integration test templates are generated from examples",
+    "steps": [
+      "Step 1: View a runnable example",
+      "Step 2: Click 'Generate test template' button",
+      "Step 3: Verify test code is generated",
+      "Step 4: Check test structure is valid",
+      "Step 5: Confirm assertions are included"
+    ],
+    "complexity": "complex",
+    "dependencies": [68],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Examples work for API endpoints",
+    "steps": [
+      "Step 1: Analyze repository with REST API",
+      "Step 2: Navigate to Examples",
+      "Step 3: Find API endpoint example",
+      "Step 4: Verify request format is shown",
+      "Step 5: Check response format is displayed",
+      "Step 6: Confirm 'Try it' sends actual request"
+    ],
+    "complexity": "complex",
+    "dependencies": [68],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Examples work for UI components",
+    "steps": [
+      "Step 1: Analyze React/UI codebase",
+      "Step 2: Navigate to Examples",
+      "Step 3: Find component example",
+      "Step 4: Verify component renders in preview",
+      "Step 5: Check props are documented"
+    ],
+    "complexity": "complex",
+    "dependencies": [68],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Examples work for utility functions",
+    "steps": [
+      "Step 1: Find utility function examples",
+      "Step 2: Verify function signature is shown",
+      "Step 3: Check multiple usage examples exist",
+      "Step 4: Confirm edge cases are demonstrated"
+    ],
+    "complexity": "medium",
+    "dependencies": [68],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Git history is analyzed to identify top contributors per module",
+    "steps": [
+      "Step 1: Analyze repository with git history",
+      "Step 2: Navigate to a file or module",
+      "Step 3: View 'Contributors' section",
+      "Step 4: Verify top contributors are listed",
+      "Step 5: Check commit counts are shown",
+      "Step 6: Confirm most recent contributor is highlighted"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Subject matter experts are identified per code area",
+    "steps": [
+      "Step 1: View a module or feature",
+      "Step 2: Check 'Expert' or 'Ask' section",
+      "Step 3: Verify SME name is shown",
+      "Step 4: Check contact information if available",
+      "Step 5: Confirm expertise is based on contribution history"
+    ],
+    "complexity": "medium",
+    "dependencies": [77],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Common patterns are extracted from PR review comments",
+    "steps": [
+      "Step 1: Analyze repository with PR history",
+      "Step 2: Navigate to 'Team Knowledge' section",
+      "Step 3: View 'Review Patterns' subsection",
+      "Step 4: Verify common feedback is listed (e.g., 'Always add tests')",
+      "Step 5: Check patterns are categorized",
+      "Step 6: Confirm examples from actual PRs are linked"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Common mistakes identified from PR feedback are documented",
+    "steps": [
+      "Step 1: Navigate to Team Knowledge",
+      "Step 2: View 'Common Mistakes' section",
+      "Step 3: Verify mistakes are listed",
+      "Step 4: Check each has description and fix",
+      "Step 5: Confirm related code areas are linked"
+    ],
+    "complexity": "medium",
+    "dependencies": [79],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Timeline of major architectural changes is visualized",
+    "steps": [
+      "Step 1: Navigate to Architecture History",
+      "Step 2: Verify timeline visualization exists",
+      "Step 3: Check major changes are marked on timeline",
+      "Step 4: Click a change event",
+      "Step 5: Confirm details and commits are shown"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Why was this decision made? answered from commit messages",
+    "steps": [
+      "Step 1: View a file or module",
+      "Step 2: Click 'Why this approach?' button",
+      "Step 3: Verify AI searches relevant commits",
+      "Step 4: Check commit messages are analyzed",
+      "Step 5: Confirm explanation is synthesized",
+      "Step 6: Verify original commits are linked"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Deprecated patterns still in use are identified",
+    "steps": [
+      "Step 1: Analyze codebase with deprecated code",
+      "Step 2: Navigate to 'Code Health' section",
+      "Step 3: View 'Deprecated Patterns' list",
+      "Step 4: Verify deprecated patterns are detected",
+      "Step 5: Check affected files are listed",
+      "Step 6: Confirm migration suggestions are provided"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Code ownership heatmap shows who owns what",
+    "steps": [
+      "Step 1: Navigate to Team view",
+      "Step 2: View ownership heatmap",
+      "Step 3: Verify files are colored by primary owner",
+      "Step 4: Check legend shows team member colors",
+      "Step 5: Confirm clicking shows owner details"
+    ],
+    "complexity": "medium",
+    "dependencies": [77],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "People are connected to their code areas of expertise",
+    "steps": [
+      "Step 1: Navigate to Team Members list",
+      "Step 2: Click a team member",
+      "Step 3: Verify their code areas are displayed",
+      "Step 4: Check contribution statistics are shown",
+      "Step 5: Confirm expertise tags are assigned"
+    ],
+    "complexity": "medium",
+    "dependencies": [77],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "CLI tool installs globally via npm",
+    "steps": [
+      "Step 1: Run npm install -g codecompass-cli",
+      "Step 2: Verify installation succeeds",
+      "Step 3: Run codecompass --version",
+      "Step 4: Check version is displayed"
+    ],
+    "complexity": "simple",
+    "dependencies": [],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "CLI can analyze a local repository",
+    "steps": [
+      "Step 1: Run codecompass analyze /path/to/repo",
+      "Step 2: Verify analysis progress is shown",
+      "Step 3: Check colored output indicates progress",
+      "Step 4: Confirm completion message appears",
+      "Step 5: Verify analysis results are cached"
+    ],
+    "complexity": "medium",
+    "dependencies": [86],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "CLI can answer quick queries about the codebase",
+    "steps": [
+      "Step 1: Run codecompass ask 'where is authentication?'",
+      "Step 2: Verify CLI connects to analysis backend",
+      "Step 3: Check answer is displayed in terminal",
+      "Step 4: Confirm file paths are shown",
+      "Step 5: Verify response time is under 3 seconds"
+    ],
+    "complexity": "medium",
+    "dependencies": [87],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "CLI can generate onboarding reports",
+    "steps": [
+      "Step 1: Run codecompass report --format markdown",
+      "Step 2: Verify report generation progress",
+      "Step 3: Check report file is created",
+      "Step 4: Open report",
+      "Step 5: Confirm report includes architecture, stats, learning path"
+    ],
+    "complexity": "complex",
+    "dependencies": [87],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "CLI displays colorful, informative output with Chalk",
+    "steps": [
+      "Step 1: Run any CLI command",
+      "Step 2: Verify output uses colors",
+      "Step 3: Check success messages are green",
+      "Step 4: Verify errors are red",
+      "Step 5: Confirm warnings are yellow"
+    ],
+    "complexity": "simple",
+    "dependencies": [86],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "CLI shows progress bars for long operations",
+    "steps": [
+      "Step 1: Start repository analysis via CLI",
+      "Step 2: Verify progress bar appears",
+      "Step 3: Check progress bar updates smoothly",
+      "Step 4: Confirm percentage is shown",
+      "Step 5: Verify bar completes at 100%"
+    ],
+    "complexity": "simple",
+    "dependencies": [87],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "CLI displays data in formatted tables",
+    "steps": [
+      "Step 1: Run command that returns structured data",
+      "Step 2: Verify table format is used",
+      "Step 3: Check columns are aligned",
+      "Step 4: Confirm headers are clear"
+    ],
+    "complexity": "simple",
+    "dependencies": [86],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "CLI has interactive mode with prompts",
+    "steps": [
+      "Step 1: Run codecompass interactive",
+      "Step 2: Verify interactive prompt appears",
+      "Step 3: Select options using arrow keys",
+      "Step 4: Confirm selections are processed",
+      "Step 5: Check commands execute based on selections"
+    ],
+    "complexity": "medium",
+    "dependencies": [86],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "CLI provides help text with examples",
+    "steps": [
+      "Step 1: Run codecompass --help",
+      "Step 2: Verify help text is displayed",
+      "Step 3: Check all commands are documented",
+      "Step 4: Confirm examples are provided",
+      "Step 5: Verify options are explained"
+    ],
+    "complexity": "simple",
+    "dependencies": [86],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "CLI supports command abbreviations",
+    "steps": [
+      "Step 1: Try abbreviated command (e.g., 'cc a' for analyze)",
+      "Step 2: Verify command is recognized",
+      "Step 3: Check execution is same as full command",
+      "Step 4: Test multiple abbreviations"
+    ],
+    "complexity": "simple",
+    "dependencies": [86],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "VS Code extension installs from VSIX file",
+    "steps": [
+      "Step 1: Build extension VSIX",
+      "Step 2: Open VS Code",
+      "Step 3: Install from VSIX",
+      "Step 4: Verify extension appears in extensions list",
+      "Step 5: Check extension is enabled"
+    ],
+    "complexity": "simple",
+    "dependencies": [],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "VS Code extension adds sidebar icon to activity bar",
+    "steps": [
+      "Step 1: Install extension",
+      "Step 2: Check VS Code activity bar",
+      "Step 3: Verify CodeCompass icon is present",
+      "Step 4: Click icon",
+      "Step 5: Confirm sidebar panel opens"
+    ],
+    "complexity": "simple",
+    "dependencies": [96],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "VS Code extension shows hover tooltips on function hover",
+    "steps": [
+      "Step 1: Open a code file in VS Code",
+      "Step 2: Hover over a function",
+      "Step 3: Verify CodeCompass tooltip appears",
+      "Step 4: Check tooltip shows function info",
+      "Step 5: Confirm it doesn't interfere with VS Code's native tooltip"
+    ],
+    "complexity": "medium",
+    "dependencies": [96],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "VS Code extension displays inline annotations in editor",
+    "steps": [
+      "Step 1: Open file with annotations",
+      "Step 2: Verify inline decorations appear",
+      "Step 3: Check annotations are visible but non-intrusive",
+      "Step 4: Click annotation",
+      "Step 5: Confirm full text is shown"
+    ],
+    "complexity": "medium",
+    "dependencies": [96],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "VS Code extension sidebar shows repository overview",
+    "steps": [
+      "Step 1: Open CodeCompass sidebar",
+      "Step 2: Verify repository name is displayed",
+      "Step 3: Check key statistics are shown (LOC, files, etc.)",
+      "Step 4: Confirm quick links are available"
+    ],
+    "complexity": "simple",
+    "dependencies": [97],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "VS Code extension settings integrate with VS Code preferences",
+    "steps": [
+      "Step 1: Open VS Code settings",
+      "Step 2: Search for CodeCompass",
+      "Step 3: Verify extension settings appear",
+      "Step 4: Modify a setting",
+      "Step 5: Confirm change is applied in extension"
+    ],
+    "complexity": "simple",
+    "dependencies": [96],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "All interfaces (web, CLI, VS Code) share the same backend analysis",
+    "steps": [
+      "Step 1: Analyze repository via web dashboard",
+      "Step 2: Query via CLI",
+      "Step 3: Verify CLI uses same cached analysis",
+      "Step 4: Open VS Code extension",
+      "Step 5: Confirm VS Code also uses same data"
+    ],
+    "complexity": "complex",
+    "dependencies": [1, 87, 96],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Settings sync across all interfaces",
+    "steps": [
+      "Step 1: Change setting in web dashboard",
+      "Step 2: Open CLI",
+      "Step 3: Verify setting is reflected",
+      "Step 4: Open VS Code extension",
+      "Step 5: Confirm setting is synced there too"
+    ],
+    "complexity": "medium",
+    "dependencies": [102],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Personal dashboard shows onboarding completion percentage",
+    "steps": [
+      "Step 1: Log in to web dashboard",
+      "Step 2: Navigate to personal dashboard",
+      "Step 3: Verify completion percentage is displayed",
+      "Step 4: Check it reflects learning path progress",
+      "Step 5: Confirm it updates as progress is made"
+    ],
+    "complexity": "simple",
+    "dependencies": [1, 52],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Dashboard tracks time spent in each module",
+    "steps": [
+      "Step 1: Open a module in learning path",
+      "Step 2: Spend time reviewing it",
+      "Step 3: Return to dashboard",
+      "Step 4: Verify time spent is recorded",
+      "Step 5: Check time is accurate"
+    ],
+    "complexity": "medium",
+    "dependencies": [104],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Dashboard displays quiz scores and understanding metrics",
+    "steps": [
+      "Step 1: Complete some quizzes",
+      "Step 2: Navigate to dashboard",
+      "Step 3: Verify quiz scores are shown",
+      "Step 4: Check understanding metrics are calculated",
+      "Step 5: Confirm weak areas are identified"
+    ],
+    "complexity": "medium",
+    "dependencies": [54, 104],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Dashboard compares user progress to team average",
+    "steps": [
+      "Step 1: Multiple users onboard to same repo",
+      "Step 2: View personal dashboard",
+      "Step 3: Verify team average is shown",
+      "Step 4: Check comparison is clear (faster/slower)",
+      "Step 5: Confirm comparison is helpful"
+    ],
+    "complexity": "medium",
+    "dependencies": [104],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Dashboard identifies knowledge gaps",
+    "steps": [
+      "Step 1: Complete partial onboarding",
+      "Step 2: View dashboard",
+      "Step 3: Check 'Knowledge Gaps' section",
+      "Step 4: Verify uncovered areas are listed",
+      "Step 5: Confirm suggestions for improvement are given"
+    ],
+    "complexity": "medium",
+    "dependencies": [104],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Manager view shows team onboarding status",
+    "steps": [
+      "Step 1: Log in as manager",
+      "Step 2: Navigate to team dashboard",
+      "Step 3: Verify all team members are listed",
+      "Step 4: Check each member's progress is shown",
+      "Step 5: Confirm sorting and filtering options exist"
+    ],
+    "complexity": "medium",
+    "dependencies": [104],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Automated check-ins ask about progress",
+    "steps": [
+      "Step 1: Use system for several days",
+      "Step 2: Receive automated check-in notification",
+      "Step 3: Verify check-in asks relevant questions",
+      "Step 4: Respond to check-in",
+      "Step 5: Confirm response is recorded"
+    ],
+    "complexity": "medium",
+    "dependencies": [104],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Git webhook integration can be configured",
+    "steps": [
+      "Step 1: Navigate to Settings > Integrations",
+      "Step 2: Find Git Webhooks section",
+      "Step 3: Enter webhook URL",
+      "Step 4: Save configuration",
+      "Step 5: Verify test webhook succeeds"
+    ],
+    "complexity": "medium",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Notifications sent when learned areas change significantly",
+    "steps": [
+      "Step 1: Complete learning for a module",
+      "Step 2: Simulate significant change to that module",
+      "Step 3: Trigger webhook or polling",
+      "Step 4: Verify notification is generated",
+      "Step 5: Check notification describes the change"
+    ],
+    "complexity": "complex",
+    "dependencies": [111],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "What's new since you joined summaries are generated",
+    "steps": [
+      "Step 1: Record join date",
+      "Step 2: Wait for commits after join date (or simulate)",
+      "Step 3: Navigate to 'What's New' section",
+      "Step 4: Verify summary of changes since join",
+      "Step 5: Check changes are categorized and prioritized"
+    ],
+    "complexity": "complex",
+    "dependencies": [111],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Breaking changes in focus areas are highlighted",
+    "steps": [
+      "Step 1: Mark certain modules as focus areas",
+      "Step 2: Simulate breaking changes in those areas",
+      "Step 3: Check notifications",
+      "Step 4: Verify breaking changes are prominently highlighted",
+      "Step 5: Confirm migration guides are suggested"
+    ],
+    "complexity": "complex",
+    "dependencies": [112],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "System suggests when to re-review modules",
+    "steps": [
+      "Step 1: Complete review of a module",
+      "Step 2: Module changes significantly over time",
+      "Step 3: Check dashboard",
+      "Step 4: Verify suggestion to re-review appears",
+      "Step 5: Confirm clicking takes to updated content"
+    ],
+    "complexity": "medium",
+    "dependencies": [112],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Onboarding content stays fresh automatically via change detection",
+    "steps": [
+      "Step 1: Set up change detection",
+      "Step 2: Code evolves over time",
+      "Step 3: Check learning paths",
+      "Step 4: Verify paths are updated to reflect changes",
+      "Step 5: Confirm outdated content is flagged"
+    ],
+    "complexity": "complex",
+    "dependencies": [112],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Repository analysis completes in under 2 minutes for 100K LOC",
+    "steps": [
+      "Step 1: Prepare test repository with ~100K LOC",
+      "Step 2: Start analysis timer",
+      "Step 3: Trigger repository analysis",
+      "Step 4: Wait for completion",
+      "Step 5: Stop timer",
+      "Step 6: Verify time is under 2 minutes"
+    ],
+    "complexity": "simple",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat responses return in under 3 seconds",
+    "steps": [
+      "Step 1: Ask a chat question",
+      "Step 2: Start response timer",
+      "Step 3: Wait for response",
+      "Step 4: Stop timer",
+      "Step 5: Verify time is under 3 seconds"
+    ],
+    "complexity": "simple",
+    "dependencies": [19],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Diagrams render smoothly at 60fps with up to 1000 nodes",
+    "steps": [
+      "Step 1: Create test case with 1000-node graph",
+      "Step 2: Render diagram",
+      "Step 3: Measure frame rate during pan/zoom",
+      "Step 4: Verify FPS is consistently near 60",
+      "Step 5: Check for lag or stuttering"
+    ],
+    "complexity": "medium",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "CLI queries return in under 1 second for cached data",
+    "steps": [
+      "Step 1: Run query once to populate cache",
+      "Step 2: Run same query again",
+      "Step 3: Start timer",
+      "Step 4: Wait for response",
+      "Step 5: Verify response time under 1 second"
+    ],
+    "complexity": "simple",
+    "dependencies": [88],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "VS Code extension causes no noticeable editor lag",
+    "steps": [
+      "Step 1: Install extension in large codebase",
+      "Step 2: Type in editor",
+      "Step 3: Verify typing is responsive",
+      "Step 4: Scroll through file",
+      "Step 5: Confirm no stuttering or delays"
+    ],
+    "complexity": "simple",
+    "dependencies": [96],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User authentication system allows login",
+    "steps": [
+      "Step 1: Navigate to login page",
+      "Step 2: Enter credentials",
+      "Step 3: Click login button",
+      "Step 4: Verify successful login",
+      "Step 5: Check redirect to dashboard"
+    ],
+    "complexity": "medium",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User authentication system allows registration",
+    "steps": [
+      "Step 1: Navigate to registration page",
+      "Step 2: Enter new user details",
+      "Step 3: Submit registration",
+      "Step 4: Verify account creation",
+      "Step 5: Check email verification if required"
+    ],
+    "complexity": "medium",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "API keys are stored securely in environment variables",
+    "steps": [
+      "Step 1: Check for .env.example file",
+      "Step 2: Verify API key variables are defined",
+      "Step 3: Confirm .env is in .gitignore",
+      "Step 4: Test that app reads from .env correctly"
+    ],
+    "complexity": "simple",
+    "dependencies": [],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Rate limiting prevents excessive AI queries",
+    "steps": [
+      "Step 1: Send multiple rapid AI queries",
+      "Step 2: Verify rate limit is enforced after threshold",
+      "Step 3: Check error message is user-friendly",
+      "Step 4: Wait for rate limit reset",
+      "Step 5: Confirm queries work again"
+    ],
+    "complexity": "medium",
+    "dependencies": [19],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "All user inputs are sanitized to prevent injection attacks",
+    "steps": [
+      "Step 1: Try entering malicious input in chat",
+      "Step 2: Verify input is sanitized",
+      "Step 3: Check no code execution occurs",
+      "Step 4: Test with SQL injection patterns",
+      "Step 5: Confirm all inputs are safe"
+    ],
+    "complexity": "medium",
+    "dependencies": [19],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Error handling shows user-friendly messages",
+    "steps": [
+      "Step 1: Trigger various error conditions",
+      "Step 2: Verify error messages are clear",
+      "Step 3: Check messages suggest solutions",
+      "Step 4: Confirm no stack traces shown to users",
+      "Step 5: Verify errors are logged for debugging"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Loading states appear during data fetching",
+    "steps": [
+      "Step 1: Trigger data fetch operation",
+      "Step 2: Verify loading indicator appears immediately",
+      "Step 3: Check loading state is visible until complete",
+      "Step 4: Confirm smooth transition to loaded state"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Progress indicators shown for long operations",
+    "steps": [
+      "Step 1: Start repository analysis",
+      "Step 2: Verify progress indicator appears",
+      "Step 3: Check progress updates incrementally",
+      "Step 4: Confirm completion at 100%"
+    ],
+    "complexity": "simple",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Empty states provide helpful guidance",
+    "steps": [
+      "Step 1: Navigate to section with no data",
+      "Step 2: Verify empty state message appears",
+      "Step 3: Check guidance on what to do next",
+      "Step 4: Confirm call-to-action button is present"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Skeleton loaders display during initial data loads",
+    "steps": [
+      "Step 1: Load page that fetches data",
+      "Step 2: Verify skeleton loader appears",
+      "Step 3: Check skeleton matches final content structure",
+      "Step 4: Confirm smooth transition to real content"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Web dashboard has clean, modern design",
+    "steps": [
+      "Step 1: Navigate to web dashboard",
+      "Step 2: Take screenshot",
+      "Step 3: Verify design is clean and uncluttered",
+      "Step 4: Check modern UI patterns are used",
+      "Step 5: Confirm alignment with GitHub/Linear aesthetics"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Sidebar navigation is present with correct sections",
+    "steps": [
+      "Step 1: Open web dashboard",
+      "Step 2: Verify sidebar is visible",
+      "Step 3: Check Dashboard link is present",
+      "Step 4: Verify Chat, Diagrams, Learning Path, Settings links",
+      "Step 5: Confirm active section is highlighted"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Main content area includes breadcrumbs for navigation",
+    "steps": [
+      "Step 1: Navigate deep into site hierarchy",
+      "Step 2: Verify breadcrumbs are displayed",
+      "Step 3: Check breadcrumbs show full path",
+      "Step 4: Click breadcrumb link",
+      "Step 5: Confirm navigation works"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Code snippets displayed in cards with syntax highlighting",
+    "steps": [
+      "Step 1: View page with code snippets",
+      "Step 2: Verify snippets are in card containers",
+      "Step 3: Check syntax highlighting is applied",
+      "Step 4: Confirm language badge is shown",
+      "Step 5: Verify copy button is present"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Toast notifications appear for user actions",
+    "steps": [
+      "Step 1: Perform action (e.g., save settings)",
+      "Step 2: Verify toast notification appears",
+      "Step 3: Check message is clear",
+      "Step 4: Confirm toast auto-dismisses",
+      "Step 5: Verify positioning is non-intrusive"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Web dashboard is mobile-responsive",
+    "steps": [
+      "Step 1: Open dashboard in mobile viewport",
+      "Step 2: Verify layout adapts to small screen",
+      "Step 3: Check navigation is accessible (hamburger menu)",
+      "Step 4: Test interactions work on mobile",
+      "Step 5: Confirm no horizontal scrolling"
+    ],
+    "complexity": "medium",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Dark mode is available and works correctly",
+    "steps": [
+      "Step 1: Find dark mode toggle",
+      "Step 2: Switch to dark mode",
+      "Step 3: Verify colors change appropriately",
+      "Step 4: Check contrast is maintained",
+      "Step 5: Confirm all components support dark mode"
+    ],
+    "complexity": "medium",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Light mode has proper contrast and readability",
+    "steps": [
+      "Step 1: Switch to light mode",
+      "Step 2: Take screenshot",
+      "Step 3: Verify text is readable",
+      "Step 4: Check WCAG contrast requirements are met",
+      "Step 5: Confirm no elements are washed out"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Consistent typography throughout the application",
+    "steps": [
+      "Step 1: Navigate through multiple pages",
+      "Step 2: Verify font family is consistent",
+      "Step 3: Check heading hierarchy is clear",
+      "Step 4: Confirm font sizes are appropriate",
+      "Step 5: Verify line height and spacing are comfortable"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Color scheme is consistent and professional",
+    "steps": [
+      "Step 1: View multiple pages",
+      "Step 2: Verify primary colors are used consistently",
+      "Step 3: Check accent colors are appropriate",
+      "Step 4: Confirm color palette is limited and coherent",
+      "Step 5: Verify colors have semantic meaning"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Interactive elements have clear hover and focus states",
+    "steps": [
+      "Step 1: Hover over buttons",
+      "Step 2: Verify hover state is visible",
+      "Step 3: Tab through interactive elements",
+      "Step 4: Check focus indicators are clear",
+      "Step 5: Confirm states are consistent"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Animations are smooth and purposeful using Framer Motion",
+    "steps": [
+      "Step 1: Navigate between pages",
+      "Step 2: Verify page transitions are animated",
+      "Step 3: Check animations are smooth (not jarring)",
+      "Step 4: Confirm animations have purpose",
+      "Step 5: Verify performance is not impacted"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Anthropic Claude API integration works for code analysis",
+    "steps": [
+      "Step 1: Configure API key",
+      "Step 2: Trigger analysis requiring AI",
+      "Step 3: Verify API request is sent",
+      "Step 4: Check response is received",
+      "Step 5: Confirm Claude Sonnet 4 is used"
+    ],
+    "complexity": "medium",
+    "dependencies": [124],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "RAG (Retrieval-Augmented Generation) provides accurate answers",
+    "steps": [
+      "Step 1: Ask question requiring code context",
+      "Step 2: Verify relevant code is retrieved",
+      "Step 3: Check AI answer incorporates retrieved context",
+      "Step 4: Confirm answer accuracy",
+      "Step 5: Verify source citations are included"
+    ],
+    "complexity": "complex",
+    "dependencies": [19, 142],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Vector database stores code embeddings for semantic search",
+    "steps": [
+      "Step 1: Complete repository analysis",
+      "Step 2: Verify embeddings are generated",
+      "Step 3: Check embeddings are stored in vector DB",
+      "Step 4: Perform semantic search query",
+      "Step 5: Confirm relevant results are returned"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Tree-sitter correctly parses multiple programming languages",
+    "steps": [
+      "Step 1: Analyze repository with mixed languages",
+      "Step 2: Verify tree-sitter is used for parsing",
+      "Step 3: Check TypeScript parsing works",
+      "Step 4: Verify Python parsing works",
+      "Step 5: Test Go, Rust, Java parsing"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Simple-git library integrates for repository operations",
+    "steps": [
+      "Step 1: Trigger git operation (clone, log, etc.)",
+      "Step 2: Verify simple-git is used",
+      "Step 3: Check operation completes successfully",
+      "Step 4: Confirm git data is extracted correctly"
+    ],
+    "complexity": "medium",
+    "dependencies": [3],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Prisma ORM connects to SQLite database",
+    "steps": [
+      "Step 1: Initialize Prisma",
+      "Step 2: Verify Prisma schema is valid",
+      "Step 3: Run migration",
+      "Step 4: Check SQLite file is created",
+      "Step 5: Test CRUD operations via Prisma"
+    ],
+    "complexity": "medium",
+    "dependencies": [2],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Database schema includes models for repos, files, users, annotations",
+    "steps": [
+      "Step 1: Review Prisma schema file",
+      "Step 2: Verify Repository model exists",
+      "Step 3: Check File model is defined",
+      "Step 4: Confirm User model is present",
+      "Step 5: Verify Annotation model exists",
+      "Step 6: Check relationships between models"
+    ],
+    "complexity": "simple",
+    "dependencies": [147],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Next.js App Router is used for routing",
+    "steps": [
+      "Step 1: Check project uses Next.js 14+",
+      "Step 2: Verify app directory exists",
+      "Step 3: Check page routes are in app directory",
+      "Step 4: Confirm routing works as expected"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Next.js API routes handle backend logic",
+    "steps": [
+      "Step 1: Locate API routes in app/api",
+      "Step 2: Verify API endpoints exist",
+      "Step 3: Test API call from frontend",
+      "Step 4: Check response is correct"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Tailwind CSS is configured and working",
+    "steps": [
+      "Step 1: Check tailwind.config file exists",
+      "Step 2: Verify Tailwind classes are used in components",
+      "Step 3: Inspect rendered HTML for Tailwind classes",
+      "Step 4: Confirm styling is applied correctly"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Shadcn/ui components are installed and used",
+    "steps": [
+      "Step 1: Check components directory for shadcn components",
+      "Step 2: Verify at least 5 shadcn components are used",
+      "Step 3: Check components render correctly",
+      "Step 4: Confirm styling matches shadcn design"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "D3.js renders interactive graphs",
+    "steps": [
+      "Step 1: Navigate to diagram with D3",
+      "Step 2: Verify D3 is loaded",
+      "Step 3: Check graph renders",
+      "Step 4: Test interactivity (zoom, pan)",
+      "Step 5: Confirm smooth performance"
+    ],
+    "complexity": "medium",
+    "dependencies": [30],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Zustand manages UI state correctly",
+    "steps": [
+      "Step 1: Check Zustand store is defined",
+      "Step 2: Modify UI state via actions",
+      "Step 3: Verify UI updates reflect state changes",
+      "Step 4: Confirm state persists across component re-renders"
+    ],
+    "complexity": "medium",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "React Query manages server state and caching",
+    "steps": [
+      "Step 1: Check React Query is configured",
+      "Step 2: Make API request",
+      "Step 3: Verify data is cached",
+      "Step 4: Make same request again",
+      "Step 5: Confirm cached data is used"
+    ],
+    "complexity": "medium",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "TypeScript strict mode is enabled throughout",
+    "steps": [
+      "Step 1: Check tsconfig.json",
+      "Step 2: Verify strict: true is set",
+      "Step 3: Run type check",
+      "Step 4: Confirm no type errors"
+    ],
+    "complexity": "simple",
+    "dependencies": [],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Project uses monorepo structure with npm workspaces",
+    "steps": [
+      "Step 1: Check package.json for workspaces config",
+      "Step 2: Verify packages directory exists",
+      "Step 3: Check multiple packages are defined",
+      "Step 4: Run npm install from root",
+      "Step 5: Confirm all packages are linked"
+    ],
+    "complexity": "medium",
+    "dependencies": [],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Shared types package is used across packages",
+    "steps": [
+      "Step 1: Locate packages/shared",
+      "Step 2: Verify types are defined",
+      "Step 3: Check web package imports shared types",
+      "Step 4: Verify CLI package imports shared types",
+      "Step 5: Confirm no type duplication"
+    ],
+    "complexity": "medium",
+    "dependencies": [156],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Analyzer package is shared between web and CLI",
+    "steps": [
+      "Step 1: Locate packages/analyzer",
+      "Step 2: Verify core analysis logic is here",
+      "Step 3: Check web package depends on analyzer",
+      "Step 4: Verify CLI package depends on analyzer",
+      "Step 5: Confirm no logic duplication"
+    ],
+    "complexity": "medium",
+    "dependencies": [156],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Development setup is easy: npm install && npm run dev",
+    "steps": [
+      "Step 1: Clone fresh repository",
+      "Step 2: Run npm install",
+      "Step 3: Verify installation succeeds",
+      "Step 4: Run npm run dev",
+      "Step 5: Check dev server starts",
+      "Step 6: Verify hot reload works"
+    ],
+    "complexity": "simple",
+    "dependencies": [],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "README.md provides clear setup instructions",
+    "steps": [
+      "Step 1: Open README.md",
+      "Step 2: Verify prerequisites are listed",
+      "Step 3: Check installation steps are clear",
+      "Step 4: Confirm examples are provided",
+      "Step 5: Verify troubleshooting section exists"
+    ],
+    "complexity": "simple",
+    "dependencies": [],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": ".env.example provides template for environment variables",
+    "steps": [
+      "Step 1: Check .env.example exists",
+      "Step 2: Verify all required variables are listed",
+      "Step 3: Check descriptions/comments are helpful",
+      "Step 4: Confirm example values are safe"
+    ],
+    "complexity": "simple",
+    "dependencies": [],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Sample repositories are provided for testing",
+    "steps": [
+      "Step 1: Check examples/sample-repos directory",
+      "Step 2: Verify at least 2 sample repos exist",
+      "Step 3: Check samples cover different languages",
+      "Step 4: Confirm samples are documented"
+    ],
+    "complexity": "simple",
+    "dependencies": [],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Logging system provides useful debugging information",
+    "steps": [
+      "Step 1: Run application",
+      "Step 2: Verify logs are output to console",
+      "Step 3: Check log levels are appropriate",
+      "Step 4: Confirm errors are logged with stack traces",
+      "Step 5: Verify log format is readable"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Hot reload works in development mode",
+    "steps": [
+      "Step 1: Start dev server",
+      "Step 2: Open browser",
+      "Step 3: Edit a component file",
+      "Step 4: Save changes",
+      "Step 5: Verify browser updates without full refresh"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Accessibility: keyboard navigation works throughout app",
+    "steps": [
+      "Step 1: Open application",
+      "Step 2: Use Tab key to navigate",
+      "Step 3: Verify focus indicators are visible",
+      "Step 4: Check all interactive elements are reachable",
+      "Step 5: Confirm Enter/Space activate elements"
+    ],
+    "complexity": "medium",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Accessibility: ARIA labels present on interactive elements",
+    "steps": [
+      "Step 1: Inspect interactive elements",
+      "Step 2: Verify ARIA labels exist",
+      "Step 3: Check labels are descriptive",
+      "Step 4: Confirm screen reader compatibility"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Accessibility: Color contrast meets WCAG 2.1 AA standards",
+    "steps": [
+      "Step 1: Use contrast checker tool",
+      "Step 2: Test text/background combinations",
+      "Step 3: Verify all pass 4.5:1 ratio for normal text",
+      "Step 4: Check large text passes 3:1 ratio"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Accessibility: Images have alt text",
+    "steps": [
+      "Step 1: Find all images in app",
+      "Step 2: Verify alt attributes exist",
+      "Step 3: Check alt text is descriptive",
+      "Step 4: Confirm decorative images use alt=''"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Accessibility: Form inputs have labels",
+    "steps": [
+      "Step 1: Find all form inputs",
+      "Step 2: Verify each has associated label",
+      "Step 3: Check labels are descriptive",
+      "Step 4: Confirm label/input associations are correct"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Search functionality allows finding files by name",
+    "steps": [
+      "Step 1: Open search interface",
+      "Step 2: Type file name",
+      "Step 3: Verify results appear",
+      "Step 4: Check results are relevant",
+      "Step 5: Click result to open file"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Search functionality supports fuzzy matching",
+    "steps": [
+      "Step 1: Search with partial file name",
+      "Step 2: Verify fuzzy matches are found",
+      "Step 3: Check ranking is reasonable",
+      "Step 4: Confirm typo tolerance"
+    ],
+    "complexity": "medium",
+    "dependencies": [169],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Search can filter by file type/language",
+    "steps": [
+      "Step 1: Open search",
+      "Step 2: Apply file type filter",
+      "Step 3: Verify only matching types shown",
+      "Step 4: Test multiple filters"
+    ],
+    "complexity": "simple",
+    "dependencies": [169],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Search can find code by content (full-text search)",
+    "steps": [
+      "Step 1: Search for code snippet",
+      "Step 2: Verify files containing snippet are found",
+      "Step 3: Check search highlights matches",
+      "Step 4: Confirm context is shown"
+    ],
+    "complexity": "complex",
+    "dependencies": [169],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can bookmark important files for quick access",
+    "steps": [
+      "Step 1: View a file",
+      "Step 2: Click bookmark button",
+      "Step 3: Verify file is bookmarked",
+      "Step 4: Navigate to bookmarks list",
+      "Step 5: Confirm bookmarked file appears",
+      "Step 6: Test removing bookmark"
+    ],
+    "complexity": "simple",
+    "dependencies": [59],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can add notes to files and modules",
+    "steps": [
+      "Step 1: Open file",
+      "Step 2: Click add note button",
+      "Step 3: Enter note text",
+      "Step 4: Save note",
+      "Step 5: Verify note appears",
+      "Step 6: Edit and delete note"
+    ],
+    "complexity": "medium",
+    "dependencies": [59],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Notes are searchable across the application",
+    "steps": [
+      "Step 1: Create multiple notes",
+      "Step 2: Use search to find note by content",
+      "Step 3: Verify relevant notes are found",
+      "Step 4: Click result to view note"
+    ],
+    "complexity": "medium",
+    "dependencies": [174],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can export learning progress report",
+    "steps": [
+      "Step 1: Navigate to dashboard",
+      "Step 2: Click export report button",
+      "Step 3: Select format (PDF/Markdown)",
+      "Step 4: Verify download starts",
+      "Step 5: Open report",
+      "Step 6: Confirm progress data is included"
+    ],
+    "complexity": "medium",
+    "dependencies": [104],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Comparison mode allows comparing two codebases",
+    "steps": [
+      "Step 1: Navigate to comparison feature",
+      "Step 2: Select two repositories",
+      "Step 3: Trigger comparison",
+      "Step 4: Verify differences are highlighted",
+      "Step 5: Check architectural differences shown",
+      "Step 6: Confirm technology stack comparison"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "System detects code smells and provides suggestions",
+    "steps": [
+      "Step 1: Analyze repository",
+      "Step 2: Navigate to code quality section",
+      "Step 3: Verify code smells are detected",
+      "Step 4: Check suggestions are provided",
+      "Step 5: Confirm severity levels are assigned"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Performance hotspots are identified in profiled code",
+    "steps": [
+      "Step 1: Analyze repository with performance data",
+      "Step 2: Navigate to performance section",
+      "Step 3: Verify hotspots are identified",
+      "Step 4: Check optimization suggestions",
+      "Step 5: Confirm impact estimates are shown"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can customize dashboard layout",
+    "steps": [
+      "Step 1: Open dashboard",
+      "Step 2: Enter edit mode",
+      "Step 3: Drag widgets to rearrange",
+      "Step 4: Add/remove widgets",
+      "Step 5: Save layout",
+      "Step 6: Verify layout persists on reload"
+    ],
+    "complexity": "medium",
+    "dependencies": [104],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Multiple repositories can be managed simultaneously",
+    "steps": [
+      "Step 1: Add first repository",
+      "Step 2: Add second repository",
+      "Step 3: Verify both appear in repository list",
+      "Step 4: Switch between repositories",
+      "Step 5: Confirm data is separate for each"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Repository analysis can be scheduled for regular updates",
+    "steps": [
+      "Step 1: Navigate to repository settings",
+      "Step 2: Configure auto-update schedule",
+      "Step 3: Save schedule",
+      "Step 4: Verify schedule is active",
+      "Step 5: Check analysis runs on schedule"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Git branches can be analyzed separately",
+    "steps": [
+      "Step 1: Analyze repository with multiple branches",
+      "Step 2: Select different branch",
+      "Step 3: Trigger analysis for that branch",
+      "Step 4: Verify branch-specific data is shown",
+      "Step 5: Compare branches"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Pull request analysis shows changes impact",
+    "steps": [
+      "Step 1: Connect to PR",
+      "Step 2: Analyze PR changes",
+      "Step 3: Verify affected files are shown",
+      "Step 4: Check impact assessment is provided",
+      "Step 5: Confirm test coverage changes are highlighted"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Code comments are extracted and searchable",
+    "steps": [
+      "Step 1: Analyze repository with comments",
+      "Step 2: Navigate to comments section",
+      "Step 3: Verify comments are extracted",
+      "Step 4: Search for specific comment",
+      "Step 5: Confirm results show file and line number"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "TODO comments are identified and tracked",
+    "steps": [
+      "Step 1: Analyze code with TODO comments",
+      "Step 2: Navigate to TODO tracker",
+      "Step 3: Verify all TODOs are listed",
+      "Step 4: Check file locations are shown",
+      "Step 5: Confirm TODOs can be marked as done"
+    ],
+    "complexity": "medium",
+    "dependencies": [184],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "API documentation is auto-generated from code",
+    "steps": [
+      "Step 1: Analyze repository with API endpoints",
+      "Step 2: Navigate to API documentation",
+      "Step 3: Verify endpoints are documented",
+      "Step 4: Check parameters and responses are shown",
+      "Step 5: Confirm examples are included"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Test coverage information is displayed if available",
+    "steps": [
+      "Step 1: Analyze repository with coverage data",
+      "Step 2: Navigate to test coverage view",
+      "Step 3: Verify coverage percentages shown",
+      "Step 4: Check file-level coverage details",
+      "Step 5: Confirm uncovered lines are highlighted"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Dependencies can be analyzed for security vulnerabilities",
+    "steps": [
+      "Step 1: Analyze project dependencies",
+      "Step 2: Check for vulnerability scanning",
+      "Step 3: Verify vulnerabilities are reported",
+      "Step 4: Check severity levels are shown",
+      "Step 5: Confirm remediation suggestions provided"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "License information for dependencies is shown",
+    "steps": [
+      "Step 1: View dependencies list",
+      "Step 2: Verify licenses are detected",
+      "Step 3: Check license types are displayed",
+      "Step 4: Confirm license compatibility is checked"
+    ],
+    "complexity": "medium",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Contribution guidelines are extracted if present",
+    "steps": [
+      "Step 1: Analyze repository with CONTRIBUTING.md",
+      "Step 2: Navigate to contribution info",
+      "Step 3: Verify guidelines are extracted",
+      "Step 4: Check guidelines are formatted properly"
+    ],
+    "complexity": "simple",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Responsive design works on tablet viewport",
+    "steps": [
+      "Step 1: Open app in tablet viewport (768px)",
+      "Step 2: Verify layout adapts appropriately",
+      "Step 3: Check all features are accessible",
+      "Step 4: Test interactions work smoothly"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Responsive design works on large desktop viewport",
+    "steps": [
+      "Step 1: Open app in large viewport (1920px+)",
+      "Step 2: Verify layout scales well",
+      "Step 3: Check content isn't too spread out",
+      "Step 4: Confirm max-width constraints exist"
+    ],
+    "complexity": "simple",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Error boundary catches and displays React errors gracefully",
+    "steps": [
+      "Step 1: Trigger component error",
+      "Step 2: Verify error boundary catches it",
+      "Step 3: Check fallback UI is shown",
+      "Step 4: Confirm error is logged",
+      "Step 5: Verify rest of app still works"
+    ],
+    "complexity": "medium",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Application handles network errors gracefully",
+    "steps": [
+      "Step 1: Simulate network failure",
+      "Step 2: Trigger API request",
+      "Step 3: Verify error message is shown",
+      "Step 4: Check retry option is provided",
+      "Step 5: Test retry functionality"
+    ],
+    "complexity": "medium",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Application handles large repositories (500K+ LOC) without crashing",
+    "steps": [
+      "Step 1: Prepare very large test repository",
+      "Step 2: Start analysis",
+      "Step 3: Monitor memory usage",
+      "Step 4: Verify analysis completes",
+      "Step 5: Check app remains responsive",
+      "Step 6: Confirm results are accurate"
+    ],
+    "complexity": "complex",
+    "dependencies": [5],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Session persistence: user stays logged in across browser restarts",
+    "steps": [
+      "Step 1: Log in to application",
+      "Step 2: Close browser completely",
+      "Step 3: Reopen browser",
+      "Step 4: Navigate to application",
+      "Step 5: Verify user is still logged in"
+    ],
+    "complexity": "simple",
+    "dependencies": [122],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can log out successfully",
+    "steps": [
+      "Step 1: Log in",
+      "Step 2: Click logout button",
+      "Step 3: Verify user is logged out",
+      "Step 4: Check redirect to login page",
+      "Step 5: Confirm session is cleared"
+    ],
+    "complexity": "simple",
+    "dependencies": [122],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Application works offline for previously loaded data",
+    "steps": [
+      "Step 1: Load repository data while online",
+      "Step 2: Disconnect from network",
+      "Step 3: Navigate within cached data",
+      "Step 4: Verify cached data is accessible",
+      "Step 5: Check appropriate message for uncached actions"
+    ],
+    "complexity": "complex",
+    "dependencies": [1],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Configuration files (package.json, tsconfig, etc) are properly documented",
+    "steps": [
+      "Step 1: Check key config files exist",
+      "Step 2: Verify they include comments",
+      "Step 3: Check settings are appropriate",
+      "Step 4: Confirm all packages are necessary"
+    ],
+    "complexity": "simple",
+    "dependencies": [],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Build process succeeds without errors",
+    "steps": [
+      "Step 1: Run npm run build",
+      "Step 2: Verify build completes",
+      "Step 3: Check no errors are shown",
+      "Step 4: Confirm output directory is created",
+      "Step 5: Verify built app is functional"
+    ],
+    "complexity": "simple",
+    "dependencies": [],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Production build is optimized (minified, tree-shaken)",
+    "steps": [
+      "Step 1: Create production build",
+      "Step 2: Inspect bundle sizes",
+      "Step 3: Verify code is minified",
+      "Step 4: Check unused code is removed",
+      "Step 5: Confirm bundle size is reasonable"
+    ],
+    "complexity": "medium",
+    "dependencies": [199],
+    "passes": false
+  }
+]

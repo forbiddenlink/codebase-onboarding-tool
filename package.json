@@ -1,0 +1,60 @@
+{
+  "name": "codecompass",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-Powered Codebase Onboarding Platform - Make joining new codebases 10x faster",
+  "keywords": [
+    "onboarding",
+    "code-analysis",
+    "ai",
+    "developer-tools",
+    "documentation",
+    "codebase-understanding"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "start": "npm run start -w web",
+    "lint": "npm run lint --workspaces --if-present",
+    "lint:fix": "npm run lint:fix --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "test:watch": "npm run test:watch --workspaces --if-present",
+    "test:coverage": "npm run test:coverage --workspaces --if-present",
+    "type-check": "npm run type-check --workspaces --if-present",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "clean": "rm -rf node_modules packages/*/node_modules packages/*/dist packages/*/.next",
+    "db:migrate": "npm run db:migrate -w web",
+    "db:studio": "npm run db:studio -w web",
+    "db:seed": "npm run db:seed -w web",
+    "cli": "npm run start -w cli",
+    "prepare": "husky install || true"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.54.0",
+    "eslint-config-next": "^14.0.3",
+    "eslint-config-prettier": "^9.0.0",
+    "husky": "^8.0.3",
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/codecompass.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/codecompass/issues"
+  },
+  "homepage": "https://github.com/yourusername/codecompass#readme"
+}

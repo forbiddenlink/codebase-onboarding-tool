@@ -1,0 +1,368 @@
+<project_specification>
+  <project_name>CodeCompass - AI-Powered Codebase Onboarding Platform</project_name>
+
+  <overview>
+    Build a comprehensive developer onboarding platform that makes joining new codebases 10x faster. 
+    The tool analyzes any repository and provides: AI-powered Q&A about the codebase, interactive 
+    architecture diagrams, personalized learning paths, code annotations, runnable examples, and team 
+    knowledge extraction from git history. Should work as a web app, CLI tool, VS Code extension, 
+    and Slack bot. Focus on making it genuinely useful and portfolio-worthy.
+  </overview>
+
+  <technology_stack>
+    <frontend>
+      <framework>Next.js 14+ with App Router and TypeScript</framework>
+      <styling>Tailwind CSS with shadcn/ui components</styling>
+      <visualization>D3.js for interactive dependency graphs and architecture diagrams</visualization>
+      <code_display>Shiki or Prism for syntax highlighting with line numbers</code_display>
+      <state_management>Zustand for UI state, React Query for server state</state_management>
+      <animations>Framer Motion for smooth transitions</animations>
+      <port>Development on port 3000</port>
+    </frontend>
+    <backend>
+      <runtime>Next.js API routes and server actions</runtime>
+      <database>SQLite with Prisma ORM (easy local setup, upgradable to PostgreSQL)</database>
+      <ai>Anthropic Claude API for code understanding and Q&A (use sonnet-4)</ai>
+      <code_analysis>tree-sitter for parsing multiple languages</code_analysis>
+      <git_integration>simple-git for repository analysis</git_integration>
+      <vector_db>In-memory vector store initially (FAISS or similar), upgradeable to Pinecone</vector_db>
+    </backend>
+    <cli>
+      <framework>Commander.js for CLI interface</framework>
+      <output>Chalk for colored terminal output, Ora for spinners</output>
+      <interactive>Inquirer.js for interactive prompts</interactive>
+    </cli>
+    <vscode_extension>
+      <framework>VS Code Extension API</framework>
+      <webview>React for extension UI panels</webview>
+      <features>Hover tooltips, inline annotations, sidebar panel</features>
+    </vscode_extension>
+  </technology_stack>
+
+  <core_features>
+    <feature name="Repository Analysis Engine">
+      <description>
+        Scans any git repository and builds a comprehensive knowledge graph of the codebase.
+        Identifies: file structure, dependencies, imports/exports, function calls, data flow,
+        entry points, configuration files, and architectural patterns.
+      </description>
+      <requirements>
+        - Support multiple languages: TypeScript/JavaScript, Python, Go, Rust, Java
+        - Handle monorepos and multi-service architectures
+        - Extract metadata: LOC, complexity, last modified, primary authors
+        - Build call graphs and dependency trees
+        - Identify common frameworks and patterns (React, Express, FastAPI, etc.)
+        - Cache analysis results for fast re-queries
+        - Incremental updates when code changes
+      </requirements>
+    </feature>
+
+    <feature name="AI-Powered Codebase Chat">
+      <description>
+        Natural language interface to ask questions about the codebase. Uses RAG 
+        (Retrieval-Augmented Generation) to answer accurately with code references.
+      </description>
+      <requirements>
+        - Conversational interface with context retention
+        - Answers include file paths, line numbers, and code snippets
+        - Understands queries like: "Where is authentication?", "How does data flow?", "What calls this function?"
+        - Explains design decisions by analyzing patterns
+        - Provides "confidence scores" for answers
+        - Suggests follow-up questions
+        - Chat history saved per repository
+        - Can compare current codebase to similar open-source projects
+      </requirements>
+    </feature>
+
+    <feature name="Interactive Architecture Diagrams">
+      <description>
+        Auto-generates visual representations of the codebase architecture with
+        interactive, zoomable, filterable diagrams.
+      </description>
+      <requirements>
+        - Multiple view types: dependency graph, call graph, data flow, module hierarchy
+        - Interactive: click nodes to see code, zoom/pan, filter by criteria
+        - Color-coding by language, age, complexity, or team ownership
+        - Export as SVG/PNG for documentation
+        - Highlight hot paths (most frequently changed files)
+        - Show relationships: "this file imports these 5 files"
+        - Detect circular dependencies and architectural smells
+      </requirements>
+    </feature>
+
+    <feature name="Personalized Learning Paths">
+      <description>
+        Creates a curriculum for learning the codebase based on role, goals, and existing knowledge.
+      </description>
+      <requirements>
+        - Role-based paths: "Backend Engineer", "Frontend Engineer", "Full-Stack", "DevOps"
+        - Suggests reading order with estimated time per file/module
+        - Tracks progress: what you've reviewed, what's remaining
+        - Interactive checklist with completion percentage
+        - Quizzes on key concepts (multiple choice about code behavior)
+        - "Days to first PR" estimation based on codebase size
+        - Adjusts based on feedback ("skip basics" or "explain more")
+        - Can resume from where you left off
+      </requirements>
+    </feature>
+
+    <feature name="Inline Code Annotations">
+      <description>
+        Adds intelligent tooltips and explanations directly in the code editor or web viewer.
+      </description>
+      <requirements>
+        - Hover over functions to see: purpose, parameters, return values, callers
+        - Show "this connects to X" relationship hints
+        - Highlight common gotchas and edge cases
+        - Team-sourced annotations (veterans can leave tips)
+        - Annotation versioning (tied to code versions)
+        - Export/import annotation packs for team sharing
+        - Works in VS Code extension and web viewer
+      </requirements>
+    </feature>
+
+    <feature name="Runnable Examples Generator">
+      <description>
+        Auto-creates minimal working examples for major features/modules that can be
+        run in isolation for learning.
+      </description>
+      <requirements>
+        - Extracts core functionality into standalone examples
+        - Generates mock data automatically
+        - "Try it" buttons that run examples in sandbox
+        - Shows input/output for each example
+        - Explains what's happening step-by-step
+        - Creates integration test templates from examples
+        - Works for API endpoints, UI components, utilities
+      </requirements>
+    </feature>
+
+    <feature name="Team Knowledge Extraction">
+      <description>
+        Mines git history, PR comments, and commit messages to extract tribal knowledge
+        and identify subject matter experts.
+      </description>
+      <requirements>
+        - Shows who to ask about each module (top contributors)
+        - Extracts patterns from PR reviews: "team always checks X", "common mistakes with Y"
+        - Timeline of major architectural changes
+        - "Why was this decision made?" answered from commit messages/PRs
+        - Identifies deprecated patterns still in use
+        - Shows code ownership heatmap
+        - Connects people to code areas
+      </requirements>
+    </feature>
+
+    <feature name="Multi-Interface Access">
+      <description>
+        Accessible through multiple interfaces for different workflows.
+      </description>
+      <requirements>
+        - Web Dashboard: visual exploration, diagrams, chat interface
+        - CLI Tool: quick queries from terminal, onboarding report generation
+        - VS Code Extension: hover tooltips, sidebar panel, inline annotations
+        - Slack Bot: "@codecompass where is rate limiting?" style queries
+        - All interfaces share same backend/analysis
+        - Settings sync across interfaces
+      </requirements>
+    </feature>
+
+    <feature name="Onboarding Progress Dashboard">
+      <description>
+        Tracks and visualizes onboarding progress for individuals and teams.
+      </description>
+      <requirements>
+        - Personal dashboard showing completion percentage
+        - Time spent in each module
+        - Quiz scores and understanding metrics
+        - Comparison to team average onboarding time
+        - Identifies knowledge gaps
+        - Manager view: see team onboarding status
+        - Automated check-ins: "How's it going? Need help with X?"
+      </requirements>
+    </feature>
+
+    <feature name="Change Detection & Notifications">
+      <description>
+        Monitors repository changes and notifies about updates to areas you've learned.
+      </description>
+      <requirements>
+        - Git webhook integration
+        - Notifications when learned areas change significantly
+        - "What's new since you joined" summaries
+        - Highlights breaking changes in your focus areas
+        - Suggests when to re-review modules
+        - Keeps onboarding content fresh automatically
+      </requirements>
+    </feature>
+  </core_features>
+
+  <user_workflows>
+    <workflow name="First Time Setup">
+      <steps>
+        - User provides git repository URL or local path
+        - System clones/analyzes repository (shows progress)
+        - Generates initial architecture overview
+        - User selects role (backend/frontend/fullstack)
+        - System creates personalized learning path
+        - User can start exploring via chat, diagrams, or guided path
+      </steps>
+    </workflow>
+
+    <workflow name="Daily Usage - Chat">
+      <steps>
+        - Developer has question about code
+        - Opens web app or types in CLI/Slack
+        - Asks natural language question
+        - Receives answer with code references
+        - Can click through to see actual code
+        - Follow-up questions refine understanding
+      </steps>
+    </workflow>
+
+    <workflow name="Daily Usage - VS Code">
+      <steps>
+        - Developer hovers over unfamiliar function
+        - Tooltip shows AI-generated explanation
+        - Can see who wrote it and why (from git)
+        - Click to see all callers or dependencies
+        - Add own annotation for future reference
+      </steps>
+    </workflow>
+
+    <workflow name="Manager - Track Team Onboarding">
+      <steps>
+        - Manager opens dashboard
+        - Sees all team members' progress
+        - Identifies who's stuck or falling behind
+        - Reviews knowledge gap analysis
+        - Sends targeted help/resources
+      </steps>
+    </workflow>
+  </user_workflows>
+
+  <technical_requirements>
+    <performance>
+      - Repository analysis: under 2 minutes for 100K LOC
+      - Chat responses: under 3 seconds
+      - Diagram rendering: smooth 60fps for up to 1000 nodes
+      - CLI queries: under 1 second for cached data
+      - VS Code extension: no noticeable editor lag
+    </performance>
+
+    <quality>
+      - TypeScript strict mode throughout
+      - 80%+ test coverage for core features
+      - Comprehensive error handling with user-friendly messages
+      - Loading states and progress indicators everywhere
+      - Mobile-responsive web dashboard
+      - Accessibility: WCAG 2.1 AA compliant
+      - Dark mode support across all interfaces
+    </quality>
+
+    <security>
+      - No code uploaded to external servers (analysis runs locally)
+      - API keys stored securely (env variables)
+      - User authentication for web dashboard
+      - Rate limiting on AI queries
+      - Git credential handling via OS keychain
+      - Sanitize all user inputs
+    </security>
+
+    <developer_experience>
+      - Easy setup: npm install && npm run dev
+      - Clear README with examples
+      - Environment variable templates
+      - Sample repositories for testing
+      - Development mode with hot reload
+      - Comprehensive logging for debugging
+    </developer_experience>
+  </technical_requirements>
+
+  <ui_ux_guidelines>
+    <web_dashboard>
+      - Clean, modern design inspired by GitHub and Linear
+      - Sidebar navigation: Dashboard, Chat, Diagrams, Learning Path, Settings
+      - Main content area with breadcrumbs
+      - Code snippets displayed in cards with syntax highlighting
+      - Interactive graph visualizations (drag, zoom, filter)
+      - Toast notifications for actions
+      - Empty states with helpful guidance
+      - Skeleton loaders during data fetching
+    </web_dashboard>
+
+    <cli>
+      - Colorful, informative output
+      - Progress bars for long operations
+      - Tables for structured data
+      - Interactive mode with prompts
+      - Help text with examples
+      - Abbreviations for common commands
+    </cli>
+
+    <vscode_extension>
+      - Minimal, non-intrusive
+      - Sidebar icon in activity bar
+      - Hover tooltips on demand
+      - Inline decorations for annotations
+      - Settings integrated with VS Code preferences
+    </vscode_extension>
+  </ui_ux_guidelines>
+
+  <project_structure>
+    /
+    ├── packages/
+    │   ├── web/              # Next.js web dashboard
+    │   │   ├── app/
+    │   │   ├── components/
+    │   │   ├── lib/
+    │   │   └── prisma/
+    │   ├── cli/              # Command-line interface
+    │   │   ├── src/
+    │   │   └── bin/
+    │   ├── analyzer/         # Core code analysis engine (shared)
+    │   │   ├── src/
+    │   │   │   ├── parsers/
+    │   │   │   ├── graph/
+    │   │   │   └── ai/
+    │   │   └── tests/
+    │   ├── vscode-extension/ # VS Code extension
+    │   │   ├── src/
+    │   │   └── webview/
+    │   └── shared/           # Shared types and utilities
+    └── examples/
+        └── sample-repos/     # Test repositories
+  </project_structure>
+
+  <success_metrics>
+    - Developer can ask questions and get useful answers within 1 minute of setup
+    - Architecture diagram is accurate and helpful (manual verification)
+    - Learning path reduces onboarding time by at least 30%
+    - VS Code extension gets positive feedback in testing
+    - CLI tool is fast and intuitive
+    - Code is clean enough to showcase in portfolio
+    - Demo video can be made in under 5 minutes
+  </success_metrics>
+
+  <nice_to_have_features>
+    - Browser extension for annotating web-based code viewers (GitHub, GitLab)
+    - Integration with Jira/Linear to connect tickets to code
+    - AI-generated video walkthroughs of code
+    - Pair programming mode (screen share with annotations)
+    - Confluence/Notion export for onboarding docs
+    - Comparison mode: compare two codebases
+    - "Code smells" detection and suggestions
+    - Performance hotspot identification
+  </nice_to_have_features>
+
+  <prerequisites>
+    <environment_setup>
+      - Node.js 18+ and npm
+      - TypeScript configuration with strict mode
+      - Anthropic API key in environment variables
+      - Git installed and configured
+      - VS Code for extension development
+      - Basic understanding of monorepo structure (using npm workspaces or similar)
+    </environment_setup>
+  </prerequisites>
+</project_specification>

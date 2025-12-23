@@ -1,0 +1,88 @@
+{
+  "name": "codecompass-vscode",
+  "displayName": "CodeCompass",
+  "description": "AI-powered codebase onboarding directly in VS Code",
+  "version": "0.1.0",
+  "publisher": "codecompass",
+  "icon": "assets/icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Machine Learning",
+    "Education",
+    "Visualization"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "codecompass",
+          "title": "CodeCompass",
+          "icon": "assets/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "codecompass": [
+        {
+          "id": "codecompass-overview",
+          "name": "Repository Overview"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "codecompass.analyze",
+        "title": "CodeCompass: Analyze Repository"
+      },
+      {
+        "command": "codecompass.ask",
+        "title": "CodeCompass: Ask Question"
+      }
+    ],
+    "configuration": {
+      "title": "CodeCompass",
+      "properties": {
+        "codecompass.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Anthropic API Key for AI features"
+        },
+        "codecompass.enableHoverTooltips": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show AI-powered tooltips on hover"
+        },
+        "codecompass.enableInlineAnnotations": {
+          "type": "boolean",
+          "default": true,
+          "description": "Display inline code annotations"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "dev": "npm run watch",
+    "build": "npm run compile",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@codecompass/analyzer": "*",
+    "@codecompass/shared": "*"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^2.3.8"
+  }
+}

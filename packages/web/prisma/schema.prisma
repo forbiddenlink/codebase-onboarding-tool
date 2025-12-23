@@ -1,0 +1,180 @@
+// Prisma schema for CodeCompass
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  name          String
+  role          String         @default("developer") // developer, manager, admin
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  repositories  Repository[]
+  annotations   Annotation[]
+  chatMessages  ChatMessage[]
+  learningPaths LearningPath[]
+}
+
+model Repository {
+  id           String         @id @default(uuid())
+  name         String
+  path         String
+  url          String?
+  userId       String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  lastAnalyzed DateTime?
+  files        FileNode[]
+  chatMessages ChatMessage[]
+  learningPaths LearningPath[]
+  analysisResults AnalysisResult[]
+
+  @@index([userId])
+}
+
+model FileNode {
+  id            String       @id @default(uuid())
+  path          String
+  name          String
+  extension     String
+  language      String
+  size          Int
+  linesOfCode   Int
+  complexity    Float
+  lastModified  DateTime
+  primaryAuthor String?
+  repositoryId  String
+  repository    Repository   @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  dependenciesFrom Dependency[] @relation("DependencyFrom")
+  dependenciesTo   Dependency[] @relation("DependencyTo")
+  functions        FunctionNode[]
+  annotations      Annotation[]
+
+  @@unique([repositoryId, path])
+  @@index([repositoryId])
+  @@index([language])
+}
+
+model Dependency {
+  id         String   @id @default(uuid())
+  fromFileId String
+  toFileId   String
+  type       String   // import, export, call, inherit
+  lineNumber Int?
+  fromFile   FileNode @relation("DependencyFrom", fields: [fromFileId], references: [id], onDelete: Cascade)
+  toFile     FileNode @relation("DependencyTo", fields: [toFileId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@index([fromFileId])
+  @@index([toFileId])
+}
+
+model FunctionNode {
+  id          String   @id @default(uuid())
+  name        String
+  fileId      String
+  file        FileNode @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  startLine   Int
+  endLine     Int
+  parameters  String   // JSON string of parameters
+  returnType  String?
+  complexity  Float
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([fileId])
+  @@index([name])
+}
+
+model Annotation {
+  id         String   @id @default(uuid())
+  fileId     String
+  file       FileNode @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  lineNumber Int
+  content    String
+  authorId   String
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  version    String   // git commit hash
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([fileId])
+  @@index([authorId])
+}
+
+model ChatMessage {
+  id           String     @id @default(uuid())
+  repositoryId String
+  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role         String     // user, assistant
+  content      String
+  confidence   Float?
+  sources      String?    // JSON string of CodeReference[]
+  createdAt    DateTime   @default(now())
+
+  @@index([repositoryId])
+  @@index([userId])
+}
+
+model LearningPath {
+  id           String             @id @default(uuid())
+  userId       String
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  repositoryId String
+  repository   Repository         @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  role         String             // backend, frontend, fullstack, devops
+  progress     Float              @default(0)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  items        LearningPathItem[]
+
+  @@unique([userId, repositoryId])
+  @@index([userId])
+  @@index([repositoryId])
+}
+
+model LearningPathItem {
+  id               String       @id @default(uuid())
+  learningPathId   String
+  learningPath     LearningPath @relation(fields: [learningPathId], references: [id], onDelete: Cascade)
+  fileId           String
+  order            Int
+  estimatedMinutes Int
+  completed        Boolean      @default(false)
+  completedAt      DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@index([learningPathId])
+  @@index([fileId])
+}
+
+model AnalysisResult {
+  id           String     @id @default(uuid())
+  repositoryId String
+  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  totalFiles   Int
+  totalLines   Int
+  languages    String     // JSON string of Record<string, number>
+  frameworks   String     // JSON string of string[]
+  entryPoints  String     // JSON string of string[]
+  complexity   String     // JSON string of complexity data
+  duration     Int        // milliseconds
+  completedAt  DateTime   @default(now())
+
+  @@index([repositoryId])
+}
