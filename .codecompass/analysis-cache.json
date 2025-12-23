@@ -1,6 +1,6 @@
 {
-  "analyzedAt": "2025-12-23T06:47:22.842Z",
-  "fileCount": 113,
+  "analyzedAt": "2025-12-23T06:56:58.229Z",
+  "fileCount": 122,
   "fileTypes": [
     {
       "ext": ".json",
@@ -16,7 +16,7 @@
     },
     {
       "ext": ".md",
-      "count": 3
+      "count": 4
     },
     {
       "ext": ".txt",
@@ -40,15 +40,15 @@
     },
     {
       "ext": ".ts",
-      "count": 25
+      "count": 27
     },
     {
       "ext": ".map",
-      "count": 19
+      "count": 23
     },
     {
       "ext": ".js",
-      "count": 17
+      "count": 19
     },
     {
       "ext": ".svg",

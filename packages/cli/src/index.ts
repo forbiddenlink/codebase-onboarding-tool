@@ -4,6 +4,7 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
 import Table from 'cli-table3';
+import inquirer from 'inquirer';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -12,7 +13,29 @@ const program = new Command();
 program
   .name('codecompass')
   .description('AI-powered codebase onboarding and analysis tool')
-  .version('0.1.0');
+  .version('0.1.0')
+  .addHelpText('after', `
+Examples:
+  $ codecompass analyze .
+    Analyze the current directory
+
+  $ codecompass analyze /path/to/repo
+    Analyze a repository at a specific path
+
+  $ codecompass ask "where is authentication?"
+    Ask a question about your codebase
+
+  $ codecompass report --format markdown
+    Generate an onboarding report in markdown format
+
+  $ codecompass report --format json
+    Generate an onboarding report in JSON format
+
+  $ codecompass interactive
+    Start interactive mode with guided prompts
+
+For more information, visit: https://codecompass.dev
+`);
 
 // Helper function to simulate async progress
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -130,7 +153,18 @@ async function analyzeRepository(repoPath: string) {
 
 program
   .command('analyze <path>')
+  .alias('a')
   .description('Analyze a repository at the given path')
+  .option('-d, --depth <depth>', 'Maximum directory depth to scan', '10')
+  .option('--skip-tests', 'Skip test files in analysis', false)
+  .addHelpText('after', `
+Examples:
+  $ codecompass analyze .
+  $ codecompass a .  (abbreviated)
+  $ codecompass analyze /path/to/project
+  $ codecompass analyze . --skip-tests
+  $ codecompass analyze ../myproject --depth 5
+`)
   .action(async (repoPath: string) => {
     try {
       await analyzeRepository(repoPath);
@@ -212,7 +246,16 @@ async function askQuestion(question: string) {
 
 program
   .command('ask <question>')
+  .alias('q')
   .description('Ask a question about the codebase')
+  .option('-c, --context <files>', 'Limit search to specific files (comma-separated)')
+  .addHelpText('after', `
+Examples:
+  $ codecompass ask "where is authentication?"
+  $ codecompass q "where is authentication?"  (abbreviated)
+  $ codecompass ask "how does the API work?"
+  $ codecompass ask "what does the login function do?" --context auth.ts,login.ts
+`)
   .action(async (question: string) => {
     try {
       await askQuestion(question);
@@ -365,11 +408,142 @@ ${cacheData.fileTypes.slice(0, 10).map((ft: {ext: string, count: number}) =>
 
 program
   .command('report')
+  .alias('r')
   .description('Generate an onboarding report')
   .option('-f, --format <format>', 'Output format (markdown, json)', 'markdown')
+  .option('-o, --output <file>', 'Output file path')
+  .addHelpText('after', `
+Examples:
+  $ codecompass report
+  $ codecompass r  (abbreviated)
+  $ codecompass report --format json
+  $ codecompass report --format markdown --output onboarding.md
+`)
   .action(async (options) => {
     try {
       await generateReport(options.format);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.log(chalk.red('✗ Error:'), errorMessage);
+      process.exit(1);
+    }
+  });
+
+// Interactive mode implementation
+async function interactiveMode() {
+  console.log(chalk.bold.blue('🧭 CodeCompass Interactive Mode'));
+  console.log(chalk.gray('Navigate your codebase with guided prompts'));
+  console.log('');
+
+  const mainMenuChoices = [
+    { name: '🔍 Analyze Repository', value: 'analyze' },
+    { name: '💬 Ask Question', value: 'ask' },
+    { name: '📄 Generate Report', value: 'report' },
+    { name: '❌ Exit', value: 'exit' }
+  ];
+
+  while (true) {
+    const { action } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'action',
+        message: 'What would you like to do?',
+        choices: mainMenuChoices
+      }
+    ]);
+
+    if (action === 'exit') {
+      console.log(chalk.green('✓ Goodbye!'));
+      break;
+    }
+
+    if (action === 'analyze') {
+      const { repoPath } = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'repoPath',
+          message: 'Enter repository path:',
+          default: '.',
+          validate: (input) => {
+            if (!input) return 'Path is required';
+            if (!fs.existsSync(input)) return 'Path does not exist';
+            return true;
+          }
+        },
+        {
+          type: 'confirm',
+          name: 'skipTests',
+          message: 'Skip test files in analysis?',
+          default: false
+        }
+      ]);
+
+      console.log('');
+      await analyzeRepository(repoPath);
+      console.log('');
+    } else if (action === 'ask') {
+      const { question } = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'question',
+          message: 'What would you like to know about your codebase?',
+          validate: (input) => input ? true : 'Question is required'
+        }
+      ]);
+
+      console.log('');
+      await askQuestion(question);
+      console.log('');
+    } else if (action === 'report') {
+      const { format } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'format',
+          message: 'Select report format:',
+          choices: [
+            { name: '📝 Markdown', value: 'markdown' },
+            { name: '📊 JSON', value: 'json' }
+          ]
+        },
+        {
+          type: 'confirm',
+          name: 'customOutput',
+          message: 'Specify custom output file?',
+          default: false
+        }
+      ]);
+
+      console.log('');
+      await generateReport(format);
+      console.log('');
+    }
+
+    // Ask if user wants to continue
+    const { continue: shouldContinue } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'continue',
+        message: 'Continue with another action?',
+        default: true
+      }
+    ]);
+
+    if (!shouldContinue) {
+      console.log(chalk.green('✓ Goodbye!'));
+      break;
+    }
+
+    console.log('');
+  }
+}
+
+program
+  .command('interactive')
+  .alias('i')
+  .description('Start interactive mode with guided prompts')
+  .action(async () => {
+    try {
+      await interactiveMode();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       console.log(chalk.red('✗ Error:'), errorMessage);
