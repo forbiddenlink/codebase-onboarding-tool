@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import AppLayout from '@/components/AppLayout'
+import { useToast } from '@/components/ToastContainer'
+import { useTheme } from '@/components/ThemeProvider'
 
 interface CodeCompassSettings {
   apiKey?: string
@@ -18,6 +20,8 @@ interface CodeCompassSettings {
 }
 
 export default function SettingsPage() {
+  const { showToast } = useToast()
+  const { theme, setTheme } = useTheme()
   const [settings, setSettings] = useState<CodeCompassSettings>({
     apiKey: '',
     enableHoverTooltips: true,
@@ -69,14 +73,17 @@ export default function SettingsPage() {
 
       if (response.ok) {
         setSaveStatus('saved')
+        showToast('Settings saved successfully!', 'success')
         setTimeout(() => setSaveStatus('idle'), 2000)
       } else {
         setSaveStatus('error')
+        showToast('Failed to save settings. Please try again.', 'error')
         setTimeout(() => setSaveStatus('idle'), 3000)
       }
     } catch (error) {
       console.error('Failed to save settings:', error)
       setSaveStatus('error')
+      showToast('An error occurred while saving settings.', 'error')
       setTimeout(() => setSaveStatus('idle'), 3000)
     }
   }
@@ -85,6 +92,7 @@ export default function SettingsPage() {
     if (!settings.webhooks.url) {
       setTestMessage('Please enter a webhook URL first')
       setTestStatus('error')
+      showToast('Please enter a webhook URL first', 'warning')
       setTimeout(() => setTestStatus('idle'), 3000)
       return
     }
@@ -112,6 +120,7 @@ export default function SettingsPage() {
       // For demonstration, always succeed
       setTestStatus('success')
       setTestMessage('Webhook test successful! Check your endpoint for the test payload.')
+      showToast('Webhook test successful!', 'success')
       setTimeout(() => {
         setTestStatus('idle')
         setTestMessage('')
@@ -120,6 +129,7 @@ export default function SettingsPage() {
       console.error('Webhook test failed:', error)
       setTestStatus('error')
       setTestMessage('Webhook test failed. Please check the URL and try again.')
+      showToast('Webhook test failed. Please check the URL.', 'error')
       setTimeout(() => {
         setTestStatus('idle')
         setTestMessage('')
@@ -194,19 +204,22 @@ export default function SettingsPage() {
               Theme Preference
             </label>
             <div className="flex gap-3">
-              {(['light', 'dark', 'auto'] as const).map(theme => (
+              {(['light', 'dark', 'auto'] as const).map(themeOption => (
                 <button
-                  key={theme}
-                  onClick={() => setSettings(prev => ({ ...prev, theme }))}
+                  key={themeOption}
+                  onClick={() => {
+                    setSettings(prev => ({ ...prev, theme: themeOption }))
+                    setTheme(themeOption)
+                  }}
                   className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                    settings.theme === theme
+                    theme === themeOption
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
                   }`}
                 >
-                  {theme === 'light' && '☀️ Light'}
-                  {theme === 'dark' && '🌙 Dark'}
-                  {theme === 'auto' && '🔄 Auto'}
+                  {themeOption === 'light' && '☀️ Light'}
+                  {themeOption === 'dark' && '🌙 Dark'}
+                  {themeOption === 'auto' && '🔄 Auto'}
                 </button>
               ))}
             </div>

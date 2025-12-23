@@ -16,7 +16,25 @@ interface Change {
 
 export default function WhatsNewPage() {
   const [joinDate] = useState(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)) // 30 days ago
+  const [focusAreas] = useState<string[]>([
+    'packages/web/app/api/auth',
+    'packages/web/prisma/schema.prisma',
+    'packages/vscode-extension'
+  ])
   const [changes] = useState<Change[]>([
+    {
+      id: '0',
+      date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+      type: 'breaking',
+      title: '⚠️ BREAKING: Authentication API Changes',
+      description: 'The authentication API endpoints have been updated with breaking changes. The /api/auth/login endpoint now requires a "rememberMe" boolean field. Session tokens are now JWT-based instead of UUID. All existing sessions will be invalidated. Migration guide: Update all login calls to include rememberMe field, and update token parsing logic to handle JWT format.',
+      files: [
+        'packages/web/app/api/auth/login/route.ts',
+        'packages/web/app/api/auth/register/route.ts'
+      ],
+      author: 'Security Team',
+      impact: 'high'
+    },
     {
       id: '1',
       date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
@@ -147,7 +165,7 @@ export default function WhatsNewPage() {
     <AppLayout>
       <div className="mb-6">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          What's New
+          What&apos;s New
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
           Stay up to date with changes to the codebase since you joined
@@ -194,23 +212,54 @@ export default function WhatsNewPage() {
         </div>
       </div>
 
+      {/* Focus Areas Info */}
+      <div className="mb-6 p-4 border border-blue-200 dark:border-blue-800 rounded-lg bg-blue-50 dark:bg-blue-950/20">
+        <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
+          <span>🎯</span> Your Focus Areas
+        </h3>
+        <div className="text-xs text-muted-foreground space-y-1">
+          {focusAreas.map((area, i) => (
+            <div key={i} className="font-mono">{area}</div>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground mt-2">
+          Breaking changes in these areas will be prominently highlighted
+        </p>
+      </div>
+
       {/* Timeline of changes */}
       <div className="space-y-4">
         <h2 className="text-xl font-semibold mb-4">Recent Changes</h2>
-        {changesSinceJoin.map((change, index) => {
+        {changesSinceJoin.map((change) => {
           const daysAgo = Math.floor((Date.now() - change.date.getTime()) / (24 * 60 * 60 * 1000))
+          const isInFocusArea = change.files.some(file =>
+            focusAreas.some(area => file.includes(area))
+          )
+          const isBreakingInFocus = change.type === 'breaking' && isInFocusArea
 
           return (
             <div
               key={change.id}
-              className="border border-border rounded-lg p-6 bg-white dark:bg-gray-900 hover:border-primary transition"
+              className={`border rounded-lg p-6 transition ${
+                isBreakingInFocus
+                  ? 'border-red-500 dark:border-red-600 bg-red-50 dark:bg-red-950/20 shadow-lg shadow-red-100 dark:shadow-red-950/50'
+                  : change.type === 'breaking'
+                  ? 'border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-950/20'
+                  : 'border-border bg-white dark:bg-gray-900 hover:border-primary'
+              }`}
             >
+              {isBreakingInFocus && (
+                <div className="mb-4 p-3 bg-red-600 dark:bg-red-700 text-white rounded-lg font-bold text-sm flex items-center gap-2">
+                  <span className="text-2xl">🚨</span>
+                  <span>BREAKING CHANGE IN YOUR FOCUS AREA - ACTION REQUIRED</span>
+                </div>
+              )}
               <div className="flex items-start gap-4">
                 <div className="text-3xl">{getTypeIcon(change.type)}</div>
                 <div className="flex-1">
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
                         <h3 className="text-lg font-semibold">{change.title}</h3>
                         <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${getTypeColor(change.type)}`}>
                           {change.type}
@@ -218,6 +267,11 @@ export default function WhatsNewPage() {
                         <span className={`text-xs font-semibold ${getImpactColor(change.impact)}`}>
                           {change.impact} impact
                         </span>
+                        {isInFocusArea && (
+                          <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                            🎯 Focus Area
+                          </span>
+                        )}
                       </div>
                       <p className="text-sm text-muted-foreground mb-3">
                         {daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : `${daysAgo} days ago`} · by {change.author}
@@ -230,11 +284,21 @@ export default function WhatsNewPage() {
                       Files changed ({change.files.length}):
                     </div>
                     <div className="space-y-1">
-                      {change.files.map((file, i) => (
-                        <div key={i} className="text-xs font-mono text-muted-foreground bg-gray-50 dark:bg-gray-950 px-2 py-1 rounded">
-                          {file}
-                        </div>
-                      ))}
+                      {change.files.map((file, i) => {
+                        const isInFocus = focusAreas.some(area => file.includes(area))
+                        return (
+                          <div
+                            key={i}
+                            className={`text-xs font-mono px-2 py-1 rounded ${
+                              isInFocus
+                                ? 'bg-blue-100 dark:bg-blue-950 text-blue-900 dark:text-blue-100 font-semibold'
+                                : 'text-muted-foreground bg-gray-50 dark:bg-gray-950'
+                            }`}
+                          >
+                            {isInFocus && '🎯 '}{file}
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -244,6 +308,11 @@ export default function WhatsNewPage() {
                     <button className="px-3 py-1.5 border border-border rounded text-xs hover:bg-accent transition">
                       View Files
                     </button>
+                    {change.type === 'breaking' && (
+                      <button className="px-3 py-1.5 bg-orange-600 text-white rounded text-xs font-semibold hover:opacity-90 transition">
+                        📚 Migration Guide
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

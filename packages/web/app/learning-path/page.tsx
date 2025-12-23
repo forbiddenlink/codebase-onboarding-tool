@@ -209,7 +209,7 @@ export default function LearningPathPage() {
           <div className="text-4xl mb-3">🎉</div>
           <h3 className="text-xl font-bold mb-2">Learning Path Complete!</h3>
           <p className="text-muted-foreground mb-4">
-            Great job! You've reviewed all the key modules in the codebase.
+            Great job! You&apos;ve reviewed all the key modules in the codebase.
           </p>
           <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:opacity-90 transition">
             Explore Advanced Topics →
