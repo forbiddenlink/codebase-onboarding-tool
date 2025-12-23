@@ -2754,7 +2754,7 @@
     ],
     "complexity": "simple",
     "dependencies": [1],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -2768,7 +2768,7 @@
     ],
     "complexity": "medium",
     "dependencies": [1],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
