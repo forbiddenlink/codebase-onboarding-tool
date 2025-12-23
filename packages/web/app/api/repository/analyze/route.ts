@@ -3,6 +3,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import simpleGit from 'simple-git'
 import { prisma } from '@/lib/prisma'
+import { logger } from '@/lib/logger'
 
 // Helper function to validate and sanitize repository path
 function validatePath(inputPath: string): { valid: boolean; error?: string; sanitized?: string } {
@@ -163,9 +164,9 @@ export async function POST(request: NextRequest) {
         }
 
         fs.writeFileSync(cacheFile, JSON.stringify(cacheData, null, 2), 'utf8')
-        console.log(`Shared cache written to: ${cacheFile}`)
+        logger.info('Shared cache written', { cacheFile })
       } catch (error) {
-        console.error('Failed to write shared cache file:', error)
+        logger.error('Failed to write shared cache file', error)
         // Don't fail the request if cache write fails
       }
 
@@ -223,7 +224,9 @@ export async function POST(request: NextRequest) {
         fs.rmSync(targetPath, { recursive: true, force: true })
       }
 
+      logger.info('Cloning repository', { repoUrl, targetPath })
       await git.clone(repoUrl, targetPath, ['--depth', '1']) // Shallow clone for faster cloning
+      logger.info('Repository cloned successfully', { repoName })
 
       // Check if repository exists
       let repository = await prisma.repository.findFirst({
@@ -292,9 +295,9 @@ export async function POST(request: NextRequest) {
         }
 
         fs.writeFileSync(cacheFile, JSON.stringify(cacheData, null, 2), 'utf8')
-        console.log(`Shared cache written to: ${cacheFile}`)
+        logger.info('Shared cache written', { cacheFile })
       } catch (error) {
-        console.error('Failed to write shared cache file:', error)
+        logger.error('Failed to write shared cache file', error)
         // Don't fail the request if cache write fails
       }
 
@@ -315,7 +318,7 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     )
   } catch (error) {
-    console.error('Repository analysis error:', error)
+    logger.error('Repository analysis error', error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to analyze repository' },
       { status: 500 }
@@ -502,7 +505,7 @@ async function buildKnowledgeGraph(
         }
       })
     } catch (error) {
-      console.error(`Error processing file ${relativePath}:`, error)
+      logger.error(`Error processing file ${relativePath}`, error)
     }
   }
 
