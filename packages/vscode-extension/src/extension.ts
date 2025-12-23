@@ -459,7 +459,7 @@ class TreeItem extends vscode.TreeItem {
 
 class CodeCompassHoverProvider implements vscode.HoverProvider {
   // Pre-compiled regex patterns for performance
-  private readonly functionDeclPattern = /(function|const|let|var|async)\s+\w+\s*[=\(]/;
+  private readonly functionDeclPattern = /(function|const|let|var|async)\s+\w+\s*[=(]/;
   private readonly classDeclPattern = /(class|interface|type)\s+\w+/;
 
   provideHover(

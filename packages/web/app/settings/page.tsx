@@ -239,7 +239,7 @@ export default function SettingsPage() {
             <label className="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
               <div>
                 <div className="font-semibold text-gray-900">Notifications</div>
-                <div className="text-sm text-gray-600">Receive notifications when code areas you've learned change</div>
+                <div className="text-sm text-gray-600">Receive notifications when code areas you&apos;ve learned change</div>
               </div>
               <input
                 type="checkbox"

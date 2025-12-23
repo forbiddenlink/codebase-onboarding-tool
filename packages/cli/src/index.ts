@@ -230,7 +230,7 @@ const queryCachePath = path.join(os.homedir(), '.codecompass', 'query-cache.json
 
 interface QueryCacheEntry {
   question: string;
-  answer: any;
+  answer: string;
   timestamp: number;
 }
 
