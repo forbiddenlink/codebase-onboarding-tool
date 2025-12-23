@@ -1,0 +1,82 @@
+{
+  "analyzedAt": "2025-12-23T06:43:32.856Z",
+  "fileCount": 113,
+  "fileTypes": [
+    {
+      "ext": ".json",
+      "count": 23
+    },
+    {
+      "ext": "",
+      "count": 5
+    },
+    {
+      "ext": ".example",
+      "count": 1
+    },
+    {
+      "ext": ".md",
+      "count": 3
+    },
+    {
+      "ext": ".txt",
+      "count": 2
+    },
+    {
+      "ext": ".tsbuildinfo",
+      "count": 1
+    },
+    {
+      "ext": ".sh",
+      "count": 1
+    },
+    {
+      "ext": ".gz",
+      "count": 1
+    },
+    {
+      "ext": ".log",
+      "count": 1
+    },
+    {
+      "ext": ".ts",
+      "count": 25
+    },
+    {
+      "ext": ".map",
+      "count": 19
+    },
+    {
+      "ext": ".js",
+      "count": 17
+    },
+    {
+      "ext": ".svg",
+      "count": 1
+    },
+    {
+      "ext": ".tsx",
+      "count": 6
+    },
+    {
+      "ext": ".css",
+      "count": 1
+    },
+    {
+      "ext": ".sql",
+      "count": 3
+    },
+    {
+      "ext": ".toml",
+      "count": 1
+    },
+    {
+      "ext": ".db",
+      "count": 1
+    },
+    {
+      "ext": ".prisma",
+      "count": 1
+    }
+  ]
+}

@@ -160,6 +160,7 @@ export default function ViewerPage() {
 
   const lines = code.split('\n')
   const tooltipRef = useRef<HTMLDivElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Simple syntax highlighting using regex
   const highlightSyntax = (line: string) => {
@@ -326,6 +327,68 @@ export default function ViewerPage() {
     URL.revokeObjectURL(url)
   }
 
+  const handleImportAnnotations = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string
+        const importedData = JSON.parse(content)
+
+        // Validate the imported data structure
+        if (!importedData.annotations || !Array.isArray(importedData.annotations)) {
+          alert('Invalid annotation file format')
+          return
+        }
+
+        // Convert imported annotations to the correct format
+        const newAnnotations: CustomAnnotation[] = importedData.annotations.map((annotation: {
+          id: string
+          lineNumber: number
+          text: string
+          author: string
+          timestamp: string
+          codeVersion: string
+          lineContent: string
+          status: 'current' | 'outdated' | 'moved'
+        }) => ({
+          id: annotation.id,
+          lineNumber: annotation.lineNumber,
+          text: annotation.text,
+          author: annotation.author,
+          timestamp: new Date(annotation.timestamp),
+          codeVersion: annotation.codeVersion,
+          lineContent: annotation.lineContent,
+          status: annotation.status
+        }))
+
+        // Merge with existing annotations (avoid duplicates by ID)
+        const existingIds = new Set(customAnnotations.map(a => a.id))
+        const uniqueNewAnnotations = newAnnotations.filter(a => !existingIds.has(a.id))
+
+        setCustomAnnotations([...customAnnotations, ...uniqueNewAnnotations])
+
+        // Show success message
+        alert(`Successfully imported ${uniqueNewAnnotations.length} annotations!`)
+
+        // Reset file input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ''
+        }
+      } catch (error) {
+        console.error('Error importing annotations:', error)
+        alert('Failed to import annotations. Please check the file format.')
+      }
+    }
+    reader.readAsText(file)
+  }
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click()
+  }
+
   const toggleAnnotation = (lineNumber: number) => {
     setExpandedAnnotation(expandedAnnotation === lineNumber ? null : lineNumber)
   }
@@ -384,6 +447,13 @@ export default function ViewerPage() {
                 </select>
               </div>
               <button
+                onClick={triggerFileInput}
+                className="text-sm px-3 py-1 rounded border border-border bg-background hover:bg-accent flex items-center gap-2"
+                title="Import annotations from JSON file"
+              >
+                📥 Import Annotations
+              </button>
+              <button
                 onClick={handleExportAnnotations}
                 disabled={customAnnotations.length === 0}
                 className="text-sm px-3 py-1 rounded border border-border bg-background hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
@@ -391,6 +461,13 @@ export default function ViewerPage() {
               >
                 📦 Export Annotations ({customAnnotations.length})
               </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".json"
+                onChange={handleImportAnnotations}
+                className="hidden"
+              />
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
