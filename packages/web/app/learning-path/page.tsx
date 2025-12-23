@@ -10,6 +10,9 @@ interface CodeSnippet {
   code: string
   language: string
   difficulty: 'beginner' | 'intermediate' | 'advanced'
+  lastUpdated?: Date
+  hasChanges?: boolean
+  changeDescription?: string
 }
 
 const sampleSnippets: CodeSnippet[] = [
@@ -27,7 +30,10 @@ const sampleSnippets: CodeSnippet[] = [
   return { user }
 }`,
     language: 'typescript',
-    difficulty: 'intermediate'
+    difficulty: 'intermediate',
+    lastUpdated: new Date('2024-01-15'),
+    hasChanges: true,
+    changeDescription: 'Authentication logic updated: Now supports JWT refresh tokens and multi-factor authentication. Review updated implementation.'
   },
   {
     id: '2',
@@ -43,7 +49,9 @@ export async function getUser(id: string) {
   })
 }`,
     language: 'typescript',
-    difficulty: 'beginner'
+    difficulty: 'beginner',
+    lastUpdated: new Date('2023-12-10'),
+    hasChanges: false
   },
   {
     id: '3',
@@ -64,7 +72,10 @@ export async function getUser(id: string) {
   }
 }`,
     language: 'typescript',
-    difficulty: 'intermediate'
+    difficulty: 'intermediate',
+    lastUpdated: new Date('2024-01-20'),
+    hasChanges: true,
+    changeDescription: 'New error types added for better error handling. Retry logic implemented for transient failures.'
   }
 ]
 
@@ -91,6 +102,9 @@ export default function LearningPathPage() {
 
   const progress = (completedSnippets.size / sampleSnippets.length) * 100
 
+  const hasAnyChanges = sampleSnippets.some(s => s.hasChanges)
+  const changedCount = sampleSnippets.filter(s => s.hasChanges).length
+
   return (
     <AppLayout>
       <div className="mb-6">
@@ -101,6 +115,27 @@ export default function LearningPathPage() {
           Follow this personalized curriculum to understand the codebase
         </p>
       </div>
+
+      {/* Change detection alert */}
+      {hasAnyChanges && (
+        <div className="mb-6 p-4 border-2 border-amber-400 bg-amber-50 dark:bg-amber-950/20 rounded-lg">
+          <div className="flex items-start gap-3">
+            <div className="text-2xl">⚠️</div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-amber-900 dark:text-amber-200 mb-1">
+                Content Update Detected
+              </h3>
+              <p className="text-sm text-amber-800 dark:text-amber-300 mb-2">
+                {changedCount} {changedCount === 1 ? 'module has' : 'modules have'} been updated since you last reviewed {changedCount === 1 ? 'it' : 'them'}.
+                The learning path content is kept fresh automatically to reflect recent code changes.
+              </p>
+              <button className="text-sm font-semibold text-amber-900 dark:text-amber-200 hover:underline">
+                View all changes →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Progress bar */}
       <div className="mb-8 p-6 border border-border rounded-lg bg-white dark:bg-gray-900">
@@ -137,6 +172,18 @@ export default function LearningPathPage() {
               }`}
             >
               <div className="p-6">
+                {/* Change detection banner for individual items */}
+                {snippet.hasChanges && (
+                  <div className="mb-4 p-3 bg-amber-100 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <span className="text-amber-600 dark:text-amber-400 font-semibold">🔄 Updated</span>
+                      <p className="text-xs text-amber-800 dark:text-amber-300 flex-1">
+                        {snippet.changeDescription}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div
@@ -149,7 +196,14 @@ export default function LearningPathPage() {
                       {isCompleted ? '✓' : index + 1}
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold">{snippet.title}</h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-lg font-semibold">{snippet.title}</h3>
+                        {snippet.hasChanges && (
+                          <span className="px-2 py-0.5 bg-amber-200 dark:bg-amber-900 text-amber-800 dark:text-amber-200 text-xs font-semibold rounded">
+                            Updated
+                          </span>
+                        )}
+                      </div>
                       <p className="text-sm text-muted-foreground">{snippet.description}</p>
                     </div>
                   </div>
