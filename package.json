@@ -35,7 +35,7 @@
     "db:migrate": "npm run db:migrate -w web",
     "db:studio": "npm run db:studio -w web",
     "db:seed": "npm run db:seed -w web",
-    "cli": "npm run start -w cli",
+    "cli": "node packages/cli/dist/index.js",
     "prepare": "husky install || true"
   },
   "devDependencies": {

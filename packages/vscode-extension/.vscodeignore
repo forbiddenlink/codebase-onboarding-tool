@@ -1,0 +1,12 @@
+.vscode
+.vscode-test
+src
+.gitignore
+tsconfig.json
+*.ts
+node_modules
+.env
+.env.*
+*.db
+*.db-journal
+.eslintrc.json

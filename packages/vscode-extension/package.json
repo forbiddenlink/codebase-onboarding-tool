@@ -4,7 +4,6 @@
   "description": "AI-powered codebase onboarding directly in VS Code",
   "version": "0.1.0",
   "publisher": "codecompass",
-  "icon": "assets/icon.png",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -73,6 +72,7 @@
     "watch": "tsc -watch -p ./",
     "dev": "npm run watch",
     "build": "npm run compile",
+    "package": "vsce package --allow-package-env-file",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
     "type-check": "tsc --noEmit"
@@ -83,6 +83,11 @@
   },
   "devDependencies": {
     "@types/vscode": "^1.85.0",
-    "@vscode/test-electron": "^2.3.8"
+    "@vscode/test-electron": "^2.3.8",
+    "@vscode/vsce": "^3.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/codecompass.git"
   }
 }

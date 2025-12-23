@@ -4,7 +4,7 @@ import { ParseResult } from './types';
 // Will use tree-sitter for actual parsing in future sessions
 
 export class CodeParser {
-  async parseFile(filePath: string, content: string): Promise<ParseResult> {
+  async parseFile(filePath: string, _content: string): Promise<ParseResult> {
     // TODO: Implement tree-sitter parsing
     return {
       filePath,
