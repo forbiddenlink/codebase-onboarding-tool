@@ -80,6 +80,9 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
       mediaQuery.addEventListener('change', handleChange)
       return () => mediaQuery.removeEventListener('change', handleChange)
     }
+
+    // Return undefined for non-auto theme mode (cleanup not needed)
+    return undefined
   }, [theme])
 
   const setTheme = (newTheme: Theme) => {
