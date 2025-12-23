@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import AppLayout from '@/components/AppLayout'
+import { searchNotes, searchAnnotations, type FileNote, type LineAnnotation } from '@/lib/notes'
 
 // Sample files for search (in a real app, this would come from the database)
 const sampleFiles = [
@@ -87,9 +88,26 @@ interface SearchResult {
 
 export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [searchType, setSearchType] = useState<'name' | 'content'>('name')
+  const [searchType, setSearchType] = useState<'name' | 'content' | 'notes'>('name')
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
   const [showFilters, setShowFilters] = useState(false)
+  const [noteResults, setNoteResults] = useState<FileNote[]>([])
+  const [annotationResults, setAnnotationResults] = useState<LineAnnotation[]>([])
+  const [sortBy, setSortBy] = useState<'relevance' | 'date' | 'author'>('relevance')
+
+  // Search notes and annotations when search type is 'notes'
+  useEffect(() => {
+    if (searchType === 'notes' && searchQuery.trim()) {
+      const notes = searchNotes(searchQuery);
+      const annotations = searchAnnotations(searchQuery);
+
+      setNoteResults(notes);
+      setAnnotationResults(annotations);
+    } else {
+      setNoteResults([]);
+      setAnnotationResults([]);
+    }
+  }, [searchQuery, searchType]);
 
   // Get unique languages from files
   const availableLanguages = useMemo(() => {
@@ -163,6 +181,27 @@ export default function SearchPage() {
     return results
   }, [searchQuery, searchType, selectedLanguages])
 
+  // Sort note results
+  const sortedNoteResults = useMemo(() => {
+    const combined = [
+      ...noteResults.map(note => ({ type: 'note' as const, data: note })),
+      ...annotationResults.map(annotation => ({ type: 'annotation' as const, data: annotation }))
+    ];
+
+    if (sortBy === 'date') {
+      return combined.sort((a, b) =>
+        b.data.timestamp.getTime() - a.data.timestamp.getTime()
+      );
+    } else if (sortBy === 'author') {
+      return combined.sort((a, b) =>
+        a.data.author.localeCompare(b.data.author)
+      );
+    }
+
+    // Default to relevance (which is the order they come from search)
+    return combined;
+  }, [noteResults, annotationResults, sortBy]);
+
   const toggleLanguage = (language: string) => {
     setSelectedLanguages(prev =>
       prev.includes(language)
@@ -192,7 +231,9 @@ export default function SearchPage() {
               placeholder={
                 searchType === 'name'
                   ? "Search files by name (e.g., 'user', 'auth', 'index')..."
-                  : "Search code content (e.g., 'express', 'jwt', 'database')..."
+                  : searchType === 'content'
+                  ? "Search code content (e.g., 'express', 'jwt', 'database')..."
+                  : "Search notes and annotations (e.g., 'important', 'bug', 'refactor')..."
               }
               className="w-full px-4 py-3 pl-12 text-lg border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
               aria-label="Search input"
@@ -227,20 +268,51 @@ export default function SearchPage() {
               >
                 📝 Code Content
               </button>
+              <button
+                onClick={() => setSearchType('notes')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  searchType === 'notes'
+                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                }`}
+                aria-label="Search notes and annotations"
+                aria-pressed={searchType === 'notes'}
+              >
+                💬 Notes
+              </button>
             </div>
 
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-              aria-label="Toggle filters"
-              aria-expanded={showFilters}
-            >
-              🎛️ Filters {selectedLanguages.length > 0 && `(${selectedLanguages.length})`}
-            </button>
+            {searchType !== 'notes' && (
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                aria-label="Toggle filters"
+                aria-expanded={showFilters}
+              >
+                🎛️ Filters {selectedLanguages.length > 0 && `(${selectedLanguages.length})`}
+              </button>
+            )}
+
+            {/* Sort Options for Notes */}
+            {searchType === 'notes' && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Sort by:</span>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as 'relevance' | 'date' | 'author')}
+                  className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                  aria-label="Sort notes by"
+                >
+                  <option value="relevance">Relevance</option>
+                  <option value="date">Date (Newest First)</option>
+                  <option value="author">Author (A-Z)</option>
+                </select>
+              </div>
+            )}
           </div>
 
           {/* Filters Panel */}
-          {showFilters && (
+          {showFilters && searchType !== 'notes' && (
             <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
                 Filter by Language
@@ -277,14 +349,23 @@ export default function SearchPage() {
 
         {/* Search Results */}
         <div className="space-y-4">
-          {searchQuery && (
+          {/* File and Content Search Results */}
+          {searchType !== 'notes' && searchQuery && (
             <div className="text-sm text-gray-600 dark:text-gray-400">
               Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
               {selectedLanguages.length > 0 && ` in ${selectedLanguages.join(', ')}`}
             </div>
           )}
 
-          {searchQuery && searchResults.length === 0 && (
+          {/* Notes Search Results Count */}
+          {searchType === 'notes' && searchQuery && (
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Found {sortedNoteResults.length} result{sortedNoteResults.length !== 1 ? 's' : ''}
+              ({noteResults.length} note{noteResults.length !== 1 ? 's' : ''}, {annotationResults.length} annotation{annotationResults.length !== 1 ? 's' : ''})
+            </div>
+          )}
+
+          {searchQuery && searchType !== 'notes' && searchResults.length === 0 && (
             <div className="text-center py-12">
               <p className="text-xl text-gray-500 dark:text-gray-400">No results found</p>
               <p className="mt-2 text-sm text-gray-400 dark:text-gray-500">
@@ -293,7 +374,17 @@ export default function SearchPage() {
             </div>
           )}
 
-          {searchResults.map((result, index) => (
+          {searchQuery && searchType === 'notes' && sortedNoteResults.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-xl text-gray-500 dark:text-gray-400">No notes found</p>
+              <p className="mt-2 text-sm text-gray-400 dark:text-gray-500">
+                Try a different search query. Notes are created in the Code Viewer.
+              </p>
+            </div>
+          )}
+
+          {/* File/Content Search Results */}
+          {searchType !== 'notes' && searchResults.map((result, index) => (
             <div
               key={`${result.file.path}-${index}`}
               className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 transition-colors cursor-pointer"
@@ -365,6 +456,72 @@ export default function SearchPage() {
               </div>
             </div>
           ))}
+
+          {/* Notes Search Results */}
+          {searchType === 'notes' && sortedNoteResults.map((result, index) => (
+            <div
+              key={`${result.type}-${result.data.id}-${index}`}
+              className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
+            >
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 text-3xl">
+                  {result.type === 'note' ? '📝' : '💡'}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className={`px-2 py-0.5 text-xs font-medium rounded ${
+                      result.type === 'note'
+                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                        : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
+                    }`}>
+                      {result.type === 'note' ? 'File Note' : 'Line Annotation'}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-500">
+                      {result.data.author}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-500">•</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-500">
+                      {result.data.timestamp.toLocaleDateString()} at {result.data.timestamp.toLocaleTimeString()}
+                    </span>
+                  </div>
+
+                  {/* Note Text with Highlighted Search Query */}
+                  <p
+                    className="text-sm text-gray-900 dark:text-gray-100 mb-3"
+                    dangerouslySetInnerHTML={{
+                      __html: result.data.text.replace(
+                        new RegExp(searchQuery, 'gi'),
+                        '<mark class="bg-yellow-200 dark:bg-yellow-900/50 px-1 rounded">$&</mark>'
+                      )
+                    }}
+                  />
+
+                  {/* File Information */}
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="font-mono text-gray-600 dark:text-gray-400">
+                      {result.data.fileName}
+                    </span>
+                    <span className="text-gray-400 dark:text-gray-600">•</span>
+                    <span className="text-gray-500 dark:text-gray-500 font-mono text-xs">
+                      {result.data.filePath}
+                    </span>
+                  </div>
+
+                  {/* Line Number for Annotations */}
+                  {result.type === 'annotation' && (
+                    <div className="mt-2 p-2 bg-gray-50 dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700">
+                      <div className="text-xs text-gray-500 dark:text-gray-500 mb-1">
+                        Line {result.data.lineNumber}
+                      </div>
+                      <code className="text-xs text-gray-700 dark:text-gray-300 font-mono">
+                        {result.data.lineContent}
+                      </code>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Empty State */}
@@ -373,7 +530,7 @@ export default function SearchPage() {
             <p className="text-xl text-gray-500 dark:text-gray-400">
               Start typing to search files
             </p>
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto text-left">
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto text-left">
               <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                 <h3 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">
                   📄 File Name Search
@@ -394,6 +551,17 @@ export default function SearchPage() {
                 </p>
                 <p className="text-xs text-purple-700 dark:text-purple-500 mt-2">
                   Try: "express", "jwt", "database"
+                </p>
+              </div>
+              <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <h3 className="font-semibold text-green-900 dark:text-green-300 mb-2">
+                  💬 Notes Search
+                </h3>
+                <p className="text-sm text-green-800 dark:text-green-400">
+                  Search your notes and annotations by content, author, or file.
+                </p>
+                <p className="text-xs text-green-700 dark:text-green-500 mt-2">
+                  Try: "important", "bug", "refactor"
                 </p>
               </div>
             </div>
