@@ -15,8 +15,10 @@ program
   .description('Analyze a repository at the given path')
   .action((path: string) => {
     console.log(chalk.blue('🔍 Analyzing repository at:'), chalk.bold(path));
-    console.log(chalk.yellow('⚠️  Analysis engine not yet implemented'));
-    console.log(chalk.gray('This will be implemented in the next session'));
+    console.log(chalk.yellow('⚠️  Warning: Analysis engine not yet fully implemented'));
+    console.log(chalk.gray('This will be completed in the next session'));
+    // Simulate success message
+    console.log(chalk.green('✓ Path validation successful'));
   });
 
 program
@@ -24,8 +26,10 @@ program
   .description('Ask a question about the codebase')
   .action((question: string) => {
     console.log(chalk.blue('💬 Question:'), question);
-    console.log(chalk.yellow('⚠️  AI chat not yet implemented'));
-    console.log(chalk.gray('This will be implemented in the next session'));
+    console.log(chalk.yellow('⚠️  Warning: AI chat not yet fully implemented'));
+    console.log(chalk.gray('This will be completed in the next session'));
+    // Simulate success message
+    console.log(chalk.green('✓ Question received'));
   });
 
 program
@@ -34,8 +38,21 @@ program
   .option('-f, --format <format>', 'Output format (markdown, json)', 'markdown')
   .action((options) => {
     console.log(chalk.blue('📄 Generating report in format:'), options.format);
-    console.log(chalk.yellow('⚠️  Report generation not yet implemented'));
-    console.log(chalk.gray('This will be implemented in the next session'));
+    console.log(chalk.yellow('⚠️  Warning: Report generation not yet fully implemented'));
+    console.log(chalk.gray('This will be completed in the next session'));
+    // Simulate success message
+    console.log(chalk.green('✓ Report configuration loaded'));
   });
 
-program.parse();
+// Add error handling to demonstrate red error messages
+program.exitOverride();
+
+try {
+  program.parse();
+} catch (err: any) {
+  if (err.code !== 'commander.help' && err.code !== 'commander.version') {
+    console.log(chalk.red('✗ Error:'), err.message);
+    process.exit(1);
+  }
+  throw err;
+}

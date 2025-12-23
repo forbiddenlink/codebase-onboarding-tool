@@ -66,15 +66,21 @@ export async function POST(request: NextRequest) {
         })
       }
 
-      // Start basic file scanning (simplified for now)
+      // Start comprehensive file scanning and knowledge graph creation
       const files = scanDirectory(repoPath, repoPath)
+      const knowledgeGraph = await buildKnowledgeGraph(repository.id, repoPath, files)
 
-      // Store file count in analysis result
+      // Store analysis results with knowledge graph
       await prisma.analysisResult.create({
         data: {
           repositoryId: repository.id,
           fileCount: files.length,
-          data: JSON.stringify({ files: files.slice(0, 100) }), // Store first 100 files
+          data: JSON.stringify({
+            files: files.slice(0, 100),
+            fileStats: knowledgeGraph.fileStats,
+            languageDistribution: knowledgeGraph.languageDistribution,
+            totalLines: knowledgeGraph.totalLines
+          }),
         },
       })
 
@@ -148,15 +154,21 @@ export async function POST(request: NextRequest) {
         })
       }
 
-      // Start basic file scanning
+      // Start comprehensive file scanning and knowledge graph creation
       const files = scanDirectory(targetPath, targetPath)
+      const knowledgeGraph = await buildKnowledgeGraph(repository.id, targetPath, files)
 
-      // Store file count in analysis result
+      // Store analysis results with knowledge graph
       await prisma.analysisResult.create({
         data: {
           repositoryId: repository.id,
           fileCount: files.length,
-          data: JSON.stringify({ files: files.slice(0, 100) }),
+          data: JSON.stringify({
+            files: files.slice(0, 100),
+            fileStats: knowledgeGraph.fileStats,
+            languageDistribution: knowledgeGraph.languageDistribution,
+            totalLines: knowledgeGraph.totalLines
+          }),
         },
       })
 
@@ -209,4 +221,158 @@ function scanDirectory(dir: string, baseDir: string): string[] {
   }
 
   return files
+}
+
+// Helper function to detect language from file extension
+function detectLanguage(filePath: string): string {
+  const ext = path.extname(filePath).toLowerCase()
+  const languageMap: Record<string, string> = {
+    '.js': 'javascript',
+    '.jsx': 'javascript',
+    '.ts': 'typescript',
+    '.tsx': 'typescript',
+    '.py': 'python',
+    '.go': 'go',
+    '.rs': 'rust',
+    '.java': 'java',
+    '.cpp': 'cpp',
+    '.c': 'c',
+    '.rb': 'ruby',
+    '.php': 'php',
+    '.cs': 'csharp',
+    '.swift': 'swift',
+    '.kt': 'kotlin',
+    '.sh': 'shell',
+    '.json': 'json',
+    '.md': 'markdown',
+    '.yaml': 'yaml',
+    '.yml': 'yaml',
+    '.toml': 'toml',
+    '.xml': 'xml',
+    '.html': 'html',
+    '.css': 'css',
+    '.scss': 'scss',
+    '.sql': 'sql'
+  }
+  return languageMap[ext] || 'unknown'
+}
+
+// Helper function to count lines of code
+function countLinesOfCode(filePath: string): number {
+  try {
+    const content = fs.readFileSync(filePath, 'utf-8')
+    return content.split('\n').length
+  } catch (error) {
+    return 0
+  }
+}
+
+// Calculate basic complexity based on control flow keywords
+function calculateComplexity(filePath: string, language: string): number {
+  try {
+    const content = fs.readFileSync(filePath, 'utf-8')
+
+    // Count control flow keywords as a simple complexity metric
+    const controlFlowKeywords = [
+      'if', 'else', 'for', 'while', 'switch', 'case',
+      'catch', 'try', '?', '&&', '||'
+    ]
+
+    let complexity = 1 // Base complexity
+
+    for (const keyword of controlFlowKeywords) {
+      const regex = new RegExp(`\\b${keyword}\\b`, 'g')
+      const matches = content.match(regex)
+      if (matches) {
+        complexity += matches.length
+      }
+    }
+
+    return complexity
+  } catch (error) {
+    return 1
+  }
+}
+
+// Build comprehensive knowledge graph
+async function buildKnowledgeGraph(
+  repositoryId: string,
+  repoPath: string,
+  files: string[]
+): Promise<{
+  fileStats: Record<string, any>
+  languageDistribution: Record<string, number>
+  totalLines: number
+}> {
+  const languageDistribution: Record<string, number> = {}
+  let totalLines = 0
+  const fileStats: Record<string, any> = {}
+
+  // Process each file and create FileNode entries
+  for (const relativePath of files) {
+    const fullPath = path.join(repoPath, relativePath)
+
+    try {
+      const stat = fs.statSync(fullPath)
+      const fileName = path.basename(relativePath)
+      const extension = path.extname(fileName)
+      const language = detectLanguage(relativePath)
+      const linesOfCode = countLinesOfCode(fullPath)
+      const complexity = calculateComplexity(fullPath, language)
+
+      // Update language distribution
+      languageDistribution[language] = (languageDistribution[language] || 0) + 1
+      totalLines += linesOfCode
+
+      // Store file stats
+      fileStats[relativePath] = {
+        name: fileName,
+        extension,
+        language,
+        size: stat.size,
+        linesOfCode,
+        complexity,
+        lastModified: stat.mtime
+      }
+
+      // Create FileNode in database
+      await prisma.fileNode.upsert({
+        where: {
+          repositoryId_path: {
+            repositoryId,
+            path: relativePath
+          }
+        },
+        update: {
+          name: fileName,
+          extension,
+          language,
+          size: stat.size,
+          linesOfCode,
+          complexity,
+          lastModified: stat.mtime
+        },
+        create: {
+          repositoryId,
+          path: relativePath,
+          name: fileName,
+          extension,
+          language,
+          size: stat.size,
+          linesOfCode,
+          complexity,
+          lastModified: stat.mtime,
+          primaryAuthor: null
+        }
+      })
+    } catch (error) {
+      console.error(`Error processing file ${relativePath}:`, error)
+    }
+  }
+
+  return {
+    fileStats,
+    languageDistribution,
+    totalLines
+  }
 }
