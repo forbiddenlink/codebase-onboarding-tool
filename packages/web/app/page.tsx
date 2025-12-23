@@ -13,9 +13,9 @@ export default function Home() {
             Make joining new codebases 10x faster
           </p>
           <div className="flex gap-4 justify-center">
-            <button className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90 transition">
+            <a href="/setup" className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90 transition">
               Get Started
-            </button>
+            </a>
             <button className="px-6 py-3 border border-border rounded-lg font-semibold hover:bg-accent transition">
               Learn More
             </button>

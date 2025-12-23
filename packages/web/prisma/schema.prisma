@@ -25,13 +25,13 @@ model User {
 model Repository {
   id           String         @id @default(uuid())
   name         String
-  path         String
-  url          String?
-  userId       String
-  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  lastAnalyzed DateTime?
+  path         String         @unique
+  url          String?        @unique
+  userId       String?
+  user         User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  lastAnalyzedAt   DateTime?
   files        FileNode[]
   chatMessages ChatMessage[]
   learningPaths LearningPath[]
@@ -167,13 +167,8 @@ model AnalysisResult {
   id           String     @id @default(uuid())
   repositoryId String
   repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
-  totalFiles   Int
-  totalLines   Int
-  languages    String     // JSON string of Record<string, number>
-  frameworks   String     // JSON string of string[]
-  entryPoints  String     // JSON string of string[]
-  complexity   String     // JSON string of complexity data
-  duration     Int        // milliseconds
+  fileCount    Int        @default(0)
+  data         String     @default("{}")  // JSON string of analysis data
   completedAt  DateTime   @default(now())
 
   @@index([repositoryId])
