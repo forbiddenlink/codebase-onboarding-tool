@@ -268,7 +268,7 @@ function countLinesOfCode(filePath: string): number {
 }
 
 // Calculate basic complexity based on control flow keywords
-function calculateComplexity(filePath: string, language: string): number {
+function calculateComplexity(filePath: string, _language: string): number {
   try {
     const content = fs.readFileSync(filePath, 'utf-8')
 

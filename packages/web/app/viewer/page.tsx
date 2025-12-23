@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 
 // Sample code for demonstration with edge cases
 const sampleCode = `import { useState, useEffect } from 'react'
@@ -130,7 +130,7 @@ export default function ViewerPage() {
   const tooltipRef = useRef<HTMLDivElement>(null)
 
   // Simple syntax highlighting using regex
-  const highlightSyntax = (line: string, lineIndex: number) => {
+  const highlightSyntax = (line: string) => {
     let highlighted = line
 
     // Keywords
@@ -154,7 +154,7 @@ export default function ViewerPage() {
     // Functions with hover detection
     highlighted = highlighted.replace(
       /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g,
-      (match, funcName) => {
+      (_match, funcName) => {
         if (functionMetadata[funcName]) {
           return `<span class="text-blue-600 font-semibold cursor-help hover:underline" data-function="${funcName}">${funcName}</span>(`
         }
@@ -310,7 +310,7 @@ export default function ViewerPage() {
                     <div
                       className="text-sm font-mono leading-6 hover:bg-accent/30 transition-colors"
                       dangerouslySetInnerHTML={{
-                        __html: highlightSyntax(line, index) || '&nbsp;',
+                        __html: highlightSyntax(line) || '&nbsp;',
                       }}
                       onMouseMove={handleMouseMove}
                     />
