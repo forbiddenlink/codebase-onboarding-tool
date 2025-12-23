@@ -12,6 +12,7 @@ interface SidebarLink {
 
 const links: SidebarLink[] = [
   { name: 'Dashboard', href: '/dashboard', icon: '📊' },
+  { name: 'Search', href: '/search', icon: '🔍' },
   { name: 'Chat', href: '/chat', icon: '💬' },
   { name: 'Diagrams', href: '/diagrams', icon: '📈' },
   { name: 'Learning Path', href: '/learning-path', icon: '🎯' },

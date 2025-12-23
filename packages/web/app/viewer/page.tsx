@@ -161,6 +161,24 @@ export default function ViewerPage() {
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [bookmarks, setBookmarks] = useState<string[]>(['example.tsx']) // Pre-populated with current file
 
+  // File-level notes
+  interface FileNote {
+    id: string
+    text: string
+    author: string
+    timestamp: Date
+  }
+  const [fileNotes, setFileNotes] = useState<FileNote[]>([
+    {
+      id: '1',
+      text: 'This is the main example component that demonstrates useState and useEffect hooks. Good starting point for learning React basics.',
+      author: 'Senior Developer',
+      timestamp: new Date('2024-01-10')
+    }
+  ])
+  const [showAddNoteForm, setShowAddNoteForm] = useState(false)
+  const [newNoteText, setNewNoteText] = useState('')
+
   const lines = code.split('\n')
   const tooltipRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -413,6 +431,31 @@ export default function ViewerPage() {
     setExpandedAnnotation(expandedAnnotation === lineNumber ? null : lineNumber)
   }
 
+  // File note handlers
+  const handleAddFileNote = () => {
+    if (newNoteText.trim()) {
+      const newNote: FileNote = {
+        id: Date.now().toString(),
+        text: newNoteText,
+        author: 'Current User',
+        timestamp: new Date()
+      }
+      setFileNotes([...fileNotes, newNote])
+      setNewNoteText('')
+      setShowAddNoteForm(false)
+    }
+  }
+
+  const handleDeleteFileNote = (id: string) => {
+    setFileNotes(fileNotes.filter(note => note.id !== id))
+  }
+
+  const handleEditFileNote = (id: string, newText: string) => {
+    setFileNotes(fileNotes.map(note =>
+      note.id === id ? { ...note, text: newText, timestamp: new Date() } : note
+    ))
+  }
+
   const getAnnotationIcon = (type: 'warning' | 'info' | 'gotcha') => {
     switch (type) {
       case 'warning': return '⚠️'
@@ -477,6 +520,72 @@ export default function ViewerPage() {
             </div>
           </div>
         )}
+
+        {/* File Notes Section */}
+        <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">📝</span>
+              <h2 className="font-semibold text-sm">File Notes ({fileNotes.length})</h2>
+            </div>
+            <button
+              onClick={() => setShowAddNoteForm(true)}
+              className="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition-colors"
+              aria-label="Add new file note"
+            >
+              + Add Note
+            </button>
+          </div>
+
+          {fileNotes.length === 0 ? (
+            <p className="text-sm text-gray-600 dark:text-gray-400 italic">
+              No notes yet. Click &quot;+ Add Note&quot; to add notes about this file or module.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {fileNotes.map((note) => (
+                <div
+                  key={note.id}
+                  className="p-3 bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-700 rounded-lg"
+                >
+                  <p className="text-sm text-gray-900 dark:text-gray-100 mb-2">{note.text}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                      <span className="font-medium">{note.author}</span>
+                      <span>•</span>
+                      <span>{note.timestamp.toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          const newText = prompt('Edit note:', note.text)
+                          if (newText && newText.trim()) {
+                            handleEditFileNote(note.id, newText)
+                          }
+                        }}
+                        className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                        aria-label={`Edit note from ${note.author}`}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm('Are you sure you want to delete this note?')) {
+                            handleDeleteFileNote(note.id)
+                          }
+                        }}
+                        className="text-xs text-red-600 dark:text-red-400 hover:underline"
+                        aria-label={`Delete note from ${note.author}`}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Code viewer */}
@@ -793,6 +902,48 @@ export default function ViewerPage() {
                 aria-label="Save annotation"
               >
                 Save Annotation
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add File Note modal */}
+      {showAddNoteForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" role="dialog" aria-modal="true" aria-labelledby="note-modal-title">
+          <div className="bg-card border border-border rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 id="note-modal-title" className="text-lg font-semibold mb-4">Add File Note</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Add a note about this file or module to help team members understand its purpose and important details.
+            </p>
+            <label htmlFor="file-note-text" className="sr-only">File note text</label>
+            <textarea
+              id="file-note-text"
+              value={newNoteText}
+              onChange={(e) => setNewNoteText(e.target.value)}
+              placeholder="Enter your note about this file..."
+              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background min-h-[120px]"
+              autoFocus
+              aria-label="File note text"
+            />
+            <div className="mt-4 flex gap-2 justify-end">
+              <button
+                onClick={() => {
+                  setShowAddNoteForm(false)
+                  setNewNoteText('')
+                }}
+                className="px-4 py-2 border border-border rounded-lg hover:bg-accent transition"
+                aria-label="Cancel file note"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddFileNote}
+                disabled={!newNoteText.trim()}
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-label="Save file note"
+              >
+                Save Note
               </button>
             </div>
           </div>
