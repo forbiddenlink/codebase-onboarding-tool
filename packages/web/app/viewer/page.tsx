@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import AppLayout from '@/components/AppLayout'
 
 // Sample code for demonstration with edge cases
 const sampleCode = `import { useState, useEffect } from 'react'
@@ -410,10 +411,10 @@ export default function ViewerPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <AppLayout>
       {/* Header */}
-      <div className="border-b border-border px-8 py-4">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           Code Viewer
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
@@ -422,7 +423,7 @@ export default function ViewerPage() {
       </div>
 
       {/* Code viewer */}
-      <div className="flex-1 overflow-auto p-8">
+      <div>
         <div className="max-w-6xl mx-auto">
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -718,6 +719,6 @@ export default function ViewerPage() {
           </div>
         </div>
       )}
-    </div>
+    </AppLayout>
   )
 }

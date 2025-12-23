@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 interface Notification {
   id: string
@@ -20,11 +20,7 @@ export default function NotificationsPage() {
   // Mock user ID - in production, get from session
   const userId = '5dfa9cdf-db81-45b3-9b08-092b8efa0917'
 
-  useEffect(() => {
-    fetchNotifications()
-  }, [filterUnread])
-
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     setLoading(true)
     try {
       const url = `/api/notifications?userId=${userId}${filterUnread ? '&unreadOnly=true' : ''}`
@@ -36,7 +32,11 @@ export default function NotificationsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [userId, filterUnread])
+
+  useEffect(() => {
+    fetchNotifications()
+  }, [fetchNotifications])
 
   const markAsRead = async (notificationId: string) => {
     try {
@@ -128,7 +128,7 @@ export default function NotificationsPage() {
             Notifications
           </h1>
           <p className="text-muted-foreground">
-            Stay updated on changes to areas you've learned
+            Stay updated on changes to areas you&apos;ve learned
           </p>
         </div>
 
@@ -179,10 +179,10 @@ export default function NotificationsPage() {
             <div className="text-7xl mb-6">🔔</div>
             <h3 className="text-2xl font-semibold mb-3">No notifications yet</h3>
             <p className="text-muted-foreground mb-2 max-w-md mx-auto">
-              You'll receive notifications when there are significant changes to code areas you've learned.
+              You&apos;ll receive notifications when there are significant changes to code areas you&apos;ve learned.
             </p>
             <p className="text-sm text-muted-foreground mb-6">
-              Click "Check for Changes" to simulate detecting changes in your learned modules.
+              Click &quot;Check for Changes&quot; to simulate detecting changes in your learned modules.
             </p>
           </div>
         ) : (

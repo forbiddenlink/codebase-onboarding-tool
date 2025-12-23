@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const whereClause: any = { userId }
+    const whereClause: { userId: string; read?: boolean } = { userId }
     if (unreadOnly) {
       whereClause.read = false
     }

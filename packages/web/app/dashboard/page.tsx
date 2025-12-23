@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import AppLayout from '@/components/AppLayout'
 
 interface Repository {
   id: string
@@ -9,9 +10,48 @@ interface Repository {
   fileCount?: number
 }
 
+interface ReviewSuggestion {
+  id: string
+  moduleName: string
+  filePath: string
+  lastReviewed: Date
+  changesSince: number
+  reason: string
+  priority: 'high' | 'medium' | 'low'
+}
+
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [repositories] = useState<Repository[]>([])
+  const [reviewSuggestions] = useState<ReviewSuggestion[]>([
+    {
+      id: '1',
+      moduleName: 'Authentication System',
+      filePath: 'packages/web/app/api/auth/login/route.ts',
+      lastReviewed: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), // 14 days ago
+      changesSince: 8,
+      reason: 'Significant changes detected: 8 commits affecting authentication logic',
+      priority: 'high'
+    },
+    {
+      id: '2',
+      moduleName: 'Database Schema',
+      filePath: 'packages/web/prisma/schema.prisma',
+      lastReviewed: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
+      changesSince: 3,
+      reason: 'Schema updated with new Notification model',
+      priority: 'medium'
+    },
+    {
+      id: '3',
+      moduleName: 'Code Viewer',
+      filePath: 'packages/web/app/viewer/page.tsx',
+      lastReviewed: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000), // 21 days ago
+      changesSince: 12,
+      reason: 'Major refactoring: annotation system enhanced with versioning',
+      priority: 'high'
+    }
+  ])
 
   useEffect(() => {
     // In a real implementation, fetch repositories from API
@@ -19,8 +59,8 @@ export default function DashboardPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-8 py-8">
+    <AppLayout>
+      <div>
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Dashboard
@@ -29,6 +69,79 @@ export default function DashboardPage() {
             Explore your analyzed repositories
           </p>
         </div>
+
+        {/* Review Suggestions */}
+        {reviewSuggestions.length > 0 && (
+          <div className="mb-8 p-6 border-2 border-orange-200 dark:border-orange-900 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+            <div className="flex items-start gap-3 mb-4">
+              <div className="text-3xl">🔄</div>
+              <div className="flex-1">
+                <h2 className="text-xl font-bold mb-1">Time to Re-Review</h2>
+                <p className="text-sm text-muted-foreground">
+                  These modules have changed significantly since you last reviewed them
+                </p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              {reviewSuggestions.map((suggestion) => {
+                const priorityColors = {
+                  high: 'border-red-500 bg-red-50 dark:bg-red-950/20',
+                  medium: 'border-orange-500 bg-orange-50 dark:bg-orange-950/20',
+                  low: 'border-yellow-500 bg-yellow-50 dark:bg-yellow-950/20'
+                }
+                const priorityBadges = {
+                  high: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+                  medium: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+                  low: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                }
+
+                return (
+                  <div
+                    key={suggestion.id}
+                    className={`p-4 border-l-4 rounded ${priorityColors[suggestion.priority]}`}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-semibold">{suggestion.moduleName}</h3>
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${priorityBadges[suggestion.priority]}`}>
+                            {suggestion.priority} priority
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground font-mono mb-2">
+                          {suggestion.filePath}
+                        </p>
+                        <p className="text-sm mb-2">{suggestion.reason}</p>
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                          <span>
+                            Last reviewed: {Math.floor((Date.now() - suggestion.lastReviewed.getTime()) / (24 * 60 * 60 * 1000))} days ago
+                          </span>
+                          <span>
+                            {suggestion.changesSince} commits since
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-3">
+                      <a
+                        href={`/viewer?file=${encodeURIComponent(suggestion.filePath)}`}
+                        className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition text-sm font-semibold"
+                      >
+                        Review Now
+                      </a>
+                      <button className="px-4 py-2 border border-border rounded-lg hover:bg-accent transition text-sm">
+                        View Changes
+                      </button>
+                      <button className="px-4 py-2 border border-border rounded-lg hover:bg-accent transition text-sm">
+                        Dismiss
+                      </button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <a
@@ -107,6 +220,6 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
-    </div>
+    </AppLayout>
   )
 }

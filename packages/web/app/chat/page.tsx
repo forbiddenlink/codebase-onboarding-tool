@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import AppLayout from '@/components/AppLayout'
 
 interface Message {
   id: string
@@ -51,19 +52,20 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-background">
-      {/* Header */}
-      <div className="border-b border-border px-8 py-4">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          AI Chat
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Ask questions about your codebase
-        </p>
-      </div>
+    <AppLayout>
+      <div className="flex flex-col" style={{ height: 'calc(100vh - 160px)' }}>
+        {/* Header */}
+        <div className="mb-4">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            AI Chat
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Ask questions about your codebase
+          </p>
+        </div>
 
-      {/* Chat messages area */}
-      <div className="flex-1 overflow-y-auto px-8 py-6">
+        {/* Chat messages area */}
+        <div className="flex-1 overflow-y-auto py-6 -mx-8 px-8">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-4">
             <div className="text-7xl mb-6">💬</div>
@@ -136,9 +138,9 @@ export default function ChatPage() {
         )}
       </div>
 
-      {/* Input area */}
-      <div className="border-t border-border px-8 py-4">
-        <form onSubmit={handleSend} className="max-w-4xl mx-auto">
+        {/* Input area */}
+        <div className="border-t border-border py-4 -mx-8 px-8">
+          <form onSubmit={handleSend} className="max-w-4xl mx-auto">
           <div className="flex gap-3">
             <input
               type="text"
@@ -156,8 +158,9 @@ export default function ChatPage() {
               Send
             </button>
           </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
+    </AppLayout>
   )
 }

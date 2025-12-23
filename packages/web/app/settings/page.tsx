@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import AppLayout from '@/components/AppLayout'
 
 interface CodeCompassSettings {
   apiKey?: string
@@ -140,17 +141,20 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-4xl mb-4">⚙️</div>
-          <div className="text-gray-600">Loading settings...</div>
+      <AppLayout>
+        <div className="flex items-center justify-center py-16">
+          <div className="text-center">
+            <div className="text-4xl mb-4">⚙️</div>
+            <div className="text-gray-600">Loading settings...</div>
+          </div>
         </div>
-      </div>
+      </AppLayout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+    <AppLayout>
+      <div>
       <div className="max-w-4xl mx-auto p-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Settings</h1>
@@ -443,6 +447,7 @@ export default function SettingsPage() {
           </pre>
         </div>
       </div>
-    </div>
+      </div>
+    </AppLayout>
   )
 }
