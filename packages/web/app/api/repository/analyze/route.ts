@@ -4,6 +4,7 @@ import * as path from 'path'
 import simpleGit from 'simple-git'
 import { prisma } from '@/lib/prisma'
 import { logger } from '@/lib/logger'
+import { CodeParser } from '@codecompass/analyzer/dist/parser'
 
 // Helper function to validate and sanitize repository path
 function validatePath(inputPath: string): { valid: boolean; error?: string; sanitized?: string } {
@@ -447,6 +448,9 @@ async function buildKnowledgeGraph(
   let totalLines = 0
   const fileStats: Record<string, FileStats> = {}
 
+  // Initialize the code parser for TypeScript/JavaScript/Python/etc parsing
+  const codeParser = new CodeParser()
+
   // Process each file and create FileNode entries
   for (const relativePath of files) {
     const fullPath = path.join(repoPath, relativePath)
@@ -474,7 +478,42 @@ async function buildKnowledgeGraph(
         lastModified: stat.mtime
       }
 
-      // Create FileNode in database
+      // Parse TypeScript/JavaScript/Python files with tree-sitter
+      let parsedData = null
+      if (['typescript', 'javascript', 'python'].includes(language)) {
+        try {
+          const content = fs.readFileSync(fullPath, 'utf-8')
+          const parseResult = await codeParser.parseFile(fullPath, content)
+          parsedData = {
+            imports: parseResult.imports,
+            exports: parseResult.exports,
+            functions: parseResult.functions.map(f => ({
+              name: f.name,
+              startLine: f.startLine,
+              endLine: f.endLine,
+              parameters: f.parameters
+            })),
+            classes: parseResult.classes.map(c => ({
+              name: c.name,
+              startLine: c.startLine,
+              endLine: c.endLine,
+              methods: c.methods.map(m => m.name),
+              properties: c.properties.map(p => p.name)
+            }))
+          }
+
+          logger.info(`Parsed ${language} file: ${relativePath}`, {
+            imports: parseResult.imports.length,
+            exports: parseResult.exports.length,
+            functions: parseResult.functions.length,
+            classes: parseResult.classes.length
+          })
+        } catch (parseError) {
+          logger.error(`Error parsing file ${relativePath}`, parseError)
+        }
+      }
+
+      // Create FileNode in database with parsed data
       await prisma.fileNode.upsert({
         where: {
           repositoryId_path: {
@@ -489,7 +528,8 @@ async function buildKnowledgeGraph(
           size: stat.size,
           linesOfCode,
           complexity,
-          lastModified: stat.mtime
+          lastModified: stat.mtime,
+          metadata: parsedData ? JSON.stringify(parsedData) : null
         },
         create: {
           repositoryId,
@@ -501,7 +541,8 @@ async function buildKnowledgeGraph(
           linesOfCode,
           complexity,
           lastModified: stat.mtime,
-          primaryAuthor: null
+          primaryAuthor: null,
+          metadata: parsedData ? JSON.stringify(parsedData) : null
         }
       })
     } catch (error) {

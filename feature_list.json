@@ -80,7 +80,7 @@
     ],
     "complexity": "medium",
     "dependencies": [5],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
