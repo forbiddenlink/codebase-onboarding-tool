@@ -14,8 +14,8 @@ export async function GET() {
 
   try {
     // Check 1: Anthropic SDK installed
-    const Anthropic = require('@anthropic-ai/sdk')
-    checks.anthropicSdkInstalled = !!Anthropic.default || !!Anthropic
+    const { default: Anthropic } = await import('@anthropic-ai/sdk')
+    checks.anthropicSdkInstalled = !!Anthropic
   } catch {
     checks.anthropicSdkInstalled = false
   }

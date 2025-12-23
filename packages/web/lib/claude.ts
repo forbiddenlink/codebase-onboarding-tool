@@ -44,7 +44,7 @@ Be concise and focus on the most important aspects.`
     : `Analyze this code:\n\`\`\`${language}\n${code}\n\`\`\``
 
   try {
-    const message = await anthropic.messages.create({
+    const message = await (anthropic as any).messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 2048,
       system: systemPrompt,
@@ -58,8 +58,8 @@ Be concise and focus on the most important aspects.`
 
     // Extract text content from response
     const analysis = message.content
-      .filter((block) => block.type === 'text')
-      .map((block) => ('text' in block ? block.text : ''))
+      .filter((block: any): block is { type: 'text'; text: string } => block.type === 'text')
+      .map((block: { type: 'text'; text: string }) => block.text)
       .join('\n')
 
     // Confidence score based on response quality (simplified)
@@ -90,7 +90,7 @@ export async function explainCode(
   }
 
   try {
-    const message = await anthropic.messages.create({
+    const message = await (anthropic as any).messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 1024,
       messages: [
@@ -102,8 +102,8 @@ export async function explainCode(
     })
 
     return message.content
-      .filter((block) => block.type === 'text')
-      .map((block) => ('text' in block ? block.text : ''))
+      .filter((block: any): block is { type: 'text'; text: string } => block.type === 'text')
+      .map((block: { type: 'text'; text: string }) => block.text)
       .join('\n')
   } catch (error) {
     console.error('Claude API error:', error)
@@ -138,7 +138,7 @@ Always cite which files you're referencing in your answer.
 If you're not confident about the answer, say so.`
 
   try {
-    const message = await anthropic.messages.create({
+    const message = await (anthropic as any).messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 2048,
       system: systemPrompt,
@@ -151,8 +151,8 @@ If you're not confident about the answer, say so.`
     })
 
     const answer = message.content
-      .filter((block) => block.type === 'text')
-      .map((block) => ('text' in block ? block.text : ''))
+      .filter((block: any): block is { type: 'text'; text: string } => block.type === 'text')
+      .map((block: { type: 'text'; text: string }) => block.text)
       .join('\n')
 
     // Extract mentioned files as sources
@@ -186,7 +186,7 @@ export async function checkClaudeConnection(): Promise<boolean> {
 
   try {
     // Simple test request
-    const message = await anthropic.messages.create({
+    const message = await (anthropic as any).messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 10,
       messages: [
