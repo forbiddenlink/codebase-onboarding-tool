@@ -133,7 +133,9 @@ class CodeCompassTreeProvider implements vscode.TreeDataProvider<TreeItem> {
     }
 
     const workspaceRoot = workspaceFolders[0];
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const fs = require('fs');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const path = require('path');
 
     // Try to load cached analysis
@@ -145,7 +147,7 @@ class CodeCompassTreeProvider implements vscode.TreeDataProvider<TreeItem> {
 
         // Calculate total LOC and languages
         const languages: Record<string, number> = {};
-        let totalLOC = 0;
+        const totalLOC = 0;
 
         if (cacheData.fileTypes) {
           for (const fileType of cacheData.fileTypes) {
