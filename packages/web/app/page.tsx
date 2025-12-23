@@ -72,6 +72,7 @@ export default function Home() {
               className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90 transition"
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
+              aria-label="Get started with repository setup"
             >
               Get Started
             </motion.a>
@@ -79,6 +80,7 @@ export default function Home() {
               className="px-6 py-3 border border-border rounded-lg font-semibold hover:bg-accent transition"
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
+              aria-label="Learn more about CodeCompass features"
             >
               Learn More
             </motion.button>
@@ -96,6 +98,8 @@ export default function Home() {
           className="p-6 border border-border rounded-lg hover:shadow-lg transition-shadow"
           variants={cardVariants}
           whileHover={{ y: -5, transition: { duration: 0.2 } }}
+          role="article"
+          aria-label="AI Chat feature"
         >
           <h3 className="text-xl font-semibold mb-2">🤖 AI Chat</h3>
           <p className="text-muted-foreground">
@@ -106,6 +110,8 @@ export default function Home() {
           className="p-6 border border-border rounded-lg hover:shadow-lg transition-shadow"
           variants={cardVariants}
           whileHover={{ y: -5, transition: { duration: 0.2 } }}
+          role="article"
+          aria-label="Architecture Diagrams feature"
         >
           <h3 className="text-xl font-semibold mb-2">📊 Architecture Diagrams</h3>
           <p className="text-muted-foreground">
@@ -116,6 +122,8 @@ export default function Home() {
           className="p-6 border border-border rounded-lg hover:shadow-lg transition-shadow"
           variants={cardVariants}
           whileHover={{ y: -5, transition: { duration: 0.2 } }}
+          role="article"
+          aria-label="Learning Paths feature"
         >
           <h3 className="text-xl font-semibold mb-2">🎯 Learning Paths</h3>
           <p className="text-muted-foreground">

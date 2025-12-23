@@ -158,10 +158,29 @@ export default function ViewerPage() {
   const [annotationText, setAnnotationText] = useState('')
   const [showAnnotationForm, setShowAnnotationForm] = useState(false)
   const [expandedAnnotation, setExpandedAnnotation] = useState<number | null>(null)
+  const [isBookmarked, setIsBookmarked] = useState(false)
+  const [bookmarks, setBookmarks] = useState<string[]>(['example.tsx']) // Pre-populated with current file
 
   const lines = code.split('\n')
   const tooltipRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const currentFileName = 'example.tsx'
+
+  const toggleBookmark = () => {
+    if (isBookmarked) {
+      setBookmarks(bookmarks.filter(f => f !== currentFileName))
+      setIsBookmarked(false)
+    } else {
+      setBookmarks([...bookmarks, currentFileName])
+      setIsBookmarked(true)
+    }
+  }
+
+  // Initialize bookmark status
+  useState(() => {
+    setIsBookmarked(bookmarks.includes(currentFileName))
+  })
 
   // Simple syntax highlighting using regex
   const highlightSyntax = (line: string) => {
@@ -420,6 +439,44 @@ export default function ViewerPage() {
         <p className="text-sm text-muted-foreground mt-1">
           Browse and explore your code with syntax highlighting, hover tooltips, and annotations
         </p>
+
+        {/* Bookmarks Section */}
+        {bookmarks.length > 0 && (
+          <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg">⭐</span>
+              <h2 className="font-semibold text-sm">Bookmarked Files ({bookmarks.length})</h2>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {bookmarks.map((file, index) => (
+                <button
+                  key={index}
+                  className="px-3 py-1 bg-white dark:bg-gray-800 border border-yellow-300 dark:border-yellow-700 rounded text-xs font-mono hover:bg-yellow-100 dark:hover:bg-yellow-900/40 transition-colors flex items-center gap-2"
+                  onClick={() => {
+                    // In a real app, this would navigate to the file
+                    alert(`Navigating to ${file}`)
+                  }}
+                  aria-label={`Navigate to bookmarked file ${file}`}
+                >
+                  <span>{file}</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setBookmarks(bookmarks.filter(f => f !== file))
+                      if (file === currentFileName) {
+                        setIsBookmarked(false)
+                      }
+                    }}
+                    className="text-gray-500 hover:text-red-600 transition-colors"
+                    aria-label={`Remove ${file} from bookmarks`}
+                  >
+                    ×
+                  </button>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Code viewer */}
@@ -432,6 +489,17 @@ export default function ViewerPage() {
                 <span className="text-sm font-mono font-semibold">
                   example.tsx
                 </span>
+                <button
+                  onClick={toggleBookmark}
+                  className={`ml-2 text-xl transition-all hover:scale-110 ${
+                    isBookmarked ? 'text-yellow-500' : 'text-gray-400 hover:text-yellow-400'
+                  }`}
+                  title={isBookmarked ? 'Remove from bookmarks' : 'Add to bookmarks'}
+                  aria-label={isBookmarked ? 'Remove file from bookmarks' : 'Add file to bookmarks'}
+                  aria-pressed={isBookmarked}
+                >
+                  {isBookmarked ? '⭐' : '☆'}
+                </button>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">Version:</span>
@@ -439,6 +507,7 @@ export default function ViewerPage() {
                   value={currentVersionId}
                   onChange={(e) => handleVersionChange(e.target.value)}
                   className="text-sm font-mono border border-border rounded px-2 py-1 bg-background"
+                  aria-label="Select code version"
                 >
                   {codeVersions.map(version => (
                     <option key={version.id} value={version.id}>
@@ -451,6 +520,7 @@ export default function ViewerPage() {
                 onClick={triggerFileInput}
                 className="text-sm px-3 py-1 rounded border border-border bg-background hover:bg-accent flex items-center gap-2"
                 title="Import annotations from JSON file"
+                aria-label="Import annotations from JSON file"
               >
                 📥 Import Annotations
               </button>
@@ -459,6 +529,7 @@ export default function ViewerPage() {
                 disabled={customAnnotations.length === 0}
                 className="text-sm px-3 py-1 rounded border border-border bg-background hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 title="Export annotations as JSON"
+                aria-label={`Export ${customAnnotations.length} annotations as JSON`}
               >
                 📦 Export Annotations ({customAnnotations.length})
               </button>
@@ -505,6 +576,7 @@ export default function ViewerPage() {
                         onClick={() => toggleAnnotation(index + 1)}
                         className="text-xs hover:scale-110 transition-transform"
                         title="View annotation"
+                        aria-label={`View ${builtInAnnotations[index + 1].type} annotation on line ${index + 1}`}
                       >
                         {getAnnotationIcon(builtInAnnotations[index + 1].type)}
                       </button>
@@ -516,6 +588,7 @@ export default function ViewerPage() {
                         onClick={() => toggleAnnotation(index + 1)}
                         className="text-xs text-purple-600 hover:scale-110 transition-transform"
                         title="View custom annotation"
+                        aria-label={`View custom annotation on line ${index + 1}`}
                       >
                         📝
                       </button>
@@ -543,6 +616,7 @@ export default function ViewerPage() {
                       onClick={() => handleAddAnnotation(index + 1)}
                       className="absolute right-2 top-0 opacity-0 group-hover:opacity-100 transition-opacity text-xs text-muted-foreground hover:text-foreground px-2 py-0.5 rounded bg-background border border-border"
                       title="Add annotation"
+                      aria-label={`Add annotation to line ${index + 1}`}
                     >
                       + Add annotation
                     </button>
@@ -687,15 +761,18 @@ export default function ViewerPage() {
 
       {/* Annotation form modal */}
       {showAnnotationForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" role="dialog" aria-modal="true" aria-labelledby="annotation-modal-title">
           <div className="bg-card border border-border rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4">Add Annotation to Line {selectedLine}</h3>
+            <h3 id="annotation-modal-title" className="text-lg font-semibold mb-4">Add Annotation to Line {selectedLine}</h3>
+            <label htmlFor="annotation-text" className="sr-only">Annotation text</label>
             <textarea
+              id="annotation-text"
               value={annotationText}
               onChange={(e) => setAnnotationText(e.target.value)}
               placeholder="Enter your annotation text..."
               className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background min-h-[120px]"
               autoFocus
+              aria-label="Annotation text"
             />
             <div className="mt-4 flex gap-2 justify-end">
               <button
@@ -705,6 +782,7 @@ export default function ViewerPage() {
                   setSelectedLine(null)
                 }}
                 className="px-4 py-2 border border-border rounded-lg hover:bg-accent transition"
+                aria-label="Cancel annotation"
               >
                 Cancel
               </button>
@@ -712,6 +790,7 @@ export default function ViewerPage() {
                 onClick={handleSaveAnnotation}
                 disabled={!annotationText.trim()}
                 className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-label="Save annotation"
               >
                 Save Annotation
               </button>

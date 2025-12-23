@@ -183,18 +183,20 @@ export default function SettingsPage() {
 
           {/* API Key */}
           <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="api-key" className="block text-sm font-semibold text-gray-700 mb-2">
               Anthropic API Key
             </label>
             <input
+              id="api-key"
               type="password"
               value={settings.apiKey || ''}
               onChange={(e) => setSettings(prev => ({ ...prev, apiKey: e.target.value }))}
               placeholder="sk-ant-api03-..."
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              aria-describedby="api-key-description"
             />
-            <p className="text-sm text-gray-500 mt-2">
-              Required for AI-powered features. Get your key from <a href="https://console.anthropic.com/" target="_blank" className="text-blue-600 hover:underline">console.anthropic.com</a>
+            <p id="api-key-description" className="text-sm text-gray-500 mt-2">
+              Required for AI-powered features. Get your key from <a href="https://console.anthropic.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">console.anthropic.com</a>
             </p>
           </div>
 
@@ -237,6 +239,7 @@ export default function SettingsPage() {
                 checked={settings.enableHoverTooltips}
                 onChange={(e) => setSettings(prev => ({ ...prev, enableHoverTooltips: e.target.checked }))}
                 className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                aria-label="Enable hover tooltips"
               />
             </label>
 
@@ -250,6 +253,7 @@ export default function SettingsPage() {
                 checked={settings.enableInlineAnnotations}
                 onChange={(e) => setSettings(prev => ({ ...prev, enableInlineAnnotations: e.target.checked }))}
                 className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                aria-label="Enable inline annotations"
               />
             </label>
 
@@ -263,6 +267,7 @@ export default function SettingsPage() {
                 checked={settings.enableNotifications}
                 onChange={(e) => setSettings(prev => ({ ...prev, enableNotifications: e.target.checked }))}
                 className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                aria-label="Enable notifications"
               />
             </label>
           </div>
@@ -300,10 +305,11 @@ export default function SettingsPage() {
 
           {/* Webhook URL */}
           <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="webhook-url" className="block text-sm font-semibold text-gray-700 mb-2">
               Webhook URL
             </label>
             <input
+              id="webhook-url"
               type="url"
               value={settings.webhooks.url}
               onChange={(e) => setSettings(prev => ({
@@ -313,18 +319,20 @@ export default function SettingsPage() {
               placeholder="https://your-server.com/webhooks/codecompass"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               disabled={!settings.webhooks.enabled}
+              aria-describedby="webhook-url-description"
             />
-            <p className="text-sm text-gray-500 mt-2">
+            <p id="webhook-url-description" className="text-sm text-gray-500 mt-2">
               POST requests will be sent to this URL when events occur
             </p>
           </div>
 
           {/* Secret Token */}
           <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="webhook-secret" className="block text-sm font-semibold text-gray-700 mb-2">
               Secret Token (Optional)
             </label>
             <input
+              id="webhook-secret"
               type="password"
               value={settings.webhooks.secret}
               onChange={(e) => setSettings(prev => ({
@@ -334,8 +342,9 @@ export default function SettingsPage() {
               placeholder="Enter a secret token for webhook verification"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               disabled={!settings.webhooks.enabled}
+              aria-describedby="webhook-secret-description"
             />
-            <p className="text-sm text-gray-500 mt-2">
+            <p id="webhook-secret-description" className="text-sm text-gray-500 mt-2">
               This token will be included in the X-CodeCompass-Signature header
             </p>
           </div>
@@ -391,6 +400,7 @@ export default function SettingsPage() {
                     ? 'bg-red-500 text-white'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
+                aria-label="Test webhook configuration"
               >
                 {testStatus === 'testing' && '⏳ Testing Webhook...'}
                 {testStatus === 'success' && '✓ Test Successful'}
