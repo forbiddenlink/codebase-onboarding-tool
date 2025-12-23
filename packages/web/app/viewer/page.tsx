@@ -166,7 +166,6 @@ export default function ViewerPage() {
     // Tokenize to avoid overlapping replacements
     const tokens: Array<{ type: string; content: string }> = []
     let remaining = line
-    let position = 0
 
     // Match patterns in order of precedence
     const patterns = [
@@ -205,12 +204,13 @@ export default function ViewerPage() {
           return `<span class="text-green-600">${token.content}</span>`
         case 'comment':
           return `<span class="text-gray-500 italic">${token.content}</span>`
-        case 'function':
+        case 'function': {
           const funcName = token.content.trim()
           if (functionMetadata[funcName]) {
             return `<span class="text-blue-600 font-semibold cursor-help hover:underline" data-function="${funcName}">${funcName}</span>`
           }
           return `<span class="text-blue-600">${funcName}</span>`
+        }
         case 'number':
           return `<span class="text-orange-600">${token.content}</span>`
         default:
@@ -267,7 +267,7 @@ export default function ViewerPage() {
     }
   }
 
-  const updateAnnotationStatuses = (newCode: string, versionId: string) => {
+  const updateAnnotationStatuses = (newCode: string, _versionId: string) => {
     const newLines = newCode.split('\n')
     const updatedAnnotations = customAnnotations.map(annotation => {
       const currentLineContent = newLines[annotation.lineNumber - 1] || ''
@@ -525,7 +525,7 @@ export default function ViewerPage() {
                                 {annotation.status === 'outdated' && (
                                   <>
                                     <span>•</span>
-                                    <span className="text-red-600">Original line: "{annotation.lineContent.substring(0, 30)}..."</span>
+                                    <span className="text-red-600">Original line: &quot;{annotation.lineContent.substring(0, 30)}...&quot;</span>
                                   </>
                                 )}
                               </div>
@@ -542,7 +542,7 @@ export default function ViewerPage() {
           <div className="mt-6 text-sm text-muted-foreground space-y-2">
             <p>✨ Hover over function names (blue text) to see detailed tooltips</p>
             <p>💡 Click on annotation icons to view gotchas, warnings, and edge cases</p>
-            <p>📝 Hover over any line and click "+ Add annotation" to add custom notes</p>
+            <p>📝 Hover over any line and click &quot;+ Add annotation&quot; to add custom notes</p>
           </div>
         </div>
       </div>

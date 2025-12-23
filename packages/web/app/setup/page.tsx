@@ -99,7 +99,7 @@ export default function SetupPage() {
         <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Local Repository</h2>
           <p className="text-sm text-muted-foreground mb-4">
-            Analyze a repository that's already on your machine
+            Analyze a repository that&apos;s already on your machine
           </p>
           <form onSubmit={handleAnalyzeLocal} className="space-y-4">
             <div>

@@ -295,18 +295,28 @@ function calculateComplexity(filePath: string, _language: string): number {
 }
 
 // Build comprehensive knowledge graph
+interface FileStats {
+  name: string
+  extension: string
+  language: string
+  size: number
+  linesOfCode: number
+  complexity: number
+  lastModified: Date
+}
+
 async function buildKnowledgeGraph(
   repositoryId: string,
   repoPath: string,
   files: string[]
 ): Promise<{
-  fileStats: Record<string, any>
+  fileStats: Record<string, FileStats>
   languageDistribution: Record<string, number>
   totalLines: number
 }> {
   const languageDistribution: Record<string, number> = {}
   let totalLines = 0
-  const fileStats: Record<string, any> = {}
+  const fileStats: Record<string, FileStats> = {}
 
   // Process each file and create FileNode entries
   for (const relativePath of files) {

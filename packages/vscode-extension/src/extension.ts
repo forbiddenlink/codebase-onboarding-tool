@@ -4,7 +4,7 @@ export function activate(context: vscode.ExtensionContext) {
   console.log('CodeCompass extension is now active!');
 
   // Register analyze command
-  let analyzeDisposable = vscode.commands.registerCommand(
+  const analyzeDisposable = vscode.commands.registerCommand(
     'codecompass.analyze',
     () => {
       vscode.window.showInformationMessage(
@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   // Register ask command
-  let askDisposable = vscode.commands.registerCommand(
+  const askDisposable = vscode.commands.registerCommand(
     'codecompass.ask',
     async () => {
       const question = await vscode.window.showInputBox({

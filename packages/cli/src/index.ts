@@ -111,8 +111,9 @@ program
   .action(async (repoPath: string) => {
     try {
       await analyzeRepository(repoPath);
-    } catch (error: any) {
-      console.log(chalk.red('✗ Error:'), error.message);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.log(chalk.red('✗ Error:'), errorMessage);
       process.exit(1);
     }
   });
@@ -145,9 +146,10 @@ program.exitOverride();
 
 try {
   program.parse();
-} catch (err: any) {
-  if (err.code !== 'commander.help' && err.code !== 'commander.version') {
-    console.log(chalk.red('✗ Error:'), err.message);
+} catch (err) {
+  const error = err as { code?: string; message?: string };
+  if (error.code !== 'commander.help' && error.code !== 'commander.version') {
+    console.log(chalk.red('✗ Error:'), error.message || String(err));
     process.exit(1);
   }
   throw err;
