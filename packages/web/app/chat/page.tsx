@@ -65,13 +65,33 @@ export default function ChatPage() {
       {/* Chat messages area */}
       <div className="flex-1 overflow-y-auto px-8 py-6">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="text-6xl mb-4">💬</div>
-            <h2 className="text-xl font-semibold mb-2">Start a conversation</h2>
-            <p className="text-muted-foreground max-w-md">
+          <div className="flex flex-col items-center justify-center h-full text-center px-4">
+            <div className="text-7xl mb-6">💬</div>
+            <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Start a conversation
+            </h2>
+            <p className="text-muted-foreground max-w-lg mb-6 text-lg">
               Ask questions about your codebase, architecture, or specific files.
               The AI will help you understand the code better.
             </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl w-full">
+              <div className="p-4 border border-border rounded-lg text-left hover:border-primary transition cursor-pointer">
+                <div className="text-sm font-semibold mb-1">💡 Example Question</div>
+                <div className="text-sm text-muted-foreground">&quot;Where is authentication handled?&quot;</div>
+              </div>
+              <div className="p-4 border border-border rounded-lg text-left hover:border-primary transition cursor-pointer">
+                <div className="text-sm font-semibold mb-1">🔍 Example Question</div>
+                <div className="text-sm text-muted-foreground">&quot;How does data flow through the app?&quot;</div>
+              </div>
+              <div className="p-4 border border-border rounded-lg text-left hover:border-primary transition cursor-pointer">
+                <div className="text-sm font-semibold mb-1">📊 Example Question</div>
+                <div className="text-sm text-muted-foreground">&quot;What are the main modules?&quot;</div>
+              </div>
+              <div className="p-4 border border-border rounded-lg text-left hover:border-primary transition cursor-pointer">
+                <div className="text-sm font-semibold mb-1">🛠️ Example Question</div>
+                <div className="text-sm text-muted-foreground">&quot;Explain the API structure&quot;</div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="max-w-4xl mx-auto space-y-6">
@@ -101,7 +121,14 @@ export default function ChatPage() {
               <div className="flex justify-start">
                 <div className="bg-muted rounded-lg px-4 py-3">
                   <div className="text-sm font-semibold mb-1">AI Assistant</div>
-                  <div className="text-sm">Thinking...</div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-1">
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                    </div>
+                    <span className="text-sm text-muted-foreground">Thinking...</span>
+                  </div>
                 </div>
               </div>
             )}

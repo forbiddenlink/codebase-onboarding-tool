@@ -61,20 +61,33 @@ export default function DashboardPage() {
         </div>
 
         {loading ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Loading repositories...</p>
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold mb-4">Your Repositories</h2>
+            {/* Skeleton loaders */}
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="p-6 border border-border rounded-lg animate-pulse">
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-2"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3 mb-2"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
+              </div>
+            ))}
           </div>
         ) : repositories.length === 0 ? (
-          <div className="text-center py-12 border border-border rounded-lg">
-            <h3 className="text-xl font-semibold mb-2">No repositories analyzed yet</h3>
-            <p className="text-muted-foreground mb-4">
-              Get started by analyzing a repository
+          <div className="text-center py-16 border border-border rounded-lg bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
+            <div className="text-6xl mb-6">📦</div>
+            <h3 className="text-2xl font-semibold mb-3">No repositories analyzed yet</h3>
+            <p className="text-muted-foreground mb-2 max-w-md mx-auto">
+              Get started by analyzing a repository to unlock AI-powered insights,
+              interactive diagrams, and personalized learning paths.
+            </p>
+            <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
+              It only takes a few minutes to analyze a typical codebase!
             </p>
             <a
               href="/setup"
-              className="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90 transition"
+              className="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:opacity-90 transition shadow-lg"
             >
-              Analyze Repository
+              🚀 Analyze Your First Repository
             </a>
           </div>
         ) : (
