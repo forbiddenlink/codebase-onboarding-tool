@@ -1,8 +1,9 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { logout, getUser } from '@/lib/auth'
 
 interface SidebarLink {
   name: string
@@ -22,7 +23,15 @@ const links: SidebarLink[] = [
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
+  const [user, setUser] = useState<ReturnType<typeof getUser>>(null)
+
+  // Get user on client side only (after mount)
+  useEffect(() => {
+    const currentUser = getUser()
+    setUser(currentUser)
+  }, [])
 
   return (
     <>
@@ -90,7 +99,30 @@ export default function Sidebar() {
         </nav>
 
         {/* Footer Section */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-800">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-800 space-y-3">
+          {/* User Info & Logout */}
+          {user && (
+            <div className="space-y-2">
+              <div className="text-xs text-gray-600 dark:text-gray-400">
+                <p className="font-medium truncate">{user.name}</p>
+                <p className="truncate text-gray-500 dark:text-gray-500">{user.email}</p>
+              </div>
+              <button
+                onClick={() => {
+                  logout()
+                  setIsOpen(false)
+                  router.push('/login')
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                aria-label="Log out"
+              >
+                <span>🚪</span>
+                <span>Log Out</span>
+              </button>
+            </div>
+          )}
+
+          {/* App Version */}
           <div className="text-xs text-gray-500 dark:text-gray-400">
             <p>CodeCompass v0.1.0</p>
             <p className="mt-1">AI-Powered Onboarding</p>

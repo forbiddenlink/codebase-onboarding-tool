@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import AppLayout from '@/components/AppLayout'
+import { requireAuth } from '@/lib/auth'
 
 interface Repository {
   id: string
@@ -21,6 +23,7 @@ interface ReviewSuggestion {
 }
 
 export default function DashboardPage() {
+  const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [repositories] = useState<Repository[]>([])
   const [reviewSuggestions] = useState<ReviewSuggestion[]>([
@@ -54,9 +57,15 @@ export default function DashboardPage() {
   ])
 
   useEffect(() => {
+    // Check authentication - redirect to login if not authenticated
+    const user = requireAuth(router)
+    if (!user) {
+      return // Will redirect to login
+    }
+
     // In a real implementation, fetch repositories from API
     setLoading(false)
-  }, [])
+  }, [router])
 
   return (
     <AppLayout>
