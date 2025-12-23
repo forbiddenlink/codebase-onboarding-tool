@@ -7,8 +7,58 @@ import Table from 'cli-table3';
 import inquirer from 'inquirer';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as os from 'os';
 
 const program = new Command();
+
+// Shared settings interface
+interface CodeCompassSettings {
+  apiKey?: string;
+  enableHoverTooltips: boolean;
+  enableInlineAnnotations: boolean;
+  enableNotifications: boolean;
+  theme: 'light' | 'dark' | 'auto';
+  webhooks: {
+    enabled: boolean;
+    url: string;
+    secret?: string;
+    events: string[];
+  };
+}
+
+// Settings utilities
+function getSettingsFilePath(): string {
+  return path.join(os.homedir(), '.codecompass', 'settings.json');
+}
+
+function loadSharedSettings(): CodeCompassSettings {
+  const settingsPath = getSettingsFilePath();
+  const defaultSettings: CodeCompassSettings = {
+    apiKey: '',
+    enableHoverTooltips: true,
+    enableInlineAnnotations: true,
+    enableNotifications: true,
+    theme: 'auto',
+    webhooks: {
+      enabled: false,
+      url: '',
+      secret: '',
+      events: ['repository.analyzed', 'repository.updated']
+    }
+  };
+
+  try {
+    if (fs.existsSync(settingsPath)) {
+      const settingsData = fs.readFileSync(settingsPath, 'utf-8');
+      const settings = JSON.parse(settingsData);
+      return { ...defaultSettings, ...settings };
+    }
+  } catch (error) {
+    console.error(chalk.red('Failed to load shared settings:'), error);
+  }
+
+  return defaultSettings;
+}
 
 program
   .name('codecompass')
@@ -175,8 +225,46 @@ Examples:
     }
   });
 
+// Query cache for faster repeated queries
+const queryCachePath = path.join(os.homedir(), '.codecompass', 'query-cache.json');
+
+interface QueryCacheEntry {
+  question: string;
+  answer: any;
+  timestamp: number;
+}
+
+function loadQueryCache(): Map<string, QueryCacheEntry> {
+  const cache = new Map<string, QueryCacheEntry>();
+  try {
+    if (fs.existsSync(queryCachePath)) {
+      const cacheData = JSON.parse(fs.readFileSync(queryCachePath, 'utf-8'));
+      Object.entries(cacheData).forEach(([key, value]) => {
+        cache.set(key, value as QueryCacheEntry);
+      });
+    }
+  } catch (error) {
+    // Ignore cache read errors
+  }
+  return cache;
+}
+
+function saveQueryCache(cache: Map<string, QueryCacheEntry>) {
+  try {
+    const cacheDir = path.dirname(queryCachePath);
+    if (!fs.existsSync(cacheDir)) {
+      fs.mkdirSync(cacheDir, { recursive: true });
+    }
+    const cacheData = Object.fromEntries(cache);
+    fs.writeFileSync(queryCachePath, JSON.stringify(cacheData, null, 2));
+  } catch (error) {
+    // Ignore cache write errors
+  }
+}
+
 // Ask command implementation
 async function askQuestion(question: string) {
+  const startTime = Date.now();
   console.log(chalk.blue('💬 Question:'), chalk.bold(question));
   console.log('');
 
@@ -187,6 +275,34 @@ async function askQuestion(question: string) {
     process.exit(1);
   }
 
+  // Check query cache for repeated queries
+  const queryCache = loadQueryCache();
+  const cacheKey = question.toLowerCase().trim();
+  const cachedResult = queryCache.get(cacheKey);
+
+  // Cache is valid for 1 hour
+  const CACHE_DURATION = 60 * 60 * 1000;
+  const isCacheValid = cachedResult && (Date.now() - cachedResult.timestamp < CACHE_DURATION);
+
+  if (isCacheValid && cachedResult) {
+    // Use cached result - extremely fast!
+    const responseTime = ((Date.now() - startTime) / 1000).toFixed(3);
+
+    console.log(chalk.bold('Answer:'), chalk.gray('(from cache)'));
+    console.log('');
+
+    // Display the cached answer
+    if (cachedResult.answer) {
+      console.log(cachedResult.answer);
+    }
+
+    console.log('');
+    console.log(chalk.gray('Response time:'), chalk.green(`${responseTime}s`), chalk.gray('⚡ Cached'));
+    console.log(chalk.gray('Confidence:'), chalk.green('85%'));
+    return;
+  }
+
+  // Not in cache - perform full query
   // Connect to analysis backend
   const connectSpinner = ora('Connecting to analysis backend...').start();
   await sleep(500);
@@ -207,40 +323,43 @@ async function askQuestion(question: string) {
   console.log('');
 
   // Simulated answer based on question keywords
+  let answerText = '';
   if (question.toLowerCase().includes('auth')) {
-    console.log(chalk.white('Authentication is handled in the following locations:'));
-    console.log('');
-    console.log(chalk.gray('  1.'), chalk.cyan('packages/web/app/api/auth/[...nextauth]/route.ts'));
-    console.log(chalk.gray('     →'), 'NextAuth.js configuration and API routes');
-    console.log('');
-    console.log(chalk.gray('  2.'), chalk.cyan('packages/web/lib/auth.ts'));
-    console.log(chalk.gray('     →'), 'Authentication helper functions and session management');
-    console.log('');
-    console.log(chalk.white('The authentication flow uses NextAuth.js with session-based auth.'));
+    answerText = chalk.white('Authentication is handled in the following locations:') + '\n\n' +
+      chalk.gray('  1. ') + chalk.cyan('packages/web/app/api/auth/[...nextauth]/route.ts') + '\n' +
+      chalk.gray('     → ') + 'NextAuth.js configuration and API routes' + '\n\n' +
+      chalk.gray('  2. ') + chalk.cyan('packages/web/lib/auth.ts') + '\n' +
+      chalk.gray('     → ') + 'Authentication helper functions and session management' + '\n\n' +
+      chalk.white('The authentication flow uses NextAuth.js with session-based auth.');
   } else if (question.toLowerCase().includes('database') || question.toLowerCase().includes('db')) {
-    console.log(chalk.white('Database configuration and usage:'));
-    console.log('');
-    console.log(chalk.gray('  1.'), chalk.cyan('packages/web/prisma/schema.prisma'));
-    console.log(chalk.gray('     →'), 'Database schema definition with Prisma ORM');
-    console.log('');
-    console.log(chalk.gray('  2.'), chalk.cyan('packages/web/lib/prisma.ts'));
-    console.log(chalk.gray('     →'), 'Prisma client initialization');
-    console.log('');
-    console.log(chalk.white('The app uses SQLite (dev) with Prisma ORM for database operations.'));
+    answerText = chalk.white('Database configuration and usage:') + '\n\n' +
+      chalk.gray('  1. ') + chalk.cyan('packages/web/prisma/schema.prisma') + '\n' +
+      chalk.gray('     → ') + 'Database schema definition with Prisma ORM' + '\n\n' +
+      chalk.gray('  2. ') + chalk.cyan('packages/web/lib/prisma.ts') + '\n' +
+      chalk.gray('     → ') + 'Prisma client initialization' + '\n\n' +
+      chalk.white('The app uses SQLite (dev) with Prisma ORM for database operations.');
   } else {
-    console.log(chalk.white('Based on your question, here are the relevant code locations:'));
-    console.log('');
-    console.log(chalk.gray('  1.'), chalk.cyan('packages/web/app/page.tsx'));
-    console.log(chalk.gray('     →'), 'Main application entry point');
-    console.log('');
-    console.log(chalk.gray('  2.'), chalk.cyan('packages/web/app/layout.tsx'));
-    console.log(chalk.gray('     →'), 'Root layout component');
-    console.log('');
-    console.log(chalk.white('💡 Tip: Use more specific keywords for better results.'));
+    answerText = chalk.white('Based on your question, here are the relevant code locations:') + '\n\n' +
+      chalk.gray('  1. ') + chalk.cyan('packages/web/app/page.tsx') + '\n' +
+      chalk.gray('     → ') + 'Main application entry point' + '\n\n' +
+      chalk.gray('  2. ') + chalk.cyan('packages/web/app/layout.tsx') + '\n' +
+      chalk.gray('     → ') + 'Root layout component' + '\n\n' +
+      chalk.white('💡 Tip: Use more specific keywords for better results.');
   }
 
+  console.log(answerText);
+
+  // Cache the result for future queries
+  queryCache.set(cacheKey, {
+    question,
+    answer: answerText,
+    timestamp: Date.now()
+  });
+  saveQueryCache(queryCache);
+
+  const responseTime = ((Date.now() - startTime) / 1000).toFixed(1);
   console.log('');
-  console.log(chalk.gray('Response time:'), chalk.white('2.3s'));
+  console.log(chalk.gray('Response time:'), chalk.white(`${responseTime}s`));
   console.log(chalk.gray('Confidence:'), chalk.green('85%'));
 }
 
@@ -546,6 +665,48 @@ program
   .action(async () => {
     try {
       await interactiveMode();
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.log(chalk.red('✗ Error:'), errorMessage);
+      process.exit(1);
+    }
+  });
+
+// Settings command
+program
+  .command('settings')
+  .alias('s')
+  .description('View and update CodeCompass settings')
+  .action(async () => {
+    try {
+      const settings = loadSharedSettings();
+      const settingsPath = getSettingsFilePath();
+
+      console.log(chalk.blue('⚙️  CodeCompass Settings'));
+      console.log('');
+      console.log(chalk.gray('Settings file:'), chalk.cyan(settingsPath));
+      console.log('');
+
+      // Display current settings
+      console.log(chalk.bold('Current Settings:'));
+      console.log('');
+      console.log(chalk.gray('  API Key:'), settings.apiKey ? chalk.green('✓ Set') : chalk.yellow('Not set'));
+      console.log(chalk.gray('  Hover Tooltips:'), settings.enableHoverTooltips ? chalk.green('Enabled') : chalk.red('Disabled'));
+      console.log(chalk.gray('  Inline Annotations:'), settings.enableInlineAnnotations ? chalk.green('Enabled') : chalk.red('Disabled'));
+      console.log(chalk.gray('  Notifications:'), settings.enableNotifications ? chalk.green('Enabled') : chalk.red('Disabled'));
+      console.log(chalk.gray('  Theme:'), chalk.cyan(settings.theme));
+      console.log(chalk.gray('  Webhooks:'), settings.webhooks.enabled ? chalk.green('Enabled') : chalk.red('Disabled'));
+      if (settings.webhooks.enabled && settings.webhooks.url) {
+        console.log(chalk.gray('    URL:'), chalk.cyan(settings.webhooks.url));
+        console.log(chalk.gray('    Events:'), chalk.cyan(settings.webhooks.events.join(', ')));
+      }
+      console.log('');
+
+      console.log(chalk.blue('💡 To update settings:'));
+      console.log(chalk.gray('  • Use the web dashboard at'), chalk.cyan('http://localhost:3000/settings'));
+      console.log(chalk.gray('  • Settings will sync automatically across CLI, Web, and VS Code'));
+      console.log('');
+
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       console.log(chalk.red('✗ Error:'), errorMessage);

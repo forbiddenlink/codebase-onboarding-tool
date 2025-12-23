@@ -1,4 +1,7 @@
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
 
 // Annotation types
 interface Annotation {
@@ -13,8 +16,64 @@ interface Annotation {
   type: 'info' | 'gotcha' | 'warning';
 }
 
+// Shared settings interface
+interface CodeCompassSettings {
+  apiKey?: string;
+  enableHoverTooltips: boolean;
+  enableInlineAnnotations: boolean;
+  enableNotifications: boolean;
+  theme: 'light' | 'dark' | 'auto';
+  webhooks: {
+    enabled: boolean;
+    url: string;
+    secret?: string;
+    events: string[];
+  };
+}
+
 // Global annotation manager
 let annotationManager: AnnotationManager;
+
+// Settings utilities
+function getSettingsFilePath(): string {
+  return path.join(os.homedir(), '.codecompass', 'settings.json');
+}
+
+function loadSharedSettings(): CodeCompassSettings {
+  const settingsPath = getSettingsFilePath();
+  const defaultSettings: CodeCompassSettings = {
+    apiKey: '',
+    enableHoverTooltips: true,
+    enableInlineAnnotations: true,
+    enableNotifications: true,
+    theme: 'auto',
+    webhooks: {
+      enabled: false,
+      url: '',
+      secret: '',
+      events: ['repository.analyzed', 'repository.updated']
+    }
+  };
+
+  try {
+    if (fs.existsSync(settingsPath)) {
+      const settingsData = fs.readFileSync(settingsPath, 'utf-8');
+      const settings = JSON.parse(settingsData);
+      return { ...defaultSettings, ...settings };
+    }
+  } catch (error) {
+    console.error('Failed to load shared settings:', error);
+  }
+
+  // Fall back to VS Code settings if shared settings don't exist
+  const config = vscode.workspace.getConfiguration('codecompass');
+  return {
+    ...defaultSettings,
+    apiKey: config.get<string>('apiKey', defaultSettings.apiKey || ''),
+    enableHoverTooltips: config.get<boolean>('enableHoverTooltips', defaultSettings.enableHoverTooltips),
+    enableInlineAnnotations: config.get<boolean>('enableInlineAnnotations', defaultSettings.enableInlineAnnotations)
+  };
+}
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('CodeCompass extension is now active!');
@@ -379,11 +438,10 @@ class CodeCompassHoverProvider implements vscode.HoverProvider {
     position: vscode.Position,
     _token: vscode.CancellationToken
   ): vscode.ProviderResult<vscode.Hover> {
-    // Get configuration to check if hover tooltips are enabled
-    const config = vscode.workspace.getConfiguration('codecompass');
-    const hoverEnabled = config.get('enableHoverTooltips', true);
+    // Load shared settings to check if hover tooltips are enabled
+    const settings = loadSharedSettings();
 
-    if (!hoverEnabled) {
+    if (!settings.enableHoverTooltips) {
       return null;
     }
 
@@ -536,11 +594,10 @@ class AnnotationManager {
   }
 
   public updateAnnotations(editor: vscode.TextEditor) {
-    // Check if inline annotations are enabled
-    const config = vscode.workspace.getConfiguration('codecompass');
-    const annotationsEnabled = config.get('enableInlineAnnotations', true);
+    // Load shared settings to check if inline annotations are enabled
+    const settings = loadSharedSettings();
 
-    if (!annotationsEnabled) {
+    if (!settings.enableInlineAnnotations) {
       editor.setDecorations(this.decorationType, []);
       return;
     }
