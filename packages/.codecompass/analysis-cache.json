@@ -1,0 +1,58 @@
+{
+  "analyzedAt": "2025-12-23T02:39:20.818Z",
+  "fileCount": 94,
+  "fileTypes": [
+    {
+      "ext": ".json",
+      "count": 15
+    },
+    {
+      "ext": ".ts",
+      "count": 25
+    },
+    {
+      "ext": ".map",
+      "count": 19
+    },
+    {
+      "ext": ".js",
+      "count": 17
+    },
+    {
+      "ext": "",
+      "count": 3
+    },
+    {
+      "ext": ".md",
+      "count": 1
+    },
+    {
+      "ext": ".svg",
+      "count": 1
+    },
+    {
+      "ext": ".tsx",
+      "count": 6
+    },
+    {
+      "ext": ".css",
+      "count": 1
+    },
+    {
+      "ext": ".sql",
+      "count": 3
+    },
+    {
+      "ext": ".toml",
+      "count": 1
+    },
+    {
+      "ext": ".db",
+      "count": 1
+    },
+    {
+      "ext": ".prisma",
+      "count": 1
+    }
+  ]
+}

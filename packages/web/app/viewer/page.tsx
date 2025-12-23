@@ -32,37 +32,53 @@ const functionMetadata: Record<string, {
   purpose: string
   parameters: string[]
   returnValue: string
-  calledBy?: string[]
+  calledBy?: Array<{ name: string; file: string }>
+  connectsTo?: string[]
 }> = {
   'useState': {
     purpose: 'React Hook that lets you add state to functional components',
     parameters: ['initialState: any - The initial state value'],
     returnValue: '[state, setState] - Returns current state and updater function',
-    calledBy: ['Example component']
+    calledBy: [
+      { name: 'Example component', file: 'example.tsx:4' }
+    ],
+    connectsTo: ['React state management system', 'Component re-render cycle']
   },
   'useEffect': {
     purpose: 'React Hook that performs side effects in functional components',
     parameters: ['effect: () => void - The effect function', 'deps: any[] - Dependency array'],
     returnValue: 'void',
-    calledBy: ['Example component']
+    calledBy: [
+      { name: 'Example component', file: 'example.tsx:6' }
+    ],
+    connectsTo: ['Component lifecycle', 'Side effects system', 'Dependency tracking']
   },
   'handleClick': {
     purpose: 'Handles button click events to increment the counter',
     parameters: [],
     returnValue: 'void',
-    calledBy: ['button onClick']
+    calledBy: [
+      { name: 'button onClick', file: 'example.tsx:23' }
+    ],
+    connectsTo: ['Event handling system', 'setCount state updater']
   },
   'setCount': {
     purpose: 'Updates the count state value',
     parameters: ['newValue: number | ((prev: number) => number)'],
     returnValue: 'void',
-    calledBy: ['handleClick']
+    calledBy: [
+      { name: 'handleClick', file: 'example.tsx:17' }
+    ],
+    connectsTo: ['useState hook', 'Component state']
   },
   'Example': {
     purpose: 'Main component that displays a counter with increment functionality',
     parameters: [],
     returnValue: 'JSX.Element',
-    calledBy: ['App root']
+    calledBy: [
+      { name: 'App root', file: 'app.tsx:12' }
+    ],
+    connectsTo: ['useState hook', 'useEffect hook', 'DOM rendering']
   }
 }
 
@@ -114,10 +130,26 @@ interface CustomAnnotation {
   text: string
   author: string
   timestamp: Date
+  codeVersion: string // Hash or version identifier
+  lineContent: string // The actual line content when annotation was created
+  status?: 'current' | 'outdated' | 'moved'
+}
+
+// Code version history for demonstration
+interface CodeVersion {
+  id: string
+  name: string
+  code: string
+  timestamp: Date
 }
 
 export default function ViewerPage() {
-  const [code] = useState(sampleCode)
+  const [code, setCode] = useState(sampleCode)
+  const [currentVersionId, setCurrentVersionId] = useState('v1')
+  const [codeVersions] = useState<CodeVersion[]>([
+    { id: 'v1', name: 'Version A (Initial)', code: sampleCode, timestamp: new Date('2024-01-15') },
+    { id: 'v2', name: 'Version B (Modified)', code: sampleCode.replace('const [count, setCount] = useState(0)', 'const [count, setCount] = useState(10) // Changed initial value'), timestamp: new Date('2024-01-20') }
+  ])
   const [hoveredFunction, setHoveredFunction] = useState<string | null>(null)
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
   const [selectedLine, setSelectedLine] = useState<number | null>(null)
@@ -131,44 +163,60 @@ export default function ViewerPage() {
 
   // Simple syntax highlighting using regex
   const highlightSyntax = (line: string) => {
-    let highlighted = line
+    // Tokenize to avoid overlapping replacements
+    const tokens: Array<{ type: string; content: string }> = []
+    let remaining = line
+    let position = 0
 
-    // Keywords
-    highlighted = highlighted.replace(
-      /\b(import|export|default|function|const|let|var|return|if|else|for|while|class|extends|from|useState|useEffect)\b/g,
-      '<span class="text-purple-600 font-semibold">$1</span>'
-    )
+    // Match patterns in order of precedence
+    const patterns = [
+      { type: 'comment', regex: /^(\/\/.*)/ },
+      { type: 'string', regex: /^(['"`])((?:\\.|(?!\1).)*?)\1/ },
+      { type: 'function', regex: /^([a-zA-Z_$][a-zA-Z0-9_$]*)\s*(?=\()/ },
+      { type: 'keyword', regex: /^(import|export|default|function|const|let|var|return|if|else|for|while|class|extends|from)\b/ },
+      { type: 'number', regex: /^(\d+)\b/ },
+      { type: 'text', regex: /^(.)/ }
+    ]
 
-    // Strings
-    highlighted = highlighted.replace(
-      /(['"`])(.*?)\1/g,
-      '<span class="text-green-600">$1$2$1</span>'
-    )
-
-    // Comments
-    highlighted = highlighted.replace(
-      /(\/\/.*$)/g,
-      '<span class="text-gray-500 italic">$1</span>'
-    )
-
-    // Functions with hover detection
-    highlighted = highlighted.replace(
-      /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g,
-      (_match, funcName) => {
-        if (functionMetadata[funcName]) {
-          return `<span class="text-blue-600 font-semibold cursor-help hover:underline" data-function="${funcName}">${funcName}</span>(`
+    while (remaining.length > 0) {
+      let matched = false
+      for (const pattern of patterns) {
+        const match = remaining.match(pattern.regex)
+        if (match) {
+          tokens.push({ type: pattern.type, content: match[0] })
+          remaining = remaining.substring(match[0].length)
+          matched = true
+          break
         }
-        return `<span class="text-blue-600">${funcName}</span>(`
       }
-    )
+      if (!matched) {
+        // Safety: consume one character
+        tokens.push({ type: 'text', content: remaining[0] })
+        remaining = remaining.substring(1)
+      }
+    }
 
-    // Numbers
-    highlighted = highlighted.replace(
-      /\b(\d+)\b/g,
-      '<span class="text-orange-600">$1</span>'
-    )
-
-    return highlighted
+    // Render tokens with proper styling
+    return tokens.map(token => {
+      switch (token.type) {
+        case 'keyword':
+          return `<span class="text-purple-600 font-semibold">${token.content}</span>`
+        case 'string':
+          return `<span class="text-green-600">${token.content}</span>`
+        case 'comment':
+          return `<span class="text-gray-500 italic">${token.content}</span>`
+        case 'function':
+          const funcName = token.content.trim()
+          if (functionMetadata[funcName]) {
+            return `<span class="text-blue-600 font-semibold cursor-help hover:underline" data-function="${funcName}">${funcName}</span>`
+          }
+          return `<span class="text-blue-600">${funcName}</span>`
+        case 'number':
+          return `<span class="text-orange-600">${token.content}</span>`
+        default:
+          return token.content
+      }
+    }).join('')
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -191,18 +239,91 @@ export default function ViewerPage() {
 
   const handleSaveAnnotation = () => {
     if (annotationText.trim() && selectedLine !== null) {
+      const currentLine = lines[selectedLine - 1] || ''
       const newAnnotation: CustomAnnotation = {
         id: Date.now().toString(),
         lineNumber: selectedLine,
         text: annotationText,
         author: 'Current User',
-        timestamp: new Date()
+        timestamp: new Date(),
+        codeVersion: currentVersionId,
+        lineContent: currentLine,
+        status: 'current'
       }
       setCustomAnnotations([...customAnnotations, newAnnotation])
       setShowAnnotationForm(false)
       setAnnotationText('')
       setSelectedLine(null)
     }
+  }
+
+  const handleVersionChange = (versionId: string) => {
+    const version = codeVersions.find(v => v.id === versionId)
+    if (version) {
+      setCurrentVersionId(versionId)
+      setCode(version.code)
+      // Update annotation statuses based on new code
+      updateAnnotationStatuses(version.code, versionId)
+    }
+  }
+
+  const updateAnnotationStatuses = (newCode: string, versionId: string) => {
+    const newLines = newCode.split('\n')
+    const updatedAnnotations = customAnnotations.map(annotation => {
+      const currentLineContent = newLines[annotation.lineNumber - 1] || ''
+
+      // Check if the line content matches the original
+      if (currentLineContent === annotation.lineContent) {
+        return { ...annotation, status: 'current' as const }
+      }
+
+      // Check if the line moved to a different location
+      const movedLineIndex = newLines.findIndex(line => line === annotation.lineContent)
+      if (movedLineIndex !== -1) {
+        return {
+          ...annotation,
+          status: 'moved' as const,
+          lineNumber: movedLineIndex + 1
+        }
+      }
+
+      // Line was modified or removed
+      return { ...annotation, status: 'outdated' as const }
+    })
+    setCustomAnnotations(updatedAnnotations)
+  }
+
+  const handleExportAnnotations = () => {
+    // Create export data
+    const exportData = {
+      fileName: 'example.tsx',
+      exportDate: new Date().toISOString(),
+      totalAnnotations: customAnnotations.length,
+      annotations: customAnnotations.map(annotation => ({
+        id: annotation.id,
+        lineNumber: annotation.lineNumber,
+        text: annotation.text,
+        author: annotation.author,
+        timestamp: annotation.timestamp.toISOString(),
+        codeVersion: annotation.codeVersion,
+        lineContent: annotation.lineContent,
+        status: annotation.status
+      }))
+    }
+
+    // Convert to JSON
+    const jsonString = JSON.stringify(exportData, null, 2)
+
+    // Create blob and download
+    const blob = new Blob([jsonString], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `annotations-${new Date().getTime()}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
   }
 
   const toggleAnnotation = (lineNumber: number) => {
@@ -241,11 +362,35 @@ export default function ViewerPage() {
       <div className="flex-1 overflow-auto p-8">
         <div className="max-w-6xl mx-auto">
           <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">File:</span>
-              <span className="text-sm font-mono font-semibold">
-                example.tsx
-              </span>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">File:</span>
+                <span className="text-sm font-mono font-semibold">
+                  example.tsx
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">Version:</span>
+                <select
+                  value={currentVersionId}
+                  onChange={(e) => handleVersionChange(e.target.value)}
+                  className="text-sm font-mono border border-border rounded px-2 py-1 bg-background"
+                >
+                  {codeVersions.map(version => (
+                    <option key={version.id} value={version.id}>
+                      {version.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button
+                onClick={handleExportAnnotations}
+                disabled={customAnnotations.length === 0}
+                className="text-sm px-3 py-1 rounded border border-border bg-background hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                title="Export annotations as JSON"
+              >
+                📦 Export Annotations ({customAnnotations.length})
+              </button>
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
@@ -355,15 +500,34 @@ export default function ViewerPage() {
                           .filter(a => a.lineNumber === index + 1)
                           .map(annotation => (
                             <div key={annotation.id} className="p-3 border border-purple-300 rounded-lg text-sm bg-purple-50 text-purple-800 mt-2">
-                              <div className="font-semibold mb-1 flex items-center gap-2">
-                                <span>📝</span>
-                                <span>Custom Annotation</span>
+                              <div className="font-semibold mb-1 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <span>📝</span>
+                                  <span>Custom Annotation</span>
+                                </div>
+                                {annotation.status && annotation.status !== 'current' && (
+                                  <span className={`text-xs px-2 py-0.5 rounded ${
+                                    annotation.status === 'outdated' ? 'bg-red-100 text-red-700 border border-red-300' :
+                                    annotation.status === 'moved' ? 'bg-blue-100 text-blue-700 border border-blue-300' :
+                                    ''
+                                  }`}>
+                                    {annotation.status === 'outdated' ? '⚠️ Outdated' : '↕️ Moved'}
+                                  </span>
+                                )}
                               </div>
                               <p className="mb-2">{annotation.text}</p>
-                              <div className="text-xs text-purple-600 flex items-center gap-2">
+                              <div className="text-xs text-purple-600 flex flex-wrap items-center gap-2">
                                 <span>By: {annotation.author}</span>
                                 <span>•</span>
                                 <span>{annotation.timestamp.toLocaleString()}</span>
+                                <span>•</span>
+                                <span>Version: {annotation.codeVersion}</span>
+                                {annotation.status === 'outdated' && (
+                                  <>
+                                    <span>•</span>
+                                    <span className="text-red-600">Original line: "{annotation.lineContent.substring(0, 30)}..."</span>
+                                  </>
+                                )}
                               </div>
                             </div>
                           ))}
@@ -419,7 +583,24 @@ export default function ViewerPage() {
             {functionMetadata[hoveredFunction].calledBy && (
               <div>
                 <span className="font-semibold">Called by:</span>
-                <p className="text-muted-foreground text-xs">{functionMetadata[hoveredFunction].calledBy?.join(', ')}</p>
+                <ul className="text-muted-foreground list-none space-y-1 mt-1">
+                  {functionMetadata[hoveredFunction].calledBy?.map((caller, i) => (
+                    <li key={i} className="text-xs">
+                      <span className="text-foreground">{caller.name}</span>
+                      <span className="text-muted-foreground ml-1">({caller.file})</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {functionMetadata[hoveredFunction].connectsTo && (
+              <div>
+                <span className="font-semibold">Connects to:</span>
+                <ul className="text-muted-foreground list-disc list-inside mt-1">
+                  {functionMetadata[hoveredFunction].connectsTo?.map((connection, i) => (
+                    <li key={i} className="text-xs">{connection}</li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>
