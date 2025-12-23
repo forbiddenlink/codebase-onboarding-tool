@@ -34,12 +34,23 @@ interface CodeCompassSettings {
 // Global annotation manager
 let annotationManager: AnnotationManager;
 
+// Settings cache for performance
+let settingsCache: CodeCompassSettings | null = null;
+let settingsCacheTime: number = 0;
+const SETTINGS_CACHE_TTL = 5000; // 5 seconds
+
 // Settings utilities
 function getSettingsFilePath(): string {
   return path.join(os.homedir(), '.codecompass', 'settings.json');
 }
 
 function loadSharedSettings(): CodeCompassSettings {
+  // Return cached settings if still valid
+  const now = Date.now();
+  if (settingsCache && (now - settingsCacheTime) < SETTINGS_CACHE_TTL) {
+    return settingsCache;
+  }
+
   const settingsPath = getSettingsFilePath();
   const defaultSettings: CodeCompassSettings = {
     apiKey: '',
@@ -59,7 +70,10 @@ function loadSharedSettings(): CodeCompassSettings {
     if (fs.existsSync(settingsPath)) {
       const settingsData = fs.readFileSync(settingsPath, 'utf-8');
       const settings = JSON.parse(settingsData);
-      return { ...defaultSettings, ...settings };
+      const loadedSettings = { ...defaultSettings, ...settings };
+      settingsCache = loadedSettings;
+      settingsCacheTime = now;
+      return loadedSettings;
     }
   } catch (error) {
     console.error('Failed to load shared settings:', error);
@@ -67,12 +81,14 @@ function loadSharedSettings(): CodeCompassSettings {
 
   // Fall back to VS Code settings if shared settings don't exist
   const config = vscode.workspace.getConfiguration('codecompass');
-  return {
+  settingsCache = {
     ...defaultSettings,
     apiKey: config.get<string>('apiKey', defaultSettings.apiKey || ''),
     enableHoverTooltips: config.get<boolean>('enableHoverTooltips', defaultSettings.enableHoverTooltips),
     enableInlineAnnotations: config.get<boolean>('enableInlineAnnotations', defaultSettings.enableInlineAnnotations)
   };
+  settingsCacheTime = now;
+  return settingsCache;
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -140,10 +156,19 @@ export function activate(context: vscode.ExtensionContext) {
     hoverProvider
   );
 
-  // Listen for active editor changes to update annotations
+  // Listen for active editor changes to update annotations with debouncing
+  let annotationUpdateTimeout: NodeJS.Timeout | undefined;
   vscode.window.onDidChangeActiveTextEditor(editor => {
+    // Clear any pending update
+    if (annotationUpdateTimeout) {
+      clearTimeout(annotationUpdateTimeout);
+    }
+
+    // Debounce annotation updates to avoid excessive rendering
     if (editor) {
-      annotationManager.updateAnnotations(editor);
+      annotationUpdateTimeout = setTimeout(() => {
+        annotationManager.updateAnnotations(editor);
+      }, 100); // 100ms debounce
     }
   }, null, context.subscriptions);
 
@@ -433,12 +458,16 @@ class TreeItem extends vscode.TreeItem {
 }
 
 class CodeCompassHoverProvider implements vscode.HoverProvider {
+  // Pre-compiled regex patterns for performance
+  private readonly functionDeclPattern = /(function|const|let|var|async)\s+\w+\s*[=\(]/;
+  private readonly classDeclPattern = /(class|interface|type)\s+\w+/;
+
   provideHover(
     document: vscode.TextDocument,
     position: vscode.Position,
     _token: vscode.CancellationToken
   ): vscode.ProviderResult<vscode.Hover> {
-    // Load shared settings to check if hover tooltips are enabled
+    // Load cached settings to check if hover tooltips are enabled
     const settings = loadSharedSettings();
 
     if (!settings.enableHoverTooltips) {
@@ -457,10 +486,10 @@ class CodeCompassHoverProvider implements vscode.HoverProvider {
     const line = document.lineAt(position.line);
     const lineText = line.text;
 
-    // Simple heuristics to identify functions, classes, etc.
+    // Optimized heuristics to identify functions, classes, etc.
     const isFunctionCall = lineText.includes(`${word}(`);
-    const isFunctionDeclaration = lineText.match(new RegExp(`(function|const|let|var|async)\\s+${word}\\s*[=\\(]`));
-    const isClassDeclaration = lineText.match(new RegExp(`(class|interface|type)\\s+${word}`));
+    const isFunctionDeclaration = this.functionDeclPattern.test(lineText) && lineText.includes(word);
+    const isClassDeclaration = this.classDeclPattern.test(lineText) && lineText.includes(word);
     const isImport = lineText.includes('import') && lineText.includes(word);
 
     // Create hover content based on context
