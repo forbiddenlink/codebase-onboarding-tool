@@ -6,7 +6,7 @@
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 interface LogMetadata {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 class Logger {
@@ -80,7 +80,7 @@ class Logger {
   /**
    * Log error message with optional error object
    */
-  error(message: string, error?: Error | any, metadata?: LogMetadata): void {
+  error(message: string, error?: Error | unknown, metadata?: LogMetadata): void {
     if (this.shouldLog('error')) {
       const errorInfo = error instanceof Error
         ? { message: error.message, stack: error.stack, ...metadata }
@@ -127,7 +127,7 @@ class ContextLogger {
     this.parent.warn(`[${this.context}] ${message}`, metadata);
   }
 
-  error(message: string, error?: Error | any, metadata?: LogMetadata): void {
+  error(message: string, error?: Error | unknown, metadata?: LogMetadata): void {
     this.parent.error(`[${this.context}] ${message}`, error, metadata);
   }
 }

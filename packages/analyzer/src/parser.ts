@@ -16,7 +16,7 @@ import {
 
 export class CodeParser {
   private parser: Parser;
-  private languageParsers: Map<string, any>;
+  private languageParsers: Map<string, unknown>;
 
   constructor() {
     this.parser = new Parser();

@@ -1,0 +1,2 @@
+packages/web:build:cd /Volumes/LizsDisk/codebase-onboarding-tool/packages/web && npm run build
+packages/web:tsc:cd /Volumes/LizsDisk/codebase-onboarding-tool/packages/web && npx tsc --noEmit

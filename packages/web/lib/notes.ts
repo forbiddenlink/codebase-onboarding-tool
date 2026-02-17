@@ -44,10 +44,10 @@ export function getAllNotes(): FileNote[] {
 
     const notes = JSON.parse(notesJson);
     // Convert timestamp strings back to Date objects
-    return notes.map((note: any) => ({
+    return notes.map((note: Partial<FileNote> & { timestamp: string | Date }) => ({
       ...note,
       timestamp: new Date(note.timestamp)
-    }));
+    })) as FileNote[];
   } catch (error) {
     console.error('Error reading notes from localStorage:', error);
     return [];
@@ -133,10 +133,10 @@ export function getAllAnnotations(): LineAnnotation[] {
 
     const annotations = JSON.parse(annotationsJson);
     // Convert timestamp strings back to Date objects
-    return annotations.map((annotation: any) => ({
+    return annotations.map((annotation: Partial<LineAnnotation> & { timestamp: string | Date }) => ({
       ...annotation,
       timestamp: new Date(annotation.timestamp)
-    }));
+    })) as LineAnnotation[];
   } catch (error) {
     console.error('Error reading annotations from localStorage:', error);
     return [];

@@ -4,7 +4,18 @@ import * as path from 'path'
 import simpleGit from 'simple-git'
 import { prisma } from '@/lib/prisma'
 import { logger } from '@/lib/logger'
-import { CodeParser } from '@codecompass/analyzer/dist/parser'
+
+// Dynamic import helper - runs at request time, not build time
+// Returns CodeParser instance or null if tree-sitter isn't available
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function getCodeParser(): Promise<any | null> {
+  try {
+    const analyzerModule = await import('@codecompass/analyzer/dist/parser')
+    return new analyzerModule.CodeParser()
+  } catch {
+    return null
+  }
+}
 
 // Helper function to validate and sanitize repository path
 function validatePath(inputPath: string): { valid: boolean; error?: string; sanitized?: string } {
@@ -448,8 +459,8 @@ async function buildKnowledgeGraph(
   let totalLines = 0
   const fileStats: Record<string, FileStats> = {}
 
-  // Initialize the code parser for TypeScript/JavaScript/Python/etc parsing
-  const codeParser = new CodeParser()
+  // Initialize the code parser for TypeScript/JavaScript/Python/etc parsing (if available)
+  const codeParser = await getCodeParser()
 
   // Process each file and create FileNode entries
   for (const relativePath of files) {
@@ -478,27 +489,31 @@ async function buildKnowledgeGraph(
         lastModified: stat.mtime
       }
 
-      // Parse TypeScript/JavaScript/Python files with tree-sitter
+      // Parse TypeScript/JavaScript/Python files with tree-sitter (if parser available)
       let parsedData = null
-      if (['typescript', 'javascript', 'python'].includes(language)) {
+      if (codeParser && ['typescript', 'javascript', 'python'].includes(language)) {
         try {
           const content = fs.readFileSync(fullPath, 'utf-8')
           const parseResult = await codeParser.parseFile(fullPath, content)
           parsedData = {
             imports: parseResult.imports,
             exports: parseResult.exports,
-            functions: parseResult.functions.map(f => ({
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            functions: parseResult.functions.map((f: any) => ({
               name: f.name,
               startLine: f.startLine,
               endLine: f.endLine,
               parameters: f.parameters
             })),
-            classes: parseResult.classes.map(c => ({
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            classes: parseResult.classes.map((c: any) => ({
               name: c.name,
               startLine: c.startLine,
               endLine: c.endLine,
-              methods: c.methods.map(m => m.name),
-              properties: c.properties.map(p => p.name)
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              methods: c.methods.map((m: any) => m.name),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              properties: c.properties.map((p: any) => p.name)
             }))
           }
 

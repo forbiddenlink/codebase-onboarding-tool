@@ -18,8 +18,8 @@ export default function TestNetworkPage() {
       // Try to fetch from a non-existent endpoint
       await apiFetch('/api/nonexistent-endpoint');
       setSuccess(true);
-    } catch (err: any) {
-      setError(err);
+    } catch (err: unknown) {
+      setError(err as ApiError);
     } finally {
       setLoading(false);
     }
@@ -34,8 +34,8 @@ export default function TestNetworkPage() {
       // Simulate server error by calling an endpoint that will fail
       await apiFetch('/api/test-error');
       setSuccess(true);
-    } catch (err: any) {
-      setError(err);
+    } catch (err: unknown) {
+      setError(err as ApiError);
     } finally {
       setLoading(false);
     }
@@ -47,7 +47,7 @@ export default function TestNetworkPage() {
       setError(null);
       error.retry()
         .then(() => setSuccess(true))
-        .catch((err: any) => setError(err))
+        .catch((err: unknown) => setError(err as ApiError))
         .finally(() => setLoading(false));
     }
   };

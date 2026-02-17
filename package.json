@@ -56,5 +56,8 @@
   "bugs": {
     "url": "https://github.com/yourusername/codecompass/issues"
   },
-  "homepage": "https://github.com/yourusername/codecompass#readme"
+  "homepage": "https://github.com/yourusername/codecompass#readme",
+  "dependencies": {
+    "next": "^16.1.6"
+  }
 }

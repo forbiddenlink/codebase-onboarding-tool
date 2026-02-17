@@ -1,29 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { analyzeCode, explainCode } from '@/lib/claude'
+import { withRateLimit, rateLimiters } from '@/lib/rate-limit'
+import { analyzeRequestSchema, safeValidateRequest } from '@/lib/validation'
 
 /**
  * POST /api/ai/analyze
  * Analyze code using Claude Sonnet 4
  */
-export async function POST(request: NextRequest) {
+async function handlePOST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { code, question, language, type } = body
 
-    // Validate input
-    if (!code || typeof code !== 'string') {
+    // Validate input with Zod
+    const validation = safeValidateRequest(analyzeRequestSchema, body);
+    if (!validation.success) {
       return NextResponse.json(
-        { error: 'Code is required and must be a string' },
+        { 
+          error: 'Invalid request data', 
+          details: validation.error.issues.map(e => ({
+            field: e.path.join('.'),
+            message: e.message,
+          }))
+        },
         { status: 400 }
       )
     }
 
-    if (code.length > 50000) {
-      return NextResponse.json(
-        { error: 'Code is too long (max 50,000 characters)' },
-        { status: 400 }
-      )
-    }
+    const { code, question, language, type } = validation.data;
 
     // Check API key is configured
     if (!process.env.ANTHROPIC_API_KEY) {
@@ -79,6 +82,11 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
+}
+
+// Apply rate limiting to POST handler
+export async function POST(request: NextRequest) {
+  return withRateLimit(request, rateLimiters.ai, () => handlePOST(request));
 }
 
 /**

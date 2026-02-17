@@ -200,6 +200,16 @@ export default function ViewerPage() {
     setIsBookmarked(bookmarks.includes(currentFileName))
   })
 
+  // Escape HTML entities to prevent XSS
+  const escapeHtml = (unsafe: string): string => {
+    return unsafe
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   // Simple syntax highlighting using regex
   const highlightSyntax = (line: string) => {
     // Tokenize to avoid overlapping replacements
@@ -234,26 +244,28 @@ export default function ViewerPage() {
       }
     }
 
-    // Render tokens with proper styling
+    // Render tokens with proper styling (escape content to prevent XSS)
     return tokens.map(token => {
+      const escaped = escapeHtml(token.content);
       switch (token.type) {
         case 'keyword':
-          return `<span class="text-purple-600 font-semibold">${token.content}</span>`
+          return `<span class="text-purple-600 font-semibold">${escaped}</span>`
         case 'string':
-          return `<span class="text-green-600">${token.content}</span>`
+          return `<span class="text-green-600">${escaped}</span>`
         case 'comment':
-          return `<span class="text-gray-500 italic">${token.content}</span>`
+          return `<span class="text-gray-500 italic">${escaped}</span>`
         case 'function': {
           const funcName = token.content.trim()
+          const escapedFuncName = escapeHtml(funcName);
           if (functionMetadata[funcName]) {
-            return `<span class="text-blue-600 font-semibold cursor-help hover:underline" data-function="${funcName}">${funcName}</span>`
+            return `<span class="text-blue-600 font-semibold cursor-help hover:underline" data-function="${escapedFuncName}">${escapedFuncName}</span>`
           }
-          return `<span class="text-blue-600">${funcName}</span>`
+          return `<span class="text-blue-600">${escapedFuncName}</span>`
         }
         case 'number':
-          return `<span class="text-orange-600">${token.content}</span>`
+          return `<span class="text-orange-600">${escaped}</span>`
         default:
-          return token.content
+          return escaped
       }
     }).join('')
   }

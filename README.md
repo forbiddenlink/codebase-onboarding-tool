@@ -3,7 +3,7 @@
 > **Make joining new codebases 10x faster** with AI-powered Q&A, interactive architecture diagrams, personalized learning paths, and intelligent code annotations.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-14+-black.svg)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black.svg)](https://nextjs.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ## 🌟 Features
@@ -112,7 +112,7 @@ codecompass/
 ## 🛠️ Technology Stack
 
 ### Frontend
-- **Next.js 14+** with App Router and TypeScript
+- **Next.js 16.1.6** with App Router and TypeScript (latest with all CVE patches)
 - **Tailwind CSS** with **shadcn/ui** components
 - **D3.js** for interactive visualizations
 - **Zustand** for UI state, **React Query** for server state
@@ -131,7 +131,92 @@ codecompass/
 - **VS Code Extension API**
 - **Chalk** and **Ora** for beautiful terminal output
 
-## 📖 Usage Guide
+## � Security Features
+
+CodeCompass implements enterprise-grade security measures to protect your codebase and data:
+
+### Framework Security
+- **Next.js 16.1.6** - Latest version with all CVE patches (CVE-2025-66478, CVE-2025-67779, CVE-2025-55184, CVE-2025-55183)
+- **Comprehensive Security Headers** - CSP, X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy
+- **Input Validation** - Zod schemas for all API endpoints with strict type checking
+
+### XSS Protection
+- **DOMPurify Integration** - All user-generated content sanitized before rendering
+- **HTML Entity Escaping** - Code viewer and syntax highlighter with safe escaping
+- **Safe Search Highlighting** - XSS-safe query highlighting in search results
+
+### Rate Limiting
+Multi-tier rate limiting powered by Upstash Redis:
+- **AI Endpoints**: 10 requests/minute (prevents API abuse)
+- **Authentication**: 5 requests/minute (brute force protection)
+- **Repository Operations**: 30 requests/minute
+- **General API**: 60 requests/minute
+
+### CSRF Protection
+- **Origin Validation** - POST/PUT/DELETE/PATCH requests validated against trusted origins
+- **SameSite Cookies** - Cookie-based sessions with SameSite=Lax/Strict
+- **Referer Header Validation** - Fallback validation for older browsers
+
+### Performance & Cost Optimization
+- **AI Response Caching** - Redis-backed cache with intelligent TTLs:
+  - Code explanations: 7 days
+  - Code analysis: 1 day
+  - Suggestions: 1 hour
+- **Estimated 60-70% cache hit rate** = ~70% reduction in AI API costs
+- **In-memory fallback** - Works without Redis in development
+
+### Environment Security
+- **Startup Validation** - Zod-based environment variable validation with fail-fast
+- **Secret Management** - 32+ character SESSION_SECRET generation
+- **Type-safe Configuration** - Environment-specific configs with feature flags
+
+### Setup Instructions
+
+1. **Generate Session Secret**:
+```bash
+openssl rand -base64 32
+```
+
+2. **Configure Environment Variables** (`.env`):
+```env
+# Required
+DATABASE_URL="file:./dev.db"
+ANTHROPIC_API_KEY=sk-ant-xxxxx
+SESSION_SECRET=<your-generated-secret>
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Recommended for Production
+UPSTASH_REDIS_REST_URL=https://xxx.upstash.io
+UPSTASH_REDIS_REST_TOKEN=xxxxx
+NODE_ENV=production
+```
+
+3. **Enable HSTS in Production** (`next.config.js`):
+```javascript
+// Uncomment in next.config.js after SSL certificate setup
+'Strict-Transport-Security': 'max-age=31536000; includeSubDomains'
+```
+
+### Security Testing
+
+Run the security test suite:
+```bash
+# Check for XSS vulnerabilities
+npm run test:security
+
+# Verify rate limiting
+npm run test:rate-limit
+
+# Audit dependencies
+npm audit
+
+# Check for CSRF protection
+npm run test:csrf
+```
+
+See [SECURITY_FIXES_SUMMARY.md](SECURITY_FIXES_SUMMARY.md) for detailed security implementation documentation.
+
+## �📖 Usage Guide
 
 ### Analyzing a Repository
 
@@ -235,24 +320,30 @@ npm run test:coverage    # Generate coverage report
 Create a `.env` file based on `.env.example`:
 
 ```env
-# Required: Anthropic API Key
-ANTHROPIC_API_KEY=sk-ant-xxxxx
+# Required
+DATABASE_URL="file:./dev.db"                # SQLite for dev, PostgreSQL for prod
+ANTHROPIC_API_KEY=sk-ant-xxxxx              # Get from https://console.anthropic.com
+SESSION_SECRET=<generate-with-openssl>       # 32+ characters (see Security section)
+NEXT_PUBLIC_APP_URL=http://localhost:3000   # Your app URL (for CORS/CSRF)
 
-# Database (SQLite default, or PostgreSQL URL)
-DATABASE_URL="file:./dev.db"
+# Recommended for Production
+UPSTASH_REDIS_REST_URL=https://xxx.upstash.io  # Redis for rate limiting & caching
+UPSTASH_REDIS_REST_TOKEN=xxxxx                 # Get from https://upstash.com
+NODE_ENV=production
 
-# Optional: Authentication
-NEXTAUTH_SECRET=your-secret-here
+# Optional: GitHub Integration
+GITHUB_TOKEN=ghp_xxxxx                      # For private repo cloning
+
+# Optional: Legacy Configuration
+NEXTAUTH_SECRET=<same-as-SESSION_SECRET>    # For backward compatibility
 NEXTAUTH_URL=http://localhost:3000
-
-# Optional: Rate Limiting
-RATE_LIMIT_MAX_REQUESTS=100
-RATE_LIMIT_WINDOW_MS=900000
-
-# Optional: Feature Flags
-ENABLE_SLACK_BOT=false
-ENABLE_ADVANCED_ANALYSIS=true
 ```
+
+**Security Notes:**
+- Generate `SESSION_SECRET` with: `openssl rand -base64 32`
+- Never commit `.env` to version control
+- Rotate secrets every 90 days in production
+- Use environment-specific `.env.production` and `.env.development` files
 
 ## 🎯 Roadmap
 

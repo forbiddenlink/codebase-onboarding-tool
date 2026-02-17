@@ -1,4 +1,11 @@
 import Anthropic from '@anthropic-ai/sdk'
+import { getCachedResponse, cacheResponse } from './cache'
+
+// Type definitions for Anthropic API responses
+interface TextBlock {
+  type: 'text';
+  text: string;
+}
 
 // Initialize Anthropic client with API key from environment
 // Only initialize if API key is configured and not a placeholder
@@ -31,6 +38,13 @@ export async function analyzeCode(
     throw new Error('Anthropic API key not configured or is invalid')
   }
 
+  // Check cache first
+  const cacheKey = { code, question: question || '', language };
+  const cached = await getCachedResponse<{ analysis: string; confidence: number }>('analyze', cacheKey);
+  if (cached) {
+    return cached;
+  }
+
   const systemPrompt = `You are an expert code analyzer. Analyze the provided ${language} code and provide insights about:
 - Purpose and functionality
 - Key components and patterns
@@ -44,6 +58,7 @@ Be concise and focus on the most important aspects.`
     : `Analyze this code:\n\`\`\`${language}\n${code}\n\`\`\``
 
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const message = await (anthropic as any).messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 2048,
@@ -57,18 +72,24 @@ Be concise and focus on the most important aspects.`
     })
 
     // Extract text content from response
+    type ContentBlock = { type: string; text?: string };
     const analysis = message.content
-      .filter((block: any): block is { type: 'text'; text: string } => block.type === 'text')
-      .map((block: { type: 'text'; text: string }) => block.text)
+      .filter((block: ContentBlock): block is TextBlock => block.type === 'text')
+      .map((block: TextBlock) => block.text)
       .join('\n')
 
     // Confidence score based on response quality (simplified)
     const confidence = analysis.length > 100 ? 0.85 : 0.7
 
-    return {
+    const result = {
       analysis,
       confidence,
-    }
+    };
+
+    // Cache the result
+    await cacheResponse('analyze', cacheKey, result);
+
+    return result;
   } catch (error) {
     console.error('Claude API error:', error)
     throw new Error(`Failed to analyze code: ${error instanceof Error ? error.message : 'Unknown error'}`)
@@ -89,7 +110,15 @@ export async function explainCode(
     throw new Error('Anthropic API key not configured or is invalid')
   }
 
+  // Check cache first
+  const cacheKey = { code, language };
+  const cached = await getCachedResponse<string>('explain', cacheKey);
+  if (cached) {
+    return cached;
+  }
+
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const message = await (anthropic as any).messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 1024,
@@ -101,10 +130,16 @@ export async function explainCode(
       ],
     })
 
-    return message.content
-      .filter((block: any): block is { type: 'text'; text: string } => block.type === 'text')
-      .map((block: { type: 'text'; text: string }) => block.text)
-      .join('\n')
+    type ContentBlock = { type: string; text?: string };
+    const explanation = message.content
+      .filter((block: ContentBlock): block is TextBlock => block.type === 'text')
+      .map((block: TextBlock) => block.text)
+      .join('\n');
+
+    // Cache the explanation
+    await cacheResponse('explain', cacheKey, explanation);
+
+    return explanation;
   } catch (error) {
     console.error('Claude API error:', error)
     throw new Error(`Failed to explain code: ${error instanceof Error ? error.message : 'Unknown error'}`)
@@ -138,6 +173,7 @@ Always cite which files you're referencing in your answer.
 If you're not confident about the answer, say so.`
 
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const message = await (anthropic as any).messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 2048,
@@ -150,9 +186,10 @@ If you're not confident about the answer, say so.`
       ],
     })
 
+    type ContentBlock = { type: string; text?: string };
     const answer = message.content
-      .filter((block: any): block is { type: 'text'; text: string } => block.type === 'text')
-      .map((block: { type: 'text'; text: string }) => block.text)
+      .filter((block: ContentBlock): block is TextBlock => block.type === 'text')
+      .map((block: TextBlock) => block.text)
       .join('\n')
 
     // Extract mentioned files as sources
@@ -186,6 +223,7 @@ export async function checkClaudeConnection(): Promise<boolean> {
 
   try {
     // Simple test request
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const message = await (anthropic as any).messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 10,

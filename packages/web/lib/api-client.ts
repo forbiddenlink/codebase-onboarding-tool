@@ -5,7 +5,7 @@
 export interface ApiError {
   message: string;
   status?: number;
-  retry?: () => Promise<any>;
+  retry?: <T = unknown>() => Promise<T>;
 }
 
 export interface FetchOptions extends RequestInit {
@@ -16,7 +16,7 @@ export interface FetchOptions extends RequestInit {
 /**
  * Enhanced fetch with automatic retry and error handling
  */
-export async function apiFetch<T = any>(
+export async function apiFetch<T = unknown>(
   url: string,
   options: FetchOptions = {}
 ): Promise<T> {
@@ -49,11 +49,12 @@ export async function apiFetch<T = any>(
       const data = await response.json();
       return data as T;
 
-    } catch (error: any) {
-      lastError = error;
+    } catch (error: unknown) {
+      lastError = error as Error;
 
       // Don't retry on 4xx errors (client errors)
-      if (error.status && error.status >= 400 && error.status < 500) {
+      const apiError = error as ApiError;
+      if (apiError.status && apiError.status >= 400 && apiError.status < 500) {
         throw error;
       }
 
@@ -81,34 +82,36 @@ export async function apiFetch<T = any>(
 /**
  * Check if error is a network error
  */
-export function isNetworkError(error: any): boolean {
+export function isNetworkError(error: unknown): boolean {
+  const err = error as Error & { message?: string };
   return (
     error instanceof TypeError ||
-    error.message?.includes('fetch') ||
-    error.message?.includes('network') ||
-    error.message?.includes('Failed to fetch')
+    err.message?.includes('fetch') ||
+    err.message?.includes('network') ||
+    err.message?.includes('Failed to fetch')
   );
 }
 
 /**
  * Get user-friendly error message
  */
-export function getErrorMessage(error: any): string {
-  if (isNetworkError(error)) {
+export function getErrorMessage(error: unknown): string {
+  const err = error as ApiError & { message?: string; status?: number };
+  if (isNetworkError(err)) {
     return 'Unable to connect to the server. Please check your internet connection and try again.';
   }
 
-  if (error?.status === 404) {
+  if (err?.status === 404) {
     return 'The requested resource was not found.';
   }
 
-  if (error?.status === 401 || error?.status === 403) {
+  if (err?.status === 401 || err?.status === 403) {
     return 'You do not have permission to access this resource.';
   }
 
-  if (error?.status >= 500) {
+  if (err?.status && err.status >= 500) {
     return 'A server error occurred. Please try again later.';
   }
 
-  return error?.message || 'An unexpected error occurred. Please try again.';
+  return err?.message || 'An unexpected error occurred. Please try again.';
 }

@@ -118,7 +118,7 @@ export async function getServiceWorkerStatus(): Promise<ServiceWorkerStatus> {
 /**
  * Send message to service worker
  */
-export async function sendMessageToServiceWorker(message: any): Promise<void> {
+export async function sendMessageToServiceWorker(message: unknown): Promise<void> {
   if (!isServiceWorkerSupported()) {
     return;
   }
@@ -217,7 +217,27 @@ export function getNetworkStatus(): {
   downlink?: number;
   rtt?: number;
 } {
-  const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+  // Type for Network Information API (not in standard types)
+  interface NavigatorWithConnection extends Navigator {
+    connection?: {
+      effectiveType?: string;
+      downlink?: number;
+      rtt?: number;
+    };
+    mozConnection?: {
+      effectiveType?: string;
+      downlink?: number;
+      rtt?: number;
+    };
+    webkitConnection?: {
+      effectiveType?: string;
+      downlink?: number;
+      rtt?: number;
+    };
+  }
+
+  const nav = navigator as NavigatorWithConnection;
+  const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
 
   return {
     online: navigator.onLine,

@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import AppLayout from '@/components/AppLayout'
 import { searchNotes, searchAnnotations, type FileNote, type LineAnnotation } from '@/lib/notes'
+import { highlightQuery } from '@/lib/security'
 
 // Sample files for search (in a real app, this would come from the database)
 const sampleFiles = [
@@ -430,10 +431,7 @@ export default function SearchPage() {
                           <pre className="overflow-x-auto font-mono text-sm text-gray-800 dark:text-gray-200">
                             <code
                               dangerouslySetInnerHTML={{
-                                __html: match.text.replace(
-                                  new RegExp(searchQuery, 'gi'),
-                                  '<mark class="bg-yellow-200 dark:bg-yellow-900/50">$&</mark>'
-                                )
+                                __html: highlightQuery(match.text, searchQuery)
                               }}
                             />
                           </pre>
@@ -489,10 +487,7 @@ export default function SearchPage() {
                   <p
                     className="mb-3 text-sm text-gray-900 dark:text-gray-100"
                     dangerouslySetInnerHTML={{
-                      __html: result.data.text.replace(
-                        new RegExp(searchQuery, 'gi'),
-                        '<mark class="bg-yellow-200 dark:bg-yellow-900/50 px-1 rounded">$&</mark>'
-                      )
+                      __html: highlightQuery(result.data.text, searchQuery, 'bg-yellow-200 dark:bg-yellow-900/50 px-1 rounded')
                     }}
                   />
 
