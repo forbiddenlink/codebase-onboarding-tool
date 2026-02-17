@@ -52,6 +52,7 @@ const nextConfig = {
   // Security headers
   async headers() {
     return [
+      // Security headers for all routes
       {
         source: '/:path*',
         headers: [
@@ -99,6 +100,45 @@ const nextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()',
+          },
+        ],
+      },
+      // Optimized caching for static assets
+      {
+        source: '/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      // Images with long cache
+      {
+        source: '/:path*.{jpg,jpeg,png,gif,webp,svg,ico}',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=86400, stale-while-revalidate=3600',
+          },
+        ],
+      },
+      // Fonts with long cache
+      {
+        source: '/:path*.{woff,woff2,ttf,otf,eot}',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
           },
         ],
       },

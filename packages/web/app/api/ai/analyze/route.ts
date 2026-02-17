@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { analyzeCode, explainCode } from '@/lib/claude'
 import { withRateLimit, rateLimiters } from '@/lib/rate-limit'
 import { analyzeRequestSchema, safeValidateRequest } from '@/lib/validation'
+import { getCachedResponse, cacheResponse } from '@/lib/cache'
 
 /**
  * POST /api/ai/analyze
@@ -36,9 +37,30 @@ async function handlePOST(request: NextRequest) {
       )
     }
 
+    // Try to get cached response
+    const cacheKey = { code, question: question || '', language, type };
+    const cached = await getCachedResponse<{
+      explanation?: string;
+      analysis?: string;
+      confidence?: number;
+    }>(type === 'explain' ? 'explain' : 'analyze', cacheKey);
+
+    if (cached) {
+      return NextResponse.json({
+        success: true,
+        type,
+        ...(type === 'explain' ? { result: cached.explanation } : { analysis: cached.analysis, confidence: cached.confidence }),
+        model: 'claude-sonnet-4-20250514',
+        cached: true,
+      });
+    }
+
     // Perform analysis based on type
     if (type === 'explain') {
       const explanation = await explainCode(code, language || 'unknown')
+
+      // Cache the result
+      await cacheResponse('explain', cacheKey, { explanation })
 
       return NextResponse.json({
         success: true,
@@ -50,12 +72,16 @@ async function handlePOST(request: NextRequest) {
       // Default to analyze
       const result = await analyzeCode(code, question, language || 'unknown')
 
+      // Cache the result
+      await cacheResponse('analyze', cacheKey, { analysis: result.analysis, confidence: result.confidence });
+
       return NextResponse.json({
         success: true,
         type: 'analyze',
         analysis: result.analysis,
         confidence: result.confidence,
         model: 'claude-sonnet-4-20250514',
+        cached: false,
       })
     }
   } catch (error) {
