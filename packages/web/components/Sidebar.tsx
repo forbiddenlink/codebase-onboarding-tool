@@ -4,21 +4,33 @@ import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { logout, getUser } from '@/lib/auth'
+import { 
+  DashboardIcon, 
+  SearchIcon, 
+  ChatIcon, 
+  DiagramIcon, 
+  LearningPathIcon, 
+  WhatsNewIcon, 
+  SettingsIcon,
+  LogoutIcon,
+  AISparkleIcon
+} from '@/components/icons/CustomIcons'
+import CommandPalette from './CommandPalette'
 
 interface SidebarLink {
   name: string
   href: string
-  icon: string
+  icon: React.ComponentType<{ className?: string; size?: number }>
 }
 
 const links: SidebarLink[] = [
-  { name: 'Dashboard', href: '/dashboard', icon: '📊' },
-  { name: 'Search', href: '/search', icon: '🔍' },
-  { name: 'Chat', href: '/chat', icon: '💬' },
-  { name: 'Diagrams', href: '/diagrams', icon: '📈' },
-  { name: 'Learning Path', href: '/learning-path', icon: '🎯' },
-  { name: "What's New", href: '/whats-new', icon: '🎉' },
-  { name: 'Settings', href: '/settings', icon: '⚙️' },
+  { name: 'Dashboard', href: '/dashboard', icon: DashboardIcon },
+  { name: 'Search', href: '/search', icon: SearchIcon },
+  { name: 'Chat', href: '/chat', icon: ChatIcon },
+  { name: 'Diagrams', href: '/diagrams', icon: DiagramIcon },
+  { name: 'Learning Path', href: '/learning-path', icon: LearningPathIcon },
+  { name: "What's New", href: '/whats-new', icon: WhatsNewIcon },
+  { name: 'Settings', href: '/settings', icon: SettingsIcon },
 ]
 
 export default function Sidebar() {
@@ -68,30 +80,41 @@ export default function Sidebar() {
           <Link
             href="/"
             onClick={() => setIsOpen(false)}
-            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded inline-block"
+            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded inline-block mb-4"
           >
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              CodeCompass
-            </h1>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-gradient-sunset">
+                <AISparkleIcon className="text-white" size={24} />
+              </div>
+              <h1 className="text-2xl font-bold gradient-sunset bg-clip-text text-transparent">
+                CodeCompass
+              </h1>
+            </div>
           </Link>
+          
+          {/* Command Palette Button */}
+          <div className="mt-4">
+            <CommandPalette />
+          </div>
         </div>
 
         {/* Navigation Links */}
         <nav className="flex-1 p-4 space-y-1">
           {links.map((link) => {
             const isActive = pathname === link.href || pathname?.startsWith(link.href + '/')
+            const Icon = link.icon
             return (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                   isActive
-                    ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-semibold'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    ? 'bg-gradient-to-r from-primary/10 to-secondary/10 text-primary dark:text-primary font-semibold shadow-sm border border-primary/20'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-muted hover:translate-x-1'
                 }`}
               >
-                <span className="text-xl">{link.icon}</span>
+                <Icon className={isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'} size={20} />
                 <span>{link.name}</span>
               </Link>
             )
@@ -113,10 +136,10 @@ export default function Sidebar() {
                   setIsOpen(false)
                   router.push('/login')
                 }}
-                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl transition-all duration-200 font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 hover:translate-x-1"
                 aria-label="Log out"
               >
-                <span>🚪</span>
+                <LogoutIcon size={16} />
                 <span>Log Out</span>
               </button>
             </div>

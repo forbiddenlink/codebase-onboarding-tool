@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import AppLayout from '@/components/AppLayout'
 import { requireAuth } from '@/lib/auth'
+import { AISparkleIcon, CodeIcon, DashboardIcon, DiagramIcon, RefreshIcon, RepositoryIcon, RocketIcon } from '@/components/icons/CustomIcons'
+import { SkeletonDashboard } from '@/components/SkeletonLoader'
 
 interface Repository {
   id: string
@@ -71,22 +73,31 @@ export default function DashboardPage() {
     <AppLayout>
       <div>
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Dashboard
-          </h1>
-          <p className="text-muted-foreground">
-            Explore your analyzed repositories
-          </p>
+          <div className="flex items-center gap-4 mb-2">
+            <div className="p-3 rounded-xl bg-gradient-sunset shadow-lg">
+              <DashboardIcon className="text-white" size={32} />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold gradient-sunset bg-clip-text text-transparent">
+                Dashboard
+              </h1>
+              <p className="text-muted-foreground mt-1">
+                Explore your analyzed repositories and insights
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Review Suggestions */}
         {reviewSuggestions.length > 0 && (
-          <div className="mb-8 p-6 border-2 border-orange-200 dark:border-orange-900 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
-            <div className="flex items-start gap-3 mb-4">
-              <div className="text-3xl">🔄</div>
+          <div className="mb-8 p-6 border-2 border-secondary/30 bg-gradient-to-br from-secondary/5 to-primary/5 rounded-2xl shadow-lg">
+            <div className="flex items-start gap-4 mb-6">
+              <div className="p-3 bg-secondary/20 rounded-xl">
+                <RefreshIcon className="text-secondary" size={28} />
+              </div>
               <div className="flex-1">
-                <h2 className="text-xl font-bold mb-1">Time to Re-Review</h2>
-                <p className="text-sm text-muted-foreground">
+                <h2 className="text-2xl font-bold mb-2">Time to Re-Review</h2>
+                <p className="text-muted-foreground">
                   These modules have changed significantly since you last reviewed them
                 </p>
               </div>
@@ -107,7 +118,7 @@ export default function DashboardPage() {
                 return (
                   <div
                     key={suggestion.id}
-                    className={`p-4 border-l-4 rounded ${priorityColors[suggestion.priority]}`}
+                    className={`p-5 border-l-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 ${priorityColors[suggestion.priority]}`}
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
@@ -134,14 +145,14 @@ export default function DashboardPage() {
                     <div className="flex gap-2 mt-3">
                       <a
                         href={`/viewer?file=${encodeURIComponent(suggestion.filePath)}`}
-                        className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition text-sm font-semibold"
+                        className="px-5 py-2.5 gradient-coral-amber text-white rounded-lg hover:shadow-lg transition-all duration-200 text-sm font-bold"
                       >
                         Review Now
                       </a>
-                      <button className="px-4 py-2 border border-border rounded-lg hover:bg-accent transition text-sm">
+                      <button className="px-5 py-2.5 border-2 border-accent text-accent rounded-lg hover:bg-accent hover:text-white transition-all duration-200 text-sm font-semibold">
                         View Changes
                       </button>
-                      <button className="px-4 py-2 border border-border rounded-lg hover:bg-accent transition text-sm">
+                      <button className="px-5 py-2.5 border border-border rounded-lg hover:bg-muted transition-all duration-200 text-sm">
                         Dismiss
                       </button>
                     </div>
@@ -155,62 +166,77 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <a
             href="/chat"
-            className="p-6 border border-border rounded-lg hover:border-primary transition cursor-pointer"
+            className="group p-8 border-2 border-border rounded-2xl hover:border-primary hover:shadow-xl transition-all duration-300 cursor-pointer bg-card relative overflow-hidden"
           >
-            <h3 className="text-xl font-semibold mb-2">🤖 AI Chat</h3>
-            <p className="text-muted-foreground">
-              Ask questions about your codebase
-            </p>
+            <div className="absolute top-0 right-0 w-24 h-24 bg-primary opacity-5 rounded-full -translate-y-12 translate-x-12 group-hover:scale-150 transition-transform duration-500"></div>
+            <div className="relative">
+              <div className="inline-block p-3 bg-primary/10 rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                <AISparkleIcon className="text-primary" size={28} />
+              </div>
+              <h3 className="text-xl font-bold mb-2">AI Chat</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Ask questions about your codebase
+              </p>
+            </div>
           </a>
           <a
             href="/viewer"
-            className="p-6 border border-border rounded-lg hover:border-primary transition cursor-pointer"
+            className="group p-8 border-2 border-border rounded-2xl hover:border-accent hover:shadow-xl transition-all duration-300 cursor-pointer bg-card relative overflow-hidden"
           >
-            <h3 className="text-xl font-semibold mb-2">📁 Code Viewer</h3>
-            <p className="text-muted-foreground">
-              Browse and explore your code
-            </p>
+            <div className="absolute top-0 right-0 w-24 h-24 bg-accent opacity-5 rounded-full -translate-y-12 translate-x-12 group-hover:scale-150 transition-transform duration-500"></div>
+            <div className="relative">
+              <div className="inline-block p-3 bg-accent/10 rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                <CodeIcon className="text-accent" size={28} />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Code Viewer</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Browse and explore your code
+              </p>
+            </div>
           </a>
           <a
             href="/diagrams"
-            className="p-6 border border-border rounded-lg hover:border-primary transition cursor-pointer"
+            className="group p-8 border-2 border-border rounded-2xl hover:border-secondary hover:shadow-xl transition-all duration-300 cursor-pointer bg-card relative overflow-hidden"
           >
-            <h3 className="text-xl font-semibold mb-2">📊 Diagrams</h3>
-            <p className="text-muted-foreground">
-              View architecture visualizations
-            </p>
+            <div className="absolute top-0 right-0 w-24 h-24 bg-secondary opacity-5 rounded-full -translate-y-12 translate-x-12 group-hover:scale-150 transition-transform duration-500"></div>
+            <div className="relative">
+              <div className="inline-block p-3 bg-secondary/10 rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                <DiagramIcon className="text-secondary" size={28} />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Diagrams</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                View architecture visualizations
+              </p>
+            </div>
           </a>
         </div>
 
         {loading ? (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold mb-4">Your Repositories</h2>
-            {/* Skeleton loaders */}
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="p-6 border border-border rounded-lg animate-pulse">
-                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-2"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3 mb-2"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
-              </div>
-            ))}
-          </div>
+          <SkeletonDashboard />
         ) : repositories.length === 0 ? (
-          <div className="text-center py-16 border border-border rounded-lg bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
-            <div className="text-6xl mb-6">📦</div>
-            <h3 className="text-2xl font-semibold mb-3">No repositories analyzed yet</h3>
-            <p className="text-muted-foreground mb-2 max-w-md mx-auto">
-              Get started by analyzing a repository to unlock AI-powered insights,
-              interactive diagrams, and personalized learning paths.
-            </p>
-            <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-              It only takes a few minutes to analyze a typical codebase!
-            </p>
-            <a
-              href="/setup"
-              className="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:opacity-90 transition shadow-lg"
-            >
-              🚀 Analyze Your First Repository
-            </a>
+          <div className="text-center py-20 border-2 border-border rounded-2xl bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary opacity-5 rounded-full -translate-y-32 translate-x-32"></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent opacity-5 rounded-full translate-y-32 -translate-x-32"></div>
+            <div className="relative">
+              <div className="inline-block p-6 bg-gradient-sunset rounded-3xl mb-6 shadow-xl">
+                <RepositoryIcon className="text-white" size={64} />
+              </div>
+              <h3 className="text-3xl font-bold mb-4">No repositories analyzed yet</h3>
+              <p className="text-muted-foreground mb-2 max-w-md mx-auto text-lg">
+                Get started by analyzing a repository to unlock AI-powered insights,
+                interactive diagrams, and personalized learning paths.
+              </p>
+              <p className="text-sm text-muted-foreground mb-8 max-w-md mx-auto">
+                It only takes a few minutes to analyze a typical codebase!
+              </p>
+              <a
+                href="/setup"
+                className="inline-flex items-center gap-3 px-8 py-4 gradient-sunset text-white rounded-xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300 shadow-lg"
+              >
+                <RocketIcon size={24} />
+                Analyze Your First Repository
+              </a>
+            </div>
           </div>
         ) : (
           <div className="space-y-4">

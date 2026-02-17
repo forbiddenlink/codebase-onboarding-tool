@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: 'CodeCompass - AI-Powered Codebase Onboarding',
   description: 'Make joining new codebases 10x faster with AI-powered analysis, interactive diagrams, and personalized learning paths.',
   manifest: '/manifest.json',
-  themeColor: '#667eea',
+  themeColor: '#f56565', // Coral primary color
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',

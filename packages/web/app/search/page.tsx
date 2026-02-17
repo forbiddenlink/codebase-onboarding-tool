@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import AppLayout from '@/components/AppLayout'
 import { searchNotes, searchAnnotations, type FileNote, type LineAnnotation } from '@/lib/notes'
+import { SkeletonSearchResults } from '@/components/SkeletonLoader'
 
 // Sample files for search (in a real app, this would come from the database)
 const sampleFiles = [

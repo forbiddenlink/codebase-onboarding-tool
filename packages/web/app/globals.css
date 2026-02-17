@@ -4,48 +4,70 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Unique Warm Sunset Theme - Coral/Amber/Teal */
+    --background: 28 50% 98%;
+    --foreground: 20 15% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 20 15% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+    --popover-foreground: 20 15% 12%;
+    
+    /* Primary: Rich Coral */
+    --primary: 11 85% 62%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary: Warm Amber */
+    --secondary: 38 92% 50%;
+    --secondary-foreground: 20 15% 12%;
+    
+    /* Muted: Warm Beige */
+    --muted: 28 40% 94%;
+    --muted-foreground: 25 10% 45%;
+    
+    /* Accent: Deep Teal */
+    --accent: 180 65% 42%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 28 30% 88%;
+    --input: 28 30% 88%;
+    --ring: 11 85% 62%;
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    /* Dark Mode: Deep Night with Warm Accents */
+    --background: 20 20% 8%;
+    --foreground: 28 40% 95%;
+    --card: 20 18% 12%;
+    --card-foreground: 28 40% 95%;
+    --popover: 20 18% 12%;
+    --popover-foreground: 28 40% 95%;
+    
+    /* Primary: Bright Coral */
+    --primary: 11 90% 65%;
+    --primary-foreground: 20 20% 8%;
+    
+    /* Secondary: Golden Amber */
+    --secondary: 38 85% 55%;
+    --secondary-foreground: 20 20% 8%;
+    
+    /* Muted: Warm Dark Gray */
+    --muted: 20 15% 18%;
+    --muted-foreground: 28 20% 65%;
+    
+    /* Accent: Vibrant Teal */
+    --accent: 180 70% 48%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 78% 55%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 20 15% 20%;
+    --input: 20 15% 20%;
+    --ring: 11 90% 65%;
   }
 }
 
@@ -127,5 +149,18 @@
 
   a:hover {
     text-decoration: underline;
+  }
+
+  /* Custom gradient utilities */
+  .gradient-coral-amber {
+    background: linear-gradient(135deg, hsl(11 85% 62%) 0%, hsl(38 92% 50%) 100%);
+  }
+
+  .gradient-teal-coral {
+    background: linear-gradient(135deg, hsl(180 65% 42%) 0%, hsl(11 85% 62%) 100%);
+  }
+
+  .gradient-sunset {
+    background: linear-gradient(135deg, hsl(11 85% 62%) 0%, hsl(38 92% 50%) 50%, hsl(180 65% 42%) 100%);
   }
 }
