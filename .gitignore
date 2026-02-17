@@ -103,3 +103,4 @@ packages/web/cloned-repos/
 .github/instructions/codacy.instructions.md
 .vercel
 .env*.local
+.env.production
