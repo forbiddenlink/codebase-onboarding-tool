@@ -3,7 +3,6 @@
 import { useState, useMemo, useEffect } from 'react'
 import AppLayout from '@/components/AppLayout'
 import { searchNotes, searchAnnotations, type FileNote, type LineAnnotation } from '@/lib/notes'
-import { SkeletonSearchResults } from '@/components/SkeletonLoader'
 
 // Sample files for search (in a real app, this would come from the database)
 const sampleFiles = [
@@ -113,7 +112,7 @@ export default function SearchPage() {
   // Get unique languages from files
   const availableLanguages = useMemo(() => {
     const languages = new Set(sampleFiles.map(f => f.language))
-    return Array.from(languages).sort()
+    return Array.from(languages).sort((a, b) => a.localeCompare(b))
   }, [])
 
   // Search results with fuzzy matching and content search
@@ -236,15 +235,15 @@ export default function SearchPage() {
                   ? "Search code content (e.g., 'express', 'jwt', 'database')..."
                   : "Search notes and annotations (e.g., 'important', 'bug', 'refactor')..."
               }
-              className="w-full px-4 py-3 pl-12 text-lg border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+              className="w-full px-4 py-3 pl-12 text-lg text-gray-900 bg-white border border-gray-300 rounded-lg dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-gray-100"
               aria-label="Search input"
             />
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl">🔍</span>
+            <span className="absolute text-2xl -translate-y-1/2 left-4 top-1/2">🔍</span>
           </div>
 
           {/* Search Type Toggle */}
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+            <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-lg dark:bg-gray-800">
               <button
                 onClick={() => setSearchType('name')}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -253,7 +252,7 @@ export default function SearchPage() {
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                 }`}
                 aria-label="Search by file name"
-                aria-pressed={searchType === 'name'}
+                aria-pressed={searchType === 'name' ? 'true' : 'false'}
               >
                 📄 File Name
               </button>
@@ -265,7 +264,7 @@ export default function SearchPage() {
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                 }`}
                 aria-label="Search by code content"
-                aria-pressed={searchType === 'content'}
+                aria-pressed={searchType === 'content' ? 'true' : 'false'}
               >
                 📝 Code Content
               </button>
@@ -277,7 +276,7 @@ export default function SearchPage() {
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                 }`}
                 aria-label="Search notes and annotations"
-                aria-pressed={searchType === 'notes'}
+                aria-pressed={searchType === 'notes' ? 'true' : 'false'}
               >
                 💬 Notes
               </button>
@@ -286,9 +285,9 @@ export default function SearchPage() {
             {searchType !== 'notes' && (
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-700 transition-colors border border-gray-300 rounded-lg dark:border-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                 aria-label="Toggle filters"
-                aria-expanded={showFilters}
+                aria-expanded={showFilters ? 'true' : 'false'}
               >
                 🎛️ Filters {selectedLanguages.length > 0 && `(${selectedLanguages.length})`}
               </button>
@@ -301,7 +300,7 @@ export default function SearchPage() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as 'relevance' | 'date' | 'author')}
-                  className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                  className="px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
                   aria-label="Sort notes by"
                 >
                   <option value="relevance">Relevance</option>
@@ -314,8 +313,8 @@ export default function SearchPage() {
 
           {/* Filters Panel */}
           {showFilters && searchType !== 'notes' && (
-            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
+            <div className="p-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+              <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
                 Filter by Language
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -329,7 +328,7 @@ export default function SearchPage() {
                         : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400'
                     }`}
                     aria-label={`Filter by ${language}`}
-                    aria-pressed={selectedLanguages.includes(language)}
+                    aria-pressed={selectedLanguages.includes(language) ? 'true' : 'false'}
                   >
                     {language}
                   </button>
@@ -367,7 +366,7 @@ export default function SearchPage() {
           )}
 
           {searchQuery && searchType !== 'notes' && searchResults.length === 0 && (
-            <div className="text-center py-12">
+            <div className="py-12 text-center">
               <p className="text-xl text-gray-500 dark:text-gray-400">No results found</p>
               <p className="mt-2 text-sm text-gray-400 dark:text-gray-500">
                 Try adjusting your search query or filters
@@ -376,7 +375,7 @@ export default function SearchPage() {
           )}
 
           {searchQuery && searchType === 'notes' && sortedNoteResults.length === 0 && (
-            <div className="text-center py-12">
+            <div className="py-12 text-center">
               <p className="text-xl text-gray-500 dark:text-gray-400">No notes found</p>
               <p className="mt-2 text-sm text-gray-400 dark:text-gray-500">
                 Try a different search query. Notes are created in the Code Viewer.
@@ -388,7 +387,7 @@ export default function SearchPage() {
           {searchType !== 'notes' && searchResults.map((result, index) => (
             <div
               key={`${result.file.path}-${index}`}
-              className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 transition-colors cursor-pointer"
+              className="p-4 transition-colors bg-white border border-gray-200 rounded-lg cursor-pointer dark:bg-gray-800 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -413,7 +412,7 @@ export default function SearchPage() {
                       {result.file.language}
                     </span>
                   </div>
-                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 font-mono">
+                  <p className="mt-1 font-mono text-sm text-gray-600 dark:text-gray-400">
                     {result.file.path}
                   </p>
                   <p className="mt-1 text-xs text-gray-500 dark:text-gray-500">
@@ -424,11 +423,11 @@ export default function SearchPage() {
                   {result.contentMatches && result.contentMatches.length > 0 && (
                     <div className="mt-3 space-y-2">
                       {result.contentMatches.slice(0, 3).map((match, matchIndex) => (
-                        <div key={matchIndex} className="p-2 bg-gray-50 dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700">
-                          <div className="text-xs text-gray-500 dark:text-gray-500 mb-1">
+                        <div key={matchIndex} className="p-2 border border-gray-200 rounded bg-gray-50 dark:bg-gray-900 dark:border-gray-700">
+                          <div className="mb-1 text-xs text-gray-500 dark:text-gray-500">
                             Line {match.line}
                           </div>
-                          <pre className="text-sm text-gray-800 dark:text-gray-200 font-mono overflow-x-auto">
+                          <pre className="overflow-x-auto font-mono text-sm text-gray-800 dark:text-gray-200">
                             <code
                               dangerouslySetInnerHTML={{
                                 __html: match.text.replace(
@@ -462,7 +461,7 @@ export default function SearchPage() {
           {searchType === 'notes' && sortedNoteResults.map((result, index) => (
             <div
               key={`${result.type}-${result.data.id}-${index}`}
-              className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
+              className="p-4 transition-colors bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400"
             >
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0 text-3xl">
@@ -488,7 +487,7 @@ export default function SearchPage() {
 
                   {/* Note Text with Highlighted Search Query */}
                   <p
-                    className="text-sm text-gray-900 dark:text-gray-100 mb-3"
+                    className="mb-3 text-sm text-gray-900 dark:text-gray-100"
                     dangerouslySetInnerHTML={{
                       __html: result.data.text.replace(
                         new RegExp(searchQuery, 'gi'),
@@ -503,18 +502,18 @@ export default function SearchPage() {
                       {result.data.fileName}
                     </span>
                     <span className="text-gray-400 dark:text-gray-600">•</span>
-                    <span className="text-gray-500 dark:text-gray-500 font-mono text-xs">
+                    <span className="font-mono text-xs text-gray-500 dark:text-gray-500">
                       {result.data.filePath}
                     </span>
                   </div>
 
                   {/* Line Number for Annotations */}
                   {result.type === 'annotation' && (
-                    <div className="mt-2 p-2 bg-gray-50 dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700">
-                      <div className="text-xs text-gray-500 dark:text-gray-500 mb-1">
+                    <div className="p-2 mt-2 border border-gray-200 rounded bg-gray-50 dark:bg-gray-900 dark:border-gray-700">
+                      <div className="mb-1 text-xs text-gray-500 dark:text-gray-500">
                         Line {result.data.lineNumber}
                       </div>
-                      <code className="text-xs text-gray-700 dark:text-gray-300 font-mono">
+                      <code className="font-mono text-xs text-gray-700 dark:text-gray-300">
                         {result.data.lineContent}
                       </code>
                     </div>
@@ -527,41 +526,41 @@ export default function SearchPage() {
 
         {/* Empty State */}
         {!searchQuery && (
-          <div className="text-center py-12">
+          <div className="py-12 text-center">
             <p className="text-xl text-gray-500 dark:text-gray-400">
               Start typing to search files
             </p>
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto text-left">
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <h3 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">
+            <div className="grid max-w-4xl grid-cols-1 gap-4 mx-auto mt-6 text-left md:grid-cols-3">
+              <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+                <h3 className="mb-2 font-semibold text-blue-900 dark:text-blue-300">
                   📄 File Name Search
                 </h3>
                 <p className="text-sm text-blue-800 dark:text-blue-400">
                   Search by file name with fuzzy matching. Handles typos and partial matches.
                 </p>
-                <p className="text-xs text-blue-700 dark:text-blue-500 mt-2">
+                <p className="mt-2 text-xs text-blue-700 dark:text-blue-500">
                   Try: &quot;user&quot;, &quot;auth&quot;, &quot;index&quot;
                 </p>
               </div>
-              <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                <h3 className="font-semibold text-purple-900 dark:text-purple-300 mb-2">
+              <div className="p-4 rounded-lg bg-purple-50 dark:bg-purple-900/20">
+                <h3 className="mb-2 font-semibold text-purple-900 dark:text-purple-300">
                   📝 Content Search
                 </h3>
                 <p className="text-sm text-purple-800 dark:text-purple-400">
                   Search within file contents. Highlights matches with context.
                 </p>
-                <p className="text-xs text-purple-700 dark:text-purple-500 mt-2">
+                <p className="mt-2 text-xs text-purple-700 dark:text-purple-500">
                   Try: &quot;express&quot;, &quot;jwt&quot;, &quot;database&quot;
                 </p>
               </div>
-              <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                <h3 className="font-semibold text-green-900 dark:text-green-300 mb-2">
+              <div className="p-4 rounded-lg bg-green-50 dark:bg-green-900/20">
+                <h3 className="mb-2 font-semibold text-green-900 dark:text-green-300">
                   💬 Notes Search
                 </h3>
                 <p className="text-sm text-green-800 dark:text-green-400">
                   Search your notes and annotations by content, author, or file.
                 </p>
-                <p className="text-xs text-green-700 dark:text-green-500 mt-2">
+                <p className="mt-2 text-xs text-green-700 dark:text-green-500">
                   Try: &quot;important&quot;, &quot;bug&quot;, &quot;refactor&quot;
                 </p>
               </div>

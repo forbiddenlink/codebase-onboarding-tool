@@ -50,6 +50,8 @@ Thumbs.db
 *.swp
 *.swo
 *~
+.history/
+.codacy/
 
 # VS Code extension
 packages/vscode-extension/*.vsix
@@ -72,3 +74,30 @@ temp/
 .stylelintcache
 *.tsbuildinfo
 .next-env.d.ts
+
+# Session notes and temporary files
+CODE_REVIEW_*.md
+BUILD_REPORT.md
+SESSION_SUMMARY.md
+DESIGN_*.md
+PARSER_IMPLEMENTATION_NOTES.md
+NOTES_SEARCH_TEST_REPORT.md
+QUICK_WINS_COMPLETE.md
+*-report-*.md
+*-report-*.json
+claude-progress.txt
+app_spec.txt
+quality_metrics.json
+
+# Temporary test files in root
+test-*.js
+!packages/**/test-*.js
+!packages/**/*.test.js
+apply-migration.js
+
+# Cloned repositories (for analysis)
+cloned-repos/
+packages/web/cloned-repos/
+
+#Ignore vscode AI rules
+.github/instructions/codacy.instructions.md

@@ -337,7 +337,7 @@ export default function CommandPalette({ onClose }: CommandPaletteProps) {
                               {categoryLabels[category as keyof typeof categoryLabels]}
                             </div>
                             <div className="space-y-1 mt-1">
-                              {commands.map((command, idx) => {
+                              {commands.map((command) => {
                                 const globalIndex = filteredCommands.indexOf(command)
                                 const isSelected = globalIndex === selectedIndex
                                 const Icon = command.icon

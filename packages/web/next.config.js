@@ -28,6 +28,22 @@ const nextConfig = {
     // Add production domain before deploying
     domains: ['localhost'],
   },
+
+  // Webpack configuration
+  webpack: (config, { isServer }) => {
+    // Externalize tree-sitter native bindings for server-side
+    if (isServer) {
+      config.externals.push({
+        'tree-sitter': 'commonjs tree-sitter',
+        'tree-sitter-typescript': 'commonjs tree-sitter-typescript',
+        'tree-sitter-python': 'commonjs tree-sitter-python',
+        'tree-sitter-java': 'commonjs tree-sitter-java',
+        'tree-sitter-rust': 'commonjs tree-sitter-rust',
+      });
+    }
+    
+    return config;
+  },
 }
 
 module.exports = nextConfig

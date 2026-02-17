@@ -170,7 +170,7 @@ export function GlassButton({
   children: ReactNode
   className?: string
   variant?: 'default' | 'primary' | 'secondary'
-} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onAnimationStart' | 'onDrag' | 'onDragStart' | 'onDragEnd'>) {
   const variantClasses = {
     default: 'bg-white/10 hover:bg-white/20 text-foreground',
     primary: 'gradient-coral-amber text-white hover:shadow-xl',

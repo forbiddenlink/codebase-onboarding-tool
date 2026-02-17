@@ -53,6 +53,7 @@ model FileNode {
   complexity    Float
   lastModified  DateTime
   primaryAuthor String?
+  metadata      String?      // JSON string of parsed data
   repositoryId  String
   repository    Repository   @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
   createdAt     DateTime     @default(now())

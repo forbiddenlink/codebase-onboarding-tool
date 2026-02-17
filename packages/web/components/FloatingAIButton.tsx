@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { AISparkleIcon, ChatIcon } from './icons/CustomIcons'
+import { AISparkleIcon } from './icons/CustomIcons'
 
 export default function FloatingAIButton() {
   const router = useRouter()
