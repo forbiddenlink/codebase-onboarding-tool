@@ -112,38 +112,26 @@ codecompass/
 ## 🛠️ Technology Stack
 
 ### Frontend
-- **Next.js 16.1.6** with App Router and TypeScript (latest with all CVE patches)
-- **Tailwind CSS** with **shadcn/ui** components
+- **Next.js 16.1.6** with App Router and TypeScript
+- **Tailwind CSS** with **Ethereal Cyber-Glass** design system
+- **Framer Motion** for advanced layout animations (scanlines, holographic effects)
+- **shadcn/ui** components (customized)
 - **D3.js** for interactive visualizations
-- **Zustand** for UI state, **React Query** for server state
-- **Framer Motion** for animations
+- **Zustand** for UI state
 
 ### Backend
 - **Next.js API Routes** and Server Actions
-- **SQLite** with **Prisma ORM** (upgradeable to PostgreSQL)
-- **Anthropic Claude API** (Sonnet 4) for AI features
+- **SQLite** with **Prisma ORM**
+- **Anthropic Claude API** (Sonnet 3.5) for AI features
 - **tree-sitter** for multi-language parsing
 - **simple-git** for repository analysis
-- **In-memory vector store** (FAISS) for semantic search
 
-### CLI & Extension
-- **Commander.js** for CLI
-- **VS Code Extension API**
-- **Chalk** and **Ora** for beautiful terminal output
+### Security
+- **Next.js 16.1.6** (Latest security patches)
+- **Content Security Policy** (CSP) optimized for animations
+- **Input Sanitization** with Zod and DOMPurify
+- **Rate Limiting** via Upstash Redis
 
-## � Security Features
-
-CodeCompass implements enterprise-grade security measures to protect your codebase and data:
-
-### Framework Security
-- **Next.js 16.1.6** - Latest version with all CVE patches (CVE-2025-66478, CVE-2025-67779, CVE-2025-55184, CVE-2025-55183)
-- **Comprehensive Security Headers** - CSP, X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy
-- **Input Validation** - Zod schemas for all API endpoints with strict type checking
-
-### XSS Protection
-- **DOMPurify Integration** - All user-generated content sanitized before rendering
-- **HTML Entity Escaping** - Code viewer and syntax highlighter with safe escaping
-- **Safe Search Highlighting** - XSS-safe query highlighting in search results
 
 ### Rate Limiting
 Multi-tier rate limiting powered by Upstash Redis:
@@ -352,12 +340,13 @@ NEXTAUTH_URL=http://localhost:3000
 - ✅ Feature list created (200+ comprehensive tests)
 - ✅ Development environment fully configured
 - ✅ Core architecture implemented
+- ✅ **Redesign Complete**: "Ethereal Cyber-Glass" UI with Bento Grids & Neon Aesthetics
 - ✅ Repository analysis engine (TypeScript/JavaScript parsing with tree-sitter)
 - ✅ Web dashboard with modern UI (Next.js 14 + Tailwind + shadcn/ui)
-- ✅ AI chat integration with Claude API (Sonnet 4)
+- ✅ AI chat integration with Claude API
 - ✅ Database layer with Prisma ORM
 - ✅ Basic CLI tool structure
-- ✅ VS Code extension scaffolding
+
 
 ### In Progress
 - ⏳ Dependency graph visualization with D3.js

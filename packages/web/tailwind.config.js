@@ -18,7 +18,6 @@ module.exports = {
     './lib/**/*.{ts,tsx}',
   ],
   theme: {
-    // Container utilities for responsive layouts
     container: {
       center: true,
       padding: "2rem",
@@ -27,8 +26,6 @@ module.exports = {
       },
     },
     extend: {
-      // Custom color palette using CSS variables for dynamic theming
-      // These map to CSS variables defined in globals.css
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -64,13 +61,11 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
-      // Border radius utilities using CSS variable for consistent theming
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
-      // Animation keyframes for interactive components
       keyframes: {
         "accordion-down": {
           from: { height: 0 },
@@ -80,14 +75,35 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: 0 },
         },
+        "scanline": {
+          "0%": { transform: "translateY(-100%)" },
+          "100%": { transform: "translateY(100%)" },
+        },
+        "flicker": {
+          "0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100%": { opacity: 0.99 },
+          "20%, 21.999%, 63%, 63.999%, 65%, 69.999%": { opacity: 0.4 },
+        },
+        "glitch": {
+          "0%": { transform: "translate(0)" },
+          "20%": { transform: "translate(-2px, 2px)" },
+          "40%": { transform: "translate(-2px, -2px)" },
+          "60%": { transform: "translate(2px, 2px)" },
+          "80%": { transform: "translate(2px, -2px)" },
+          "100%": { transform: "translate(0)" },
+        },
       },
-      // Animation utilities for smooth transitions
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "scanline": "scanline 2s linear infinite",
+        "flicker": "flicker 2s infinite",
+        "glitch": "glitch 0.5s ease-in-out",
+      },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "cyber-grid": "linear-gradient(to right, #111 1px, transparent 1px), linear-gradient(to bottom, #111 1px, transparent 1px)",
       },
     },
   },
-  // Tailwind Animate plugin for additional animation utilities
   plugins: [require("tailwindcss-animate")],
 }
