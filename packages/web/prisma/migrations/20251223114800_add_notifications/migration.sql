@@ -1,3 +1,0 @@
--- Duplicate migration - Notification table already created in 20251223064821
--- This migration is a no-op for PostgreSQL since the table already exists
--- If running fresh, this will be skipped. If table exists, no changes needed.
