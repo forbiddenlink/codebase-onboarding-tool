@@ -1,19 +1,3 @@
--- CreateTable
-CREATE TABLE "Notification" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "userId" TEXT NOT NULL,
-    "type" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "message" TEXT NOT NULL,
-    "metadata" TEXT,
-    "read" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
-);
-
--- CreateIndex
-CREATE INDEX "Notification_userId_idx" ON "Notification"("userId");
-
--- CreateIndex
-CREATE INDEX "Notification_read_idx" ON "Notification"("read");
+-- Duplicate migration - Notification table already created in 20251223064821
+-- This migration is a no-op for PostgreSQL since the table already exists
+-- If running fresh, this will be skipped. If table exists, no changes needed.
