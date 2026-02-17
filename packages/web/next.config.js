@@ -22,11 +22,31 @@ const nextConfig = {
     },
   },
 
+  // Turbopack configuration (Next.js 16+ default bundler)
+  turbopack: {
+    // Externalize native modules that can't be bundled
+    resolveExtensions: ['.js', '.ts', '.tsx', '.jsx', '.json'],
+  },
+
+  // Additional server externals for native modules
+  serverExternalPackages: [
+    'tree-sitter',
+    'tree-sitter-typescript',
+    'tree-sitter-python',
+    'tree-sitter-java',
+    'tree-sitter-rust',
+    'tree-sitter-go',
+  ],
+
   // Image optimization configuration
   images: {
-    // Allowed domains for next/image component
-    // Add production domain before deploying
-    domains: ['localhost'],
+    // Allowed remote patterns for next/image component
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+    ],
   },
 
   // Security headers

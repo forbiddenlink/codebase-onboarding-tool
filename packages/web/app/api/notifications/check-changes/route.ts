@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get completed learning path items
-    const completedItems = learningPath.items.filter(item => item.completed)
+    const completedItems = learningPath.items.filter((item: { completed: boolean; fileId: string }) => item.completed)
 
     if (completedItems.length === 0) {
       return NextResponse.json({
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get the file IDs that the user has learned
-    const learnedFileIds = completedItems.map(item => item.fileId)
+    const learnedFileIds = completedItems.map((item: { fileId: string }) => item.fileId)
 
     // Get the files from the database
     const files = await prisma.fileNode.findMany({
