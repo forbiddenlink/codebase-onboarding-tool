@@ -5,6 +5,7 @@
   "description": "CodeCompass Web Dashboard - Next.js application",
   "scripts": {
     "dev": "next dev",
+    "prebuild": "cd ../analyzer && npm run build",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
