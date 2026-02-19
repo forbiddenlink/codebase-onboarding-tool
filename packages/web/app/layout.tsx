@@ -45,16 +45,17 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#f56565', // Coral primary color
+  themeColor: '#000000', // Deep black for Cyber-Glass theme
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
+  colorScheme: 'dark',
 }
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  readonly children: React.ReactNode
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
